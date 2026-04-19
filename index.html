@@ -758,14 +758,14 @@ function renderIndex() {
     document.getElementById('statsCard').style.display = 'none';
   } else {
     document.getElementById('levelTip').style.display = 'none';
-    if (state.interests.length > 0) {
-      document.getElementById('interestCard').style.display = 'none';
-      document.getElementById('recommendCard').style.display = 'block';
-      loadDaily();
-    } else {
-      document.getElementById('interestCard').style.display = 'block';
-      renderInterestSelector();
+    // 默认设置全部兴趣，直接显示推荐
+    if (state.interests.length === 0) {
+      state.interests = INTERESTS.map(i => i.key);
+      save('interests');
     }
+    document.getElementById('interestCard').style.display = 'none';
+    document.getElementById('recommendCard').style.display = 'block';
+    loadDaily();
     document.getElementById('statsCard').style.display = 'block';
     document.getElementById('statArticles').textContent = state.stats.totalArticles;
     document.getElementById('statMinutes').textContent = state.stats.totalMinutes;
