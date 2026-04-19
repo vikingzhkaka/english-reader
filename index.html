@@ -1,0 +1,1094 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>轻松英语阅读 - Graded Reader</title>
+  <style>
+    :root {
+      --primary: #4A90D9;
+      --primary-light: #6BA3E0;
+      --bg: #F7F8FA;
+      --card: #FFFFFF;
+      --text1: #333;
+      --text2: #666;
+      --text3: #999;
+      --border: #EBEBEB;
+      --success: #00B578;
+      --warning: #ED7B2F;
+      --danger: #ff4757;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      font-size: 15px; line-height: 1.6; color: var(--text1);
+      background: var(--bg); overflow-x: hidden;
+      padding-bottom: 70px;
+    }
+    /* ===== Nav ===== */
+    .navbar {
+      position: sticky; top: 0; z-index: 100;
+      background: var(--primary); color: #fff;
+      padding: 14px 16px; display: flex; align-items: center; justify-content: space-between;
+    }
+    .navbar h1 { font-size: 18px; font-weight: 600; }
+    .navbar .back-btn { font-size: 20px; cursor: pointer; padding: 4px 8px; }
+    .navbar .right-btns { display: flex; gap: 16px; }
+    .navbar .icon-btn { font-size: 20px; cursor: pointer; }
+    /* ===== Tab Bar ===== */
+    .tab-bar {
+      position: fixed; bottom: 0; left: 0; right: 0; z-index: 100;
+      background: #fff; border-top: 1px solid var(--border);
+      display: flex; padding: 6px 0 env(safe-area-inset-bottom, 8px);
+    }
+    .tab-item {
+      flex: 1; text-align: center; cursor: pointer; padding: 6px 0;
+      color: var(--text3); transition: color 0.2s;
+    }
+    .tab-item.active { color: var(--primary); }
+    .tab-item .tab-icon { font-size: 22px; display: block; margin-bottom: 2px; }
+    .tab-item .tab-label { font-size: 11px; }
+    /* ===== Page ===== */
+    .page { display: none; padding: 16px; }
+    .page.active { display: block; }
+    /* ===== Card ===== */
+    .card {
+      background: var(--card); border-radius: 12px; padding: 16px;
+      margin-bottom: 14px; box-shadow: 0 1px 6px rgba(0,0,0,0.04);
+    }
+    .section-title {
+      font-size: 16px; font-weight: 600; margin-bottom: 12px;
+      display: flex; align-items: center;
+    }
+    .section-title::before {
+      content: ''; width: 3px; height: 16px;
+      background: var(--primary); border-radius: 2px; margin-right: 8px;
+    }
+    /* ===== Level Tags ===== */
+    .ltag { display: inline-block; padding: 2px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; }
+    .ltag-a1 { background: #E8F5E9; color: #2E7D32; }
+    .ltag-a2 { background: #E3F2FD; color: #1565C0; }
+    .ltag-b1 { background: #FFF3E0; color: #E65100; }
+    .ltag-b2 { background: #FCE4EC; color: #C62828; }
+    .ltag-c1 { background: #F3E5F5; color: #6A1B9A; }
+    /* ===== Index Page ===== */
+    .greeting { font-size: 22px; font-weight: 700; padding: 12px 0 8px; }
+    .streak { font-size: 13px; color: var(--warning); padding-bottom: 12px; }
+    .level-tip {
+      display: flex; align-items: center; padding: 16px;
+      background: linear-gradient(135deg, #E8F4FD, #F0F7FF); border-radius: 12px; margin-bottom: 14px;
+    }
+    .level-tip .tip-icon { font-size: 36px; margin-right: 12px; }
+    .level-tip .tip-content { flex: 1; }
+    .level-tip .tip-title { font-size: 15px; font-weight: 600; }
+    .level-tip .tip-desc { font-size: 12px; color: var(--text2); }
+    .level-tip .tip-btn {
+      background: var(--primary); color: #fff; border: none; border-radius: 20px;
+      padding: 8px 18px; font-size: 13px; font-weight: 600; cursor: pointer;
+    }
+    /* Interest tags */
+    .interest-list { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
+    .interest-tag {
+      padding: 8px 16px; border-radius: 20px; font-size: 13px;
+      border: 1.5px solid var(--border); color: var(--text2); background: #fff;
+      cursor: pointer; user-select: none; -webkit-user-select: none;
+      transition: all 0.2s ease; touch-action: manipulation;
+    }
+    .interest-tag:active { transform: scale(0.95); background: rgba(74,144,217,0.05); }
+    .interest-tag.active { border-color: var(--primary); color: var(--primary); background: rgba(74,144,217,0.08); }
+    .confirm-btn {
+      width: 100%; background: var(--primary); color: #fff; border: none;
+      border-radius: 24px; padding: 12px; font-size: 15px; font-weight: 600; cursor: pointer;
+      touch-action: manipulation; -webkit-appearance: none;
+    }
+    .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+    .section-more { font-size: 13px; color: var(--primary); cursor: pointer; }
+    /* Article card */
+    .article-card {
+      background: var(--bg); border-radius: 10px; padding: 14px; margin-bottom: 12px; cursor: pointer;
+    }
+    .article-card .ac-header { display: flex; justify-content: space-between; margin-bottom: 6px; }
+    .article-card .ac-tags { display: flex; gap: 6px; align-items: center; }
+    .article-card .ac-tag { font-size: 11px; color: var(--text3); background: rgba(0,0,0,0.04); padding: 2px 8px; border-radius: 4px; text-transform: capitalize; }
+    .article-card .ac-time { font-size: 11px; color: var(--text3); }
+    .article-card .ac-title { font-size: 16px; font-weight: 600; display: block; margin-bottom: 2px; }
+    .article-card .ac-cn { font-size: 12px; color: var(--text3); display: block; margin-bottom: 8px; }
+    .article-card .ac-footer { display: flex; justify-content: space-between; align-items: center; }
+    .article-card .ac-words { font-size: 11px; color: var(--text3); }
+    .article-card .ac-read { font-size: 13px; color: var(--primary); font-weight: 500; }
+    /* Stats */
+    .stats-grid { display: flex; justify-content: space-around; padding: 8px 0; }
+    .stat-item { text-align: center; }
+    .stat-val { font-size: 24px; font-weight: 700; color: var(--primary); display: block; }
+    .stat-lbl { font-size: 12px; color: var(--text3); }
+    /* ===== Reading Page ===== */
+    .reading-page { background: #fff; min-height: 100vh; }
+    .reading-page.eye-care { background: #F5EDD8; }
+    .reading-topbar {
+      display: flex; justify-content: space-between; align-items: center; padding: 10px 16px;
+      background: var(--primary); color: #fff;
+    }
+    .reading-topbar .rt-left { display: flex; gap: 10px; align-items: center; }
+    .reading-topbar .rt-right { display: flex; gap: 16px; }
+    .reading-meta { padding: 16px; }
+    .reading-meta .rm-title { font-size: 20px; font-weight: 700; display: block; margin-bottom: 4px; }
+    .reading-meta .rm-cn { font-size: 13px; color: var(--text3); display: block; margin-bottom: 8px; }
+    .reading-meta .rm-tags { display: flex; gap: 8px; align-items: center; }
+    .reading-meta .rm-tag { font-size: 11px; color: var(--primary); background: rgba(74,144,217,0.1); padding: 2px 10px; border-radius: 4px; text-transform: capitalize; }
+    .reading-divider { height: 1px; background: var(--border); margin: 0 16px 16px; }
+    .reading-body { padding: 0 16px 100px; }
+    .reading-body p { margin-bottom: 20px; text-align: justify; letter-spacing: 0.3px; }
+    .reading-body .wh { color: var(--primary); font-weight: 500; cursor: pointer; border-bottom: 1.5px solid rgba(74,144,217,0.2); transition: color 0.15s; }
+    .reading-body .wh:active { color: var(--success); border-bottom-color: rgba(0,181,120,0.2); }
+    .reading-body .wc { color: var(--success); font-weight: 500; border-bottom-color: rgba(0,181,120,0.2); }
+    /* Reading footer */
+    .reading-fbar {
+      position: fixed; bottom: 0; left: 0; right: 0; z-index: 100;
+      background: #fff; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center;
+      box-shadow: 0 -1px 8px rgba(0,0,0,0.06);
+    }
+    .reading-fbar .progress { font-size: 13px; color: var(--primary); font-weight: 600; }
+    .reading-fbar .fbar-btns { display: flex; gap: 10px; }
+    .reading-fbar .fb-btn {
+      padding: 8px 18px; border-radius: 20px; font-size: 13px; cursor: pointer; border: none;
+    }
+    .fb-back { background: var(--bg); color: var(--text2); }
+    .fb-done { background: var(--primary); color: #fff; font-weight: 600; }
+    /* Word popup */
+    .word-popup-overlay {
+      display: none; position: fixed; inset: 0; z-index: 200; background: rgba(0,0,0,0.4);
+      justify-content: center; align-items: flex-end;
+    }
+    .word-popup-overlay.show { display: flex; }
+    .word-popup {
+      background: #fff; border-radius: 16px 16px 0 0; padding: 28px 24px; width: 100%; max-width: 500px;
+      animation: slideUp 0.25s ease;
+    }
+    @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+    .word-popup .wp-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
+    .word-popup .wp-word { font-size: 24px; font-weight: 700; color: var(--primary); }
+    .word-popup .wp-phonetic { font-size: 13px; color: var(--text3); display: block; margin-bottom: 10px; }
+    .word-popup .wp-divider { height: 1px; background: var(--border); margin-bottom: 10px; }
+    .word-popup .wp-def { font-size: 15px; color: var(--text1); line-height: 1.6; margin-bottom: 10px; }
+    .word-popup .wp-hint { font-size: 11px; color: var(--text3); text-align: center; display: block; }
+    .wp-close { font-size: 20px; cursor: pointer; color: var(--text3); background: none; border: none; padding: 4px; }
+    /* Settings panel */
+    .settings-panel {
+      display: none; position: fixed; inset: 0; z-index: 200; background: rgba(0,0,0,0.4);
+      justify-content: center; align-items: flex-end;
+    }
+    .settings-panel.show { display: flex; }
+    .settings-content {
+      background: #fff; border-radius: 16px 16px 0 0; padding: 28px 24px; width: 100%; max-width: 500px;
+      animation: slideUp 0.25s ease;
+    }
+    .setting-row {
+      display: flex; justify-content: space-between; align-items: center; padding: 14px 0; border-bottom: 1px solid var(--border);
+    }
+    .setting-row label { font-size: 14px; }
+    .setting-row input[type=range] { width: 140px; accent-color: var(--primary); }
+    .setting-row .sw { width: 44px; height: 24px; accent-color: var(--primary); }
+    .font-btn { background: none; border: none; font-size: 22px; color: var(--primary); cursor: pointer; padding: 4px 8px; }
+    /* ===== Level Test ===== */
+    .test-intro { text-align: center; padding: 40px 16px; }
+    .test-intro .ti-icon { font-size: 56px; margin-bottom: 16px; }
+    .test-intro .ti-title { font-size: 22px; font-weight: 700; margin-bottom: 8px; }
+    .test-intro .ti-desc { font-size: 14px; color: var(--text2); margin-bottom: 28px; line-height: 1.7; }
+    .test-intro .ti-features { text-align: left; margin-bottom: 28px; }
+    .test-intro .ti-feat { display: flex; align-items: center; gap: 8px; padding: 6px 0; font-size: 14px; }
+    .test-intro .ti-levels { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-bottom: 32px; }
+    .test-intro .ti-btn {
+      background: var(--primary); color: #fff; border: none; border-radius: 24px;
+      padding: 14px 48px; font-size: 16px; font-weight: 600; cursor: pointer;
+    }
+    /* Test progress */
+    .test-progress { padding: 12px 16px; background: #fff; border-radius: 12px; margin-bottom: 12px; }
+    .test-progress .tp-info { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 13px; color: var(--text2); }
+    .test-progress .tp-bar { height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; }
+    .test-progress .tp-fill { height: 100%; background: var(--primary); transition: width 0.3s; }
+    .test-tip { background: rgba(74,144,217,0.08); border-radius: 8px; padding: 10px 14px; font-size: 12px; color: var(--primary); margin-bottom: 14px; }
+    .test-content {
+      background: #fff; border-radius: 12px; padding: 20px; margin-bottom: 16px;
+      font-size: 16px; line-height: 2; letter-spacing: 0.3px;
+    }
+    .test-content .t-title { font-size: 18px; font-weight: 700; margin-bottom: 12px; }
+    .test-next-btn {
+      display: block; width: 100%; background: var(--primary); color: #fff; border: none;
+      border-radius: 24px; padding: 14px; font-size: 15px; font-weight: 600; cursor: pointer;
+    }
+    /* Result */
+    .result-page { text-align: center; padding: 40px 16px; }
+    .result-page .r-icon { font-size: 56px; margin-bottom: 12px; }
+    .result-page .r-title { font-size: 22px; font-weight: 700; margin-bottom: 24px; }
+    .result-level-card {
+      background: #fff; border-radius: 16px; padding: 32px; margin-bottom: 20px;
+      box-shadow: 0 2px 12px rgba(74,144,217,0.1);
+    }
+    .result-level-card .rl-label { font-size: 13px; color: var(--text3); margin-bottom: 10px; }
+    .result-level-card .rl-badge { font-size: 48px; font-weight: 700; margin-bottom: 8px; }
+    .result-level-card .rl-name { font-size: 16px; font-weight: 600; color: var(--text1); margin-bottom: 4px; }
+    .result-level-card .rl-desc { font-size: 13px; color: var(--text3); }
+    .result-rec { background: #fff; border-radius: 12px; padding: 16px; margin-bottom: 16px; text-align: left; }
+    .result-rec .rec-label { font-size: 14px; font-weight: 600; margin-bottom: 8px; }
+    .result-rec .rec-levels { display: flex; align-items: center; gap: 10px; }
+    .result-rec .rec-hint { font-size: 12px; color: var(--text3); }
+    .result-tip { font-size: 12px; color: var(--text3); margin-bottom: 28px; }
+    .result-btn {
+      background: var(--primary); color: #fff; border: none; border-radius: 24px;
+      padding: 14px 60px; font-size: 16px; font-weight: 600; cursor: pointer;
+    }
+    /* ===== History Page ===== */
+    .hist-tabs { display: flex; background: #fff; border-radius: 10px; margin-bottom: 14px; overflow: hidden; }
+    .hist-tab {
+      flex: 1; text-align: center; padding: 12px; font-size: 14px; cursor: pointer;
+      color: var(--text2); border-bottom: 2px solid transparent; transition: all 0.2s;
+    }
+    .hist-tab.active { color: var(--primary); border-bottom-color: var(--primary); font-weight: 600; }
+    .date-label { font-size: 12px; color: var(--text3); padding: 8px 4px; margin-top: 4px; }
+    .hist-item {
+      background: #fff; border-radius: 10px; padding: 14px; margin-bottom: 10px; cursor: pointer;
+    }
+    .hist-item .hi-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
+    .hist-item .hi-title { font-size: 15px; font-weight: 600; }
+    .hist-item .hi-desc { font-size: 12px; color: var(--text3); }
+    .word-item { background: #fff; border-radius: 10px; padding: 14px; margin-bottom: 8px; }
+    .word-item .wi-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+    .word-item .wi-word { font-size: 17px; font-weight: 600; color: var(--primary); }
+    .word-item .wi-count { font-size: 11px; color: var(--text3); background: rgba(74,144,217,0.08); padding: 2px 8px; border-radius: 4px; }
+    .word-item .wi-def { font-size: 13px; color: var(--text2); line-height: 1.5; }
+    .empty-state { text-align: center; padding: 48px 16px; color: var(--text3); font-size: 14px; }
+    /* ===== Profile ===== */
+    .profile-card {
+      background: linear-gradient(135deg, #4A90D9, #6BA3E0); color: #fff;
+      border-radius: 14px; padding: 24px 16px; margin-bottom: 14px;
+      display: flex; align-items: center;
+    }
+    .profile-avatar {
+      width: 56px; height: 56px; border-radius: 50%; background: rgba(255,255,255,0.2);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 24px; font-weight: 700; margin-right: 16px;
+    }
+    .profile-info { flex: 1; }
+    .profile-info .pi-label { font-size: 12px; opacity: 0.8; }
+    .profile-info .pi-level { font-size: 22px; font-weight: 700; margin: 4px 0; }
+    .profile-info .pi-name { font-size: 12px; opacity: 0.8; }
+    .profile-adjust {
+      background: rgba(255,255,255,0.15); border: none; color: #fff; border-radius: 16px;
+      padding: 6px 14px; font-size: 12px; cursor: pointer;
+    }
+    .stats-grid-4 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .stat-box { text-align: center; background: var(--bg); border-radius: 10px; padding: 14px 8px; }
+    .stat-box .sb-val { font-size: 26px; font-weight: 700; color: var(--primary); }
+    .stat-box .sb-unit { font-size: 11px; color: var(--text3); }
+    .stat-box .sb-lbl { font-size: 12px; color: var(--text2); margin-top: 2px; }
+    .my-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; }
+    .my-tag { padding: 6px 14px; background: rgba(74,144,217,0.08); border-radius: 16px; font-size: 13px; color: var(--primary); }
+    .menu-item {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 0; border-bottom: 1px solid var(--border); cursor: pointer;
+    }
+    .menu-item:last-child { border-bottom: none; }
+    .menu-item .mi-label { font-size: 14px; display: flex; align-items: center; gap: 8px; }
+    .menu-item .mi-arrow { color: var(--text3); }
+    .app-info { text-align: center; padding: 12px; font-size: 11px; color: var(--text3); line-height: 1.8; }
+    /* Level selector */
+    .level-selector {
+      display: none; position: fixed; inset: 0; z-index: 200; background: rgba(0,0,0,0.4);
+      justify-content: center; align-items: flex-end;
+    }
+    .level-selector.show { display: flex; }
+    .level-options {
+      background: #fff; border-radius: 16px 16px 0 0; padding: 20px; width: 100%; max-width: 500px;
+      animation: slideUp 0.25s ease;
+    }
+    .level-options .lo-title { font-size: 16px; font-weight: 600; margin-bottom: 14px; text-align: center; }
+    .lo-item {
+      padding: 14px; text-align: center; border-radius: 10px; margin-bottom: 8px;
+      background: var(--bg); cursor: pointer; font-size: 15px; font-weight: 500;
+      transition: all 0.15s;
+    }
+    .lo-item:active { background: rgba(74,144,217,0.12); color: var(--primary); }
+    .lo-cancel {
+      text-align: center; padding: 12px; color: var(--text3); font-size: 14px; cursor: pointer;
+    }
+    /* About dialog */
+    .about-overlay {
+      display: none; position: fixed; inset: 0; z-index: 200; background: rgba(0,0,0,0.4);
+      justify-content: center; align-items: center;
+    }
+    .about-overlay.show { display: flex; }
+    .about-dialog {
+      background: #fff; border-radius: 16px; padding: 28px 24px; width: 85%; max-width: 400px;
+      text-align: center;
+    }
+    .about-dialog h3 { font-size: 17px; font-weight: 600; margin-bottom: 14px; }
+    .about-dialog p { font-size: 13px; color: var(--text2); line-height: 1.8; margin-bottom: 16px; text-align: left; }
+    .about-dialog .ad-btn {
+      background: var(--primary); color: #fff; border: none; border-radius: 20px;
+      padding: 10px 36px; font-size: 14px; cursor: pointer;
+    }
+    /* Toast */
+    .toast {
+      position: fixed; top: 50%; left: 50%; transform: translate(-50%,-50%);
+      background: rgba(0,0,0,0.75); color: #fff; padding: 12px 24px; border-radius: 10px;
+      font-size: 14px; z-index: 300; pointer-events: none;
+      animation: fadeInOut 1.8s ease forwards;
+    }
+    @keyframes fadeInOut { 0%{opacity:0} 15%{opacity:1} 75%{opacity:1} 100%{opacity:0} }
+  </style>
+</head>
+<body>
+
+<!-- ===================== INDEX PAGE ===================== -->
+<div class="page active" id="page-index">
+  <div class="greeting" id="greeting"></div>
+  <div class="streak" id="streak" style="display:none"></div>
+
+  <div class="level-tip" id="levelTip">
+    <div class="tip-icon">🎯</div>
+    <div class="tip-content">
+      <div class="tip-title">开始你的英语阅读之旅</div>
+      <div class="tip-desc">只需阅读3篇短文，系统自动判断你的英语水平</div>
+    </div>
+    <button class="tip-btn" onclick="navigateTo('level-test')">开始定级</button>
+  </div>
+
+  <div class="card" id="interestCard" style="display:none">
+    <div class="section-title">选择你感兴趣的领域</div>
+    <div style="font-size:12px;color:var(--text3);margin-bottom:10px">帮助我们推荐更合适的内容</div>
+    <div class="interest-list" id="interestList"></div>
+    <button class="confirm-btn" onclick="confirmInterests()">确认选择</button>
+  </div>
+
+  <div class="card" id="recommendCard" style="display:none">
+    <div class="section-header">
+      <div class="section-title">今日推荐</div>
+      <div class="section-more" onclick="loadDaily()">换一批 ↻</div>
+    </div>
+    <div id="dailyList"></div>
+  </div>
+
+  <div class="card" id="statsCard" style="display:none">
+    <div class="section-title">我的阅读</div>
+    <div class="stats-grid">
+      <div class="stat-item"><span class="stat-val" id="statArticles">0</span><span class="stat-lbl">篇</span></div>
+      <div class="stat-item"><span class="stat-val" id="statMinutes">0</span><span class="stat-lbl">分钟</span></div>
+      <div class="stat-item"><span class="stat-val" id="statWords">0</span><span class="stat-lbl">生词</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== READING PAGE ===================== -->
+<div class="page" id="page-reading">
+  <div class="reading-topbar">
+    <div class="rt-left">
+      <span class="ltag" id="readLevelTag"></span>
+      <span style="font-size:12px" id="readWordCount"></span>
+    </div>
+    <div class="rt-right">
+      <span class="icon-btn" id="favBtn" onclick="toggleFav()">🤍</span>
+      <span class="icon-btn" onclick="showSettings()">⚙️</span>
+    </div>
+  </div>
+  <div class="reading-meta">
+    <span class="rm-title" id="readTitle"></span>
+    <span class="rm-cn" id="readCn"></span>
+    <div class="rm-tags" id="readTags"></div>
+  </div>
+  <div class="reading-divider"></div>
+  <div class="reading-body" id="readingBody"></div>
+  <div class="reading-fbar">
+    <span class="progress" id="readProgress">0%</span>
+    <div class="fbar-btns">
+      <button class="fb-btn fb-back" onclick="navigateBack()">← 返回</button>
+      <button class="fb-btn fb-done" onclick="completeReading()">读完了 ✓</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== LEVEL TEST PAGE ===================== -->
+<div class="page" id="page-level-test">
+  <div class="test-intro" id="testIntro">
+    <div class="ti-icon">📚</div>
+    <div class="ti-title">了解你的英语水平</div>
+    <div class="ti-desc">只需阅读 3 篇不同难度的短文<br>系统会根据你的阅读情况自动判断水平</div>
+    <div class="ti-features">
+      <div class="ti-feat">✅ 无需考试答题</div>
+      <div class="ti-feat">✅ 无压力无焦虑</div>
+      <div class="ti-feat">✅ 3分钟完成</div>
+    </div>
+    <div class="ti-levels">
+      <span class="ltag ltag-a1">A1 入门</span>
+      <span class="ltag ltag-a2">A2 初级</span>
+      <span class="ltag ltag-b1">B1 中级</span>
+      <span class="ltag ltag-b2">B2 中高级</span>
+      <span class="ltag ltag-c1">C1 高级</span>
+    </div>
+    <button class="ti-btn" onclick="startTest()">开始阅读</button>
+  </div>
+  <div id="testArea" style="display:none"></div>
+  <div id="resultArea" style="display:none"></div>
+</div>
+
+<!-- ===================== HISTORY PAGE ===================== -->
+<div class="page" id="page-history">
+  <div class="hist-tabs">
+    <div class="hist-tab active" onclick="switchHistTab('history')">阅读历史</div>
+    <div class="hist-tab" onclick="switchHistTab('favorites')">我的收藏</div>
+    <div class="hist-tab" onclick="switchHistTab('wordbook')">生词本</div>
+  </div>
+  <div id="histContent"></div>
+</div>
+
+<!-- ===================== PROFILE PAGE ===================== -->
+<div class="page" id="page-profile">
+  <div class="profile-card">
+    <div class="profile-avatar" id="profileAvatar">?</div>
+    <div class="profile-info">
+      <div class="pi-label">当前等级</div>
+      <div class="pi-level" id="profileLevel">未定级</div>
+      <div class="pi-name" id="profileLevelName"></div>
+    </div>
+    <button class="profile-adjust" id="adjustBtn" onclick="showLevelSelector()" style="display:none">调整</button>
+  </div>
+  <div class="card">
+    <div class="section-title">阅读统计</div>
+    <div class="stats-grid-4">
+      <div class="stat-box"><span class="sb-val" id="pArticles">0</span><span class="sb-unit">篇</span><div class="sb-lbl">已读文章</div></div>
+      <div class="stat-box"><span class="sb-val" id="pMinutes">0</span><span class="sb-unit">分</span><div class="sb-lbl">阅读时长</div></div>
+      <div class="stat-box"><span class="sb-val" id="pStreak">0</span><span class="sb-unit">天</span><div class="sb-lbl">连续阅读</div></div>
+      <div class="stat-box"><span class="sb-val" id="pWords">0</span><span class="sb-unit">个</span><div class="sb-lbl">生词积累</div></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="section-title">我的兴趣</div>
+    <div class="my-tags" id="myTags"></div>
+    <div id="noInterest" style="font-size:13px;color:var(--text3)">未设置兴趣</div>
+  </div>
+  <div class="card">
+    <div class="menu-item" onclick="navigateTo('level-test')"><span class="mi-label">📊 重新定级</span><span class="mi-arrow">›</span></div>
+    <div class="menu-item" onclick="setDailyGoal()"><span class="mi-label">⏱️ 每日阅读时长</span><span class="mi-arrow" id="goalDisplay">10分钟 ›</span></div>
+    <div class="menu-item" onclick="showAbout()"><span class="mi-label">ℹ️ 关于应用</span><span class="mi-arrow">›</span></div>
+  </div>
+  <div class="app-info">基于罗肖尼（Krashen）二语习得理论<br>可理解输入 · 兴趣驱动 · 低焦虑</div>
+</div>
+
+<!-- ===== OVERLAYS ===== -->
+<div class="word-popup-overlay" id="wordPopup" onclick="closeWordPopup(event)">
+  <div class="word-popup">
+    <div class="wp-header"><span class="wp-word" id="wpWord"></span><button class="wp-close" onclick="closeWordPopup()">✕</button></div>
+    <span class="wp-phonetic" id="wpPhonetic"></span>
+    <div class="wp-divider"></div>
+    <div class="wp-def" id="wpDef"></div>
+    <span class="wp-hint">💡 点击空白处关闭</span>
+  </div>
+</div>
+
+<div class="settings-panel" id="settingsPanel" onclick="hideSettings(event)">
+  <div class="settings-content">
+    <div style="font-size:17px;font-weight:600;margin-bottom:16px">阅读设置</div>
+    <div class="setting-row"><label>字体大小</label><div><button class="font-btn" onclick="changeFontSize(-1)">A-</button><button class="font-btn" onclick="changeFontSize(1)">A+</button></div></div>
+    <div class="setting-row"><label>护眼模式</label><input type="checkbox" class="sw" id="eyeCareSwitch" onchange="toggleEyeCare(this.checked)"></div>
+  </div>
+</div>
+
+<div class="level-selector" id="levelSelector" onclick="hideLevelSelector(event)">
+  <div class="level-options">
+    <div class="lo-title">选择等级</div>
+    <div class="lo-item" onclick="setLevel('A1')">A1 入门 - Beginner</div>
+    <div class="lo-item" onclick="setLevel('A2')">A2 初级 - Elementary</div>
+    <div class="lo-item" onclick="setLevel('B1')">B1 中级 - Intermediate</div>
+    <div class="lo-item" onclick="setLevel('B2')">B2 中高级 - Upper-Intermediate</div>
+    <div class="lo-item" onclick="setLevel('C1')">C1 高级 - Advanced</div>
+    <div class="lo-cancel" onclick="hideLevelSelector()">取消</div>
+  </div>
+</div>
+
+<div class="about-overlay" id="aboutOverlay" onclick="hideAbout(event)">
+  <div class="about-dialog">
+    <h3>关于轻松英语阅读</h3>
+    <p>本应用严格遵循罗肖尼（Stephen Krashen）二语习得理论核心原则：<br><br>
+    📖 i+1可理解输入<br>
+    🎯 兴趣驱动<br>
+    😌 低焦虑环境<br>
+    🔄 大量沉浸式输入<br><br>
+    不背单词、不做题、不考试，真正实现无痛英语习得。</p>
+    <button class="ad-btn" onclick="hideAbout()">知道了</button>
+  </div>
+</div>
+
+<!-- Tab Bar -->
+<div class="tab-bar" id="tabBar">
+  <div class="tab-item active" onclick="switchTab('index')" data-tab="index"><span class="tab-icon">🏠</span><span class="tab-label">首页</span></div>
+  <div class="tab-item" onclick="switchTab('history')" data-tab="history"><span class="tab-icon">📋</span><span class="tab-label">历史</span></div>
+  <div class="tab-item" onclick="switchTab('profile')" data-tab="profile"><span class="tab-icon">👤</span><span class="tab-label">我的</span></div>
+</div>
+
+<script>
+// ============ DATA ============
+const LEVELS = [
+  {key:'A1',name:'入门',desc:'Beginner'},{key:'A2',name:'初级',desc:'Elementary'},
+  {key:'B1',name:'中级',desc:'Intermediate'},{key:'B2',name:'中高级',desc:'Upper-Intermediate'},
+  {key:'C1',name:'高级',desc:'Advanced'}
+];
+const INTERESTS = [
+  {key:'story',name:'故事',icon:'📖'},{key:'science',name:'科普',icon:'🔬'},
+  {key:'history',name:'历史',icon:'🏛️'},{key:'psychology',name:'心理',icon:'🧠'},
+  {key:'business',name:'商业',icon:'💼'},{key:'life',name:'生活',icon:'🌟'},
+  {key:'tech',name:'科技',icon:'💻'},{key:'movie',name:'影视',icon:'🎬'}
+];
+const DICT = {
+  pet:{p:'/pet/',d:'An animal you keep at home for pleasure and company.'},
+  wake:{p:'/weɪk/',d:'To stop sleeping and become conscious.'},
+  catch:{p:'/kætʃ/',d:'To take hold of something, especially something moving.'},
+  cloud:{p:'/klaʊd/',d:'A white or gray mass in the sky, made of small water drops.'},
+  past:{p:'/pɑːst/',d:'Going by someone or something.'},
+  sing:{p:'/sɪŋ/',d:'To make music with your voice.'},
+  kind:{p:'/kaɪnd/',d:'Friendly, generous, and caring about other people.'},
+  playground:{p:'/ˈpleɪɡraʊnd/',d:'An outdoor area where children can play.'},
+  study:{p:'/ˈstʌdi/',d:'To learn about a subject, especially by reading.'},
+  market:{p:'/ˈmɑːkɪt/',d:'A place where people buy and sell goods.'},
+  shiny:{p:'/ˈʃaɪni/',d:'Bright and reflecting light.'},
+  bite:{p:'/baɪt/',d:'To use your teeth to cut or crush something.'},
+  season:{p:'/ˈsiːzn/',d:'One of the four periods of the year.'},
+  autumn:{p:'/ˈɔːtəm/',d:'The season between summer and winter.'},
+  grow:{p:'/ɡrəʊ/',d:'To increase in size or amount over time.'},
+  delicious:{p:'/dɪˈlɪʃəs/',d:'Very pleasant to taste or smell.'},
+  dolphin:{p:'/ˈdɒlfɪn/',d:'An intelligent sea mammal that looks like a fish.'},
+  picnic:{p:'/ˈpɪknɪk/',d:'A meal that you eat outdoors, usually in a park.'},
+  inventor:{p:'/ɪnˈventər/',d:'A person who creates something never made before.'},
+  garage:{p:'/ˈɡærɑːʒ/',d:'A building where you keep a car.'},
+  glow:{p:'/ɡləʊ/',d:'To produce a soft steady light.'},
+  planet:{p:'/ˈplænɪt/',d:'A large round body in space that moves around a star.'},
+  creature:{p:'/ˈkriːtʃər/',d:'Any living animal, especially an unusual one.'},
+  recycle:{p:'/ˌriːˈsaɪkl/',d:'To process used materials so they can be used again.'},
+  skeleton:{p:'/ˈskelɪtn/',d:'The set of bones that supports a body.'},
+  dynasty:{p:'/ˈdɪnəsti/',d:'A series of rulers from the same family.'},
+  experiment:{p:'/ɪkˈsperɪmənt/',d:'A test to discover or prove something.'},
+  spread:{p:'/spred/',d:'To put a layer of something over a surface.'},
+  slice:{p:'/slaɪs/',d:'A thin flat piece cut from something.'},
+  surface:{p:'/ˈsɜːfɪs/',d:'The outside part of something.'},
+  achieve:{p:'/əˈtʃiːv/',d:'To successfully reach a goal.'},
+  struggle:{p:'/ˈstrʌɡl/',d:'To try hard to do something difficult.'},
+  consistency:{p:'/kənˈsɪstənsi/',d:'The quality of always behaving the same way.'},
+  bioluminescence:{p:'/ˌbaɪəʊˌluːmɪˈnesəns/',d:'Light produced by living organisms.'},
+  hydrothermal:{p:'/ˌhaɪdrəʊˈθɜːml/',d:'Related to hot water from deep in the earth.'},
+  ecosystem:{p:'/ˈiːkəʊsɪstəm/',d:'All living and non-living things in an area as a system.'},
+  influential:{p:'/ˌɪnfluˈenʃl/',d:'Having a lot of influence on people or events.'},
+  equator:{p:'/ɪˈkweɪtər/',d:'An imaginary line around the middle of the earth.'},
+  calming:{p:'/ˈkɑːmɪŋ/',d:'Making you feel calm and relaxed.'},
+  concentration:{p:'/ˌkɒnsnˈtreɪʃn/',d:'The ability to focus your attention.'},
+  purity:{p:'/ˈpjʊərəti/',d:'The state of being clean and free from harmful substances.'},
+  humanity:{p:'/hjuːˈmænɪti/',d:'People in general; the human race.'},
+  detect:{p:'/dɪˈtekt/',d:'To discover or notice something hidden.'},
+  bias:{p:'/ˈbaɪəs/',d:'An unfair preference for or against something.'},
+  sophisticated:{p:'/səˈfɪstɪkeɪtɪd/',d:'Very advanced or complex.'},
+  deliberately:{p:'/dɪˈlɪbərətli/',d:'Done on purpose, not by chance.'},
+  disrupt:{p:'/dɪsˈrʌpt/',d:'To change the normal way something works.'},
+  controversy:{p:'/ˈkɒntrəvɜːsi/',d:'A serious disagreement about something.'},
+  possession:{p:'/pəˈzeʃn/',d:'Something that you own.'},
+  contentious:{p:'/kənˈtenʃəs/',d:'Causing a lot of disagreement.'},
+  albeit:{p:'/ɔːlˈbiːɪt/',d:'Although; even though.'},
+  vanishingly:{p:'/ˈvænɪʃɪŋli/',d:'Extremely small; almost zero.'},
+  extraterrestrial:{p:'/ˌekstrətəˈrestriəl/',d:'Coming from outside the Earth.'},
+  annihilation:{p:'/əˌnaɪəˈleɪʃn/',d:'Complete destruction.'},
+  epidemic:{p:'/ˌepɪˈdemɪk/',d:'A sudden increase in disease cases.'},
+  devastating:{p:'/ˈdevəsteɪtɪŋ/',d:'Causing great damage or suffering.'},
+  contagious:{p:'/kənˈteɪdʒəs/',d:'Able to spread from one person to another.'},
+  inflammatory:{p:'/ɪnˈflæmətəri/',d:'Related to redness, swelling, and pain.'},
+  achieve:{p:'/əˈtʃiːv/',d:'To successfully reach a goal or result.'},
+  habit:{p:'/ˈhæbɪt/',d:'Something you do regularly, often without thinking.'},
+  signal:{p:'/ˈsɪɡnəl/',d:'A movement, sound, or sign that gives information.'},
+  propose:{p:'/prəˈpəʊz/',d:'To suggest a plan or idea for others to consider.'},
+  guarantee:{p:'/ˌɡærənˈtiː/',d:'A promise that something will be done or happen.'}
+};
+const ARTICLES = {
+  A1:[
+    {id:'a1_1',title:'My Pet Cat',titleCn:'我的宠物猫',level:'A1',tags:['life','story'],wordCount:85,readMinutes:3,hl:['morning','fast','catches','friend','after'],
+      content:'I have a cat. Her name is Lily. She is small and white. She likes to sleep on my bed. Every morning, Lily wakes me up. She sits on my face and says "meow". I give her food and water. She likes fish very much. After school, I play with Lily. She runs after a ball. She is very fast. Sometimes she catches a toy mouse. I love my cat. She is my best friend.',
+      vocab:[{word:'pet',d:'an animal you keep at home'},{word:'wake',d:'to stop sleeping'},{word:'catch',d:'to take hold of something'}]},
+    {id:'a1_2',title:'A Sunny Day',titleCn:'晴天',level:'A1',tags:['life'],wordCount:92,readMinutes:3,hl:['sunny','clouds','flowers','grass','happy'],
+      content:'Today is a sunny day. The sky is blue. There are no clouds. I go to the park with my mom. We walk on the grass. I see many flowers. They are red, yellow, and pink. A dog runs past us. It is very happy. We sit under a big tree. I eat an apple. My mom drinks tea. Birds sing in the tree. I feel very happy. I love sunny days.',
+      vocab:[{word:'cloud',d:'white things in the sky'},{word:'past',d:'going by'},{word:'sing',d:'make music with voice'}]},
+    {id:'a1_3',title:'The Red Apple',titleCn:'红苹果',level:'A1',tags:['story'],wordCount:78,readMinutes:2,hl:['market','shiny','sweet','shared','smiled'],
+      content:'Once upon a time, a little girl went to the market. She saw a big red apple. "I want this apple," she said. The apple was very shiny. She paid one coin and took it home. She washed it with water. Then she took a big bite. "Mmm, it is so sweet!" she said. She shared the apple with her little brother. They both smiled. It was a happy day.',
+      vocab:[{word:'market',d:'place to buy things'},{word:'shiny',d:'bright'},{word:'bite',d:'use teeth to cut'}]},
+    {id:'a1_4',title:'The Four Seasons',titleCn:'四季',level:'A1',tags:['science'],wordCount:105,readMinutes:3,hl:['seasons','autumn','leaves','snows','snowmen'],
+      content:'There are four seasons in a year. Spring is warm. Flowers grow and birds sing. Summer is hot. We eat ice cream and go swimming. Autumn is cool. Leaves fall from the trees. They turn red and yellow. Winter is cold. Sometimes it snows. We wear warm clothes and make snowmen. Each season is beautiful in its own way. I love all the seasons.',
+      vocab:[{word:'season',d:'one part of the year'},{word:'autumn',d:'between summer and winter'},{word:'grow',d:'get bigger'}]},
+    {id:'a1_5',title:'My School',titleCn:'我的学校',level:'A1',tags:['life'],wordCount:98,readMinutes:3,hl:['classroom','kind','playground','basketball','learn'],
+      content:'I go to school every day. My school is big. It has many rooms. My classroom is on the second floor. I have many friends at school. We study English, math, and art. My English teacher is Miss Wang. She is very kind. After class, we play in the playground. We run and jump. Sometimes we play basketball. I like school because I can learn new things and play with my friends.',
+      vocab:[{word:'kind',d:'nice and friendly'},{word:'playground',d:'place to play'},{word:'study',d:'learn about something'}]}
+  ],
+  A2:[
+    {id:'a2_1',title:'A Letter to My Friend',titleCn:'给朋友的信',level:'A2',tags:['life','story'],wordCount:120,readMinutes:4,hl:['library','dolphins','delicious','garden','wonderful'],
+      content:'Dear Tom,\n\nHow are you? I hope you are doing well. I want to tell you about my weekend. On Saturday morning, I went to the library with my sister. We read some interesting books about animals. I learned that dolphins can talk to each other using sounds.\n\nIn the afternoon, we visited my grandmother. She made delicious cookies for us. We helped her clean the garden and water the plants.\n\nOn Sunday, my family had a picnic in the park. We played games and ate sandwiches. It was a wonderful weekend. I hope we can meet soon!\n\nYour friend,\nLisa',
+      vocab:[{word:'delicious',d:'very pleasant to taste'},{word:'dolphin',d:'smart sea animal'},{word:'picnic',d:'meal eaten outside'}]},
+    {id:'a2_2',title:'The Little Inventor',titleCn:'小小发明家',level:'A2',tags:['tech','story'],wordCount:130,readMinutes:5,hl:['inventor','carefully','batteries','amazing','inventing'],
+      content:'Jack was ten years old. He loved to build things. One day, he found an old clock in the garage. He took it apart carefully and looked at all the pieces inside. "How does this work?" he thought.\n\nJack started to put the pieces together in a new way. He added some batteries and a small light. When he turned it on, the clock started to glow in the dark! His mother was very surprised. "That is amazing, Jack!" she said.\n\nJack kept inventing new things. He made a pencil that could write in the rain, and a cup that kept water cold all day. His teacher said he would be a great inventor someday.',
+      vocab:[{word:'inventor',d:'person who creates new things'},{word:'garage',d:'building for car'},{word:'glow',d:'produce soft light'}]},
+    {id:'a2_3',title:'Our Beautiful Earth',titleCn:'我们美丽的地球',level:'A2',tags:['science'],wordCount:115,readMinutes:4,hl:['planet','surface','creatures','rainforest','protect'],
+      content:'Our Earth is a beautiful planet. About 71 percent of its surface is covered by water. The oceans are home to millions of fish and other sea creatures.\n\nOn land, we can find forests, deserts, and mountains. The Amazon rainforest is the biggest forest in the world. It produces a lot of oxygen for us to breathe.\n\nBut our planet is in danger. People cut down too many trees and make the air dirty. We should protect the Earth. We can start by planting trees, saving water, and recycling rubbish. Every small action helps.',
+      vocab:[{word:'planet',d:'large round object in space'},{word:'creature',d:'living animal'},{word:'recycle',d:'use things again'}]},
+    {id:'a2_4',title:'A Day at the Museum',titleCn:'博物馆的一天',level:'A2',tags:['history'],wordCount:125,readMinutes:4,hl:['museum','skeleton','dinosaurs','pottery','experiments'],
+      content:'Last Friday, our class went to the city museum. I was very excited because I had never been there before.\n\nFirst, we visited the dinosaur hall. There was a huge skeleton of a T-Rex. It was much bigger than I imagined. Our guide told us that dinosaurs lived on Earth over 65 million years ago.\n\nThen we saw old Chinese pottery and paintings from the Ming Dynasty. The colors were still bright and beautiful after hundreds of years.\n\nFinally, we went to the science room. We could try many experiments. I made a small robot move using a computer. It was the best school trip ever!',
+      vocab:[{word:'skeleton',d:'bones of a body'},{word:'dynasty',d:'period of ruling family'},{word:'experiment',d:'test to learn'}]},
+    {id:'a2_5',title:'How to Make a Sandwich',titleCn:'如何做三明治',level:'A2',tags:['life'],wordCount:110,readMinutes:3,hl:['spread','surface','slice','important','enjoy'],
+      content:'Today I will teach you how to make a simple sandwich. You will need: two slices of bread, butter, cheese, lettuce, tomato, and some ham.\n\nStep one: Wash your hands. This is very important!\n\nStep two: Spread butter on both slices of bread. Make sure to cover the whole surface.\n\nStep three: Put the ham on one slice. Then add the cheese and lettuce.\n\nStep four: Cut the tomato into thin slices and place them on top.\n\nStep five: Put the other slice of bread on top. Cut the sandwich in half.\n\nNow your sandwich is ready. Enjoy your meal!',
+      vocab:[{word:'spread',d:'put layer on surface'},{word:'slice',d:'thin flat piece'},{word:'surface',d:'outside part'}]}
+  ],
+  B1:[
+    {id:'b1_1',title:'The Power of Habit',titleCn:'习惯的力量',level:'B1',tags:['psychology','life'],wordCount:180,readMinutes:6,hl:['achieve','struggle','researchers','consistency','automatic'],
+      content:'Have you ever wondered why some people seem to achieve their goals easily while others struggle? The answer might lie in their habits.\n\nA habit is a behavior that you repeat regularly, often without thinking about it. Researchers at Duke University found that habits, not decisions, shape about 40 percent of our daily actions.\n\nThe process of forming a habit has three parts: a cue, a routine, and a reward. For example, when your phone buzzes (cue), you pick it up and check messages (routine), and you feel connected to your friends (reward).\n\nTo build good habits, start small. Instead of trying to exercise for an hour every day, begin with just five minutes. The key is consistency, not intensity. Over time, the behavior becomes automatic.\n\nBreaking bad habits works the same way. First, identify the cue that triggers the habit. Then, replace the routine with something healthier.',
+      vocab:[{word:'achieve',d:'successfully reach a goal'},{word:'struggle',d:'try hard with difficulty'},{word:'consistency',d:'same behavior over time'}]},
+    {id:'b1_2',title:'The Coffee Story',titleCn:'咖啡的故事',level:'B1',tags:['history','business'],wordCount:170,readMinutes:6,hl:['phenomenon','legend','energetic','influential','equator'],
+      content:'Coffee is the second most traded product in the world, after oil. But how did a simple bean become such a global phenomenon?\n\nAccording to legend, coffee was discovered by an Ethiopian goat herder named Kaldi around 800 AD. He noticed that his goats became unusually energetic after eating berries from a certain tree.\n\nBy the 15th century, coffee had spread to the Arabian Peninsula. Coffee houses became important social gathering places where people discussed politics, philosophy, and business.\n\nToday, coffee is grown in over 70 countries, mostly near the equator. Brazil is the largest producer, followed by Vietnam and Colombia. The global coffee industry is worth more than 400 billion dollars annually.',
+      vocab:[{word:'phenomenon',d:'something observed happening'},{word:'influential',d:'having power to affect'},{word:'equator',d:'imaginary middle line of earth'}]},
+    {id:'b1_3',title:'The Psychology of Color',titleCn:'色彩心理学',level:'B1',tags:['psychology'],wordCount:155,readMinutes:5,hl:['intense','calming','concentration','purity','mourning'],
+      content:'Colors affect our mood and behavior more than most people realize. This field of study is called color psychology.\n\nRed is the most intense color. It can increase your heart rate and make you feel excited or even hungry. That is why many fast food restaurants use red in their logos.\n\nBlue has the opposite effect. It is calming and can lower blood pressure. Many hospitals and offices paint their walls light blue to create a peaceful environment. Blue is also the most popular color in the world.\n\nGreen represents nature and growth. It is restful for the eyes and can improve concentration.\n\nInterestingly, color meanings can vary between cultures. While white represents purity in Western countries, it is associated with mourning in some Asian countries.',
+      vocab:[{word:'calming',d:'making feel quiet and relaxed'},{word:'concentration',d:'ability to focus attention'},{word:'purity',d:'state of being clean'}]},
+    {id:'b1_4',title:'The Secret of the Deep Sea',titleCn:'深海的秘密',level:'B1',tags:['science'],wordCount:165,readMinutes:6,hl:['unexplored','bioluminescence','phenomenon','hydrothermal','ecosystems'],
+      content:'The deep sea is one of the last unexplored places on Earth. Below 200 meters, sunlight disappears, and the water becomes completely dark. Despite this, life exists in incredible forms.\n\nMany deep-sea creatures have developed the ability to produce their own light, a phenomenon called bioluminescence. The anglerfish has a small glowing lure on its head that attracts smaller fish in the darkness.\n\nScientists have also discovered creatures living near hydrothermal vents, where water temperatures can reach 400 degrees Celsius. These organisms get energy from chemicals released by the vents.\n\nThe deep sea also contains valuable minerals and possibly new medicines. However, scientists worry that deep-sea mining could damage these fragile ecosystems.',
+      vocab:[{word:'bioluminescence',d:'living things producing light'},{word:'hydrothermal',d:'hot water from earth'},{word:'ecosystem',d:'living system in area'}]},
+    {id:'b1_5',title:'AI: Friend or Foe?',titleCn:'AI：朋友还是敌人？',level:'B1',tags:['tech'],wordCount:175,readMinutes:6,hl:['humanity','detect','accurately','bias','innovation'],
+      content:'Artificial Intelligence, or AI, is changing our world at an incredible speed. But is this technology a friend or a threat?\n\nOn the positive side, AI is already making our lives easier. Smart assistants help us with daily tasks. AI doctors can detect diseases more accurately than human doctors in some cases.\n\nHowever, there are also serious concerns. Millions of workers could lose their jobs as machines learn to do their work. AI systems can also show bias, especially when trained on unfair data.\n\nThe solution is not to stop AI development, but to guide it wisely. Governments and companies need to create rules that protect people while allowing innovation to continue.',
+      vocab:[{word:'humanity',d:'all people in the world'},{word:'detect',d:'discover or notice'},{word:'bias',d:'unfair preference'}]}
+  ],
+  B2:[
+    {id:'b2_1',title:'The Attention Economy',titleCn:'注意力经济',level:'B2',tags:['business','psychology'],wordCount:220,readMinutes:8,hl:['sophisticated','deliberately','unpredictability','consequences','discipline'],
+      content:'In the modern digital world, the most valuable resource is not oil or gold — it is your attention. The "attention economy" refers to a business model where companies profit by capturing and keeping people\'s focus.\n\nEvery time you scroll through social media, watch a short video, or click on a notification, tech companies are collecting data about your behavior. They use sophisticated algorithms to predict what will keep you engaged.\n\nThis system has created what researchers call "digital addiction." Apps are deliberately designed using psychological tricks. The pull-to-refresh gesture, for instance, mimics the unpredictability of a slot machine.\n\nThe consequences are significant. Studies show that the average person checks their phone over 150 times per day. This constant distraction reduces our ability to concentrate deeply and think critically.\n\nFighting back requires awareness and discipline. Setting daily screen time limits and scheduling regular "digital detox" periods can help reclaim control.',
+      vocab:[{word:'sophisticated',d:'very advanced or complex'},{word:'deliberately',d:'done on purpose'},{word:'unpredictability',d:'cannot be predicted'}]},
+    {id:'b2_2',title:'The Quantum Computing Revolution',titleCn:'量子计算革命',level:'B2',tags:['tech','science'],wordCount:210,readMinutes:7,hl:['simultaneously','superposition','exponentially','encryption','millennia'],
+      content:'Classical computers process information using bits that are either 0 or 1. Quantum computers use "qubits" that can exist in both states simultaneously — a property called superposition.\n\nThis might sound abstract, but the implications are enormous. A quantum computer with just 300 qubits could represent more values simultaneously than there are atoms in the observable universe.\n\nDrug discovery is one of the most promising applications. Currently, developing a new drug takes roughly 10 years and costs billions of dollars. Quantum computers could model molecular interactions accurately, potentially reducing development time to just a few years.\n\nCryptography is another area facing disruption. Modern encryption relies on the difficulty of factoring large prime numbers. Quantum computers could theoretically break these codes in hours rather than millennia.',
+      vocab:[{word:'superposition',d:'multiple states at once'},{word:'exponentially',d:'at increasingly fast rate'},{word:'cryptography',d:'keeping info secret by codes'}]},
+    {id:'b2_3',title:'The History of Money',titleCn:'货币的历史',level:'B2',tags:['history','business'],wordCount:200,readMinutes:7,hl:['civilization','inefficient','coincidence','intermediaries','abandon'],
+      content:'Money has evolved dramatically over the past 5,000 years. The earliest form was barter — directly exchanging goods. If you had wheat and wanted fish, you had to find someone who wanted wheat and had fish. This was inefficient.\n\nAround 1000 BC, the Chinese created the first metal coins. Later, the Lydians minted coins from electrum, a natural mixture of gold and silver. Paper money emerged in China during the Tang Dynasty as "flying cash."\n\nThe gold standard, established in the 19th century, tied paper money to a fixed amount of gold. Most countries abandoned it during the 1930s.\n\nToday, we are entering a new era with digital currencies and blockchain technology. Cryptocurrencies like Bitcoin challenge traditional banking by removing intermediaries.',
+      vocab:[{word:'intermediary',d:'person helping reach agreement'},{word:'civilization',d:'advanced human society'},{word:'abandon',d:'give up completely'}]},
+    {id:'b2_4',title:'The Gut-Brain Connection',titleCn:'肠脑连接',level:'B2',tags:['science','psychology'],wordCount:190,readMinutes:7,hl:['neurotransmitters','microbiome','crucial','psychiatric','probiotics'],
+      content:'Scientists have discovered that your gut and your brain are in constant communication. The gut contains approximately 100 million neurons — more than in the entire spinal cord. This is sometimes called the "second brain."\n\nAbout 95 percent of the body\'s serotonin — a chemical linked to mood — is produced in the gut. What you eat can directly influence how you feel.\n\nThe gut microbiome, consisting of trillions of bacteria, also plays a crucial role. These bacteria produce compounds that travel through the bloodstream to the brain, affecting emotions, memory, and decision-making.\n\nThese findings suggest that treating mental health might involve more than just therapy and medication. Diet, probiotics, and gut health could become important components of future psychiatric treatment.',
+      vocab:[{word:'microbiome',d:'microorganisms in an environment'},{word:'neurotransmitter',d:'chemical carrying signals'},{word:'psychiatric',d:'related to mental illness'}]}
+  ],
+  C1:[
+    {id:'c1_1',title:'The Illusion of Consciousness',titleCn:'意识的幻觉',level:'C1',tags:['psychology','science'],wordCount:260,readMinutes:10,hl:['contentious','retrospectively','preparatory','methodology','accountability'],
+      content:'What if consciousness — the very essence of what makes you "you" — is nothing more than an elaborate illusion constructed by your brain?\n\nThe "illusionist" theory argues that our subjective experience of being a unified, conscious self is a mental construction. The brain processes vast amounts of information simultaneously and then retrospectively weaves these parallel processes into a coherent narrative.\n\nConsider a famous experiment by Benjamin Libet. Participants were asked to perform a simple action, like pressing a button, whenever they felt the urge. Libet discovered that preparatory brain activity began approximately 300 milliseconds before participants reported being consciously aware of their decision to move.\n\nIf our sense of conscious agency is indeed illusory, this challenges fundamental assumptions about moral responsibility, legal accountability, and the very nature of free will.',
+      vocab:[{word:'contentious',d:'causing disagreement'},{word:'retrospectively',d:'looking back at the past'},{word:'albeit',d:'although'}]},
+    {id:'c1_2',title:'The Fermi Paradox',titleCn:'费米悖论',level:'C1',tags:['science'],wordCount:240,readMinutes:9,hl:['vanishingly','extraterrestrial','harboring','annihilation','comprehension'],
+      content:'In a universe with an estimated 200 billion trillion stars, the probability that Earth is the only planet harboring life seems vanishingly small. Yet, despite decades of searching, we have found no definitive evidence of extraterrestrial civilizations.\n\nThe "Rare Earth Hypothesis" suggests that while microbial life may be common, the specific conditions for complex life are extraordinarily uncommon.\n\nThe "Great Filter" theory posits that somewhere along the path from simple life to an advanced civilization, there exists a barrier so difficult that virtually no species manages to pass it. The unsettling question is whether this filter lies behind us or ahead.\n\nSome researchers suggest a more sobering explanation: perhaps advanced civilizations tend to self-destruct. The window between developing communication capability and self-annihilation may be remarkably narrow.',
+      vocab:[{word:'vanishingly',d:'extremely small'},{word:'extraterrestrial',d:'from outside Earth'},{word:'annihilation',d:'complete destruction'}]},
+    {id:'c1_3',title:'The Architecture of Loneliness',titleCn:'孤独的建筑学',level:'C1',tags:['psychology','life'],wordCount:250,readMinutes:9,hl:['epidemic','devastating','inflammatory','contagious','albeit'],
+      content:'Loneliness has reached epidemic proportions in the 21st century. Recent research suggests it is not merely a social inconvenience — it is a biological signal with profound implications for health.\n\nNeuroscientist John Cacioppo argued that loneliness evolved as a survival mechanism. Just as hunger motivates us to seek food, loneliness motivates us to seek social connection.\n\nChronic loneliness triggers a persistent inflammatory response. The immune system shifts toward a defensive posture, producing elevated levels of pro-inflammatory cytokines. Over time, this damages blood vessels and accelerates cellular aging. Studies found that chronic loneliness increases the risk of premature death by approximately 26 percent.\n\nPerhaps most troublingly, loneliness appears to be contagious. Research demonstrated that loneliness spreads through social networks like a virus. The paradox of the digital age is that we have never been more connected, yet rates of loneliness continue to climb.',
+      vocab:[{word:'epidemic',d:'widespread occurrence'},{word:'devastating',d:'causing great suffering'},{word:'contagious',d:'spreadable between people'}]}
+  ]
+};
+
+// ============ STATE ============
+let state = {
+  page: 'index', level: null, interests: [],
+  readingHistory: [], favorites: [], wordBook: [],
+  stats: { totalMinutes: 0, totalArticles: 0, currentStreak: 0, lastReadDate: '' },
+  dailyGoal: 10, fontSize: 16, eyeCare: false,
+  currentArticle: null, readingStart: 0, wordClicks: 0
+};
+let selectedInterests = [];
+let pageHistory = [];
+
+// ============ PERSISTENCE ============
+function save(k) { try { localStorage.setItem('er_' + k, JSON.stringify(state[k])); } catch(e) {} }
+function load(k) { try { const v = localStorage.getItem('er_' + k); return v ? JSON.parse(v) : null; } catch(e) { return null; } }
+function loadState() {
+  ['level','interests','readingHistory','favorites','wordBook','stats','dailyGoal','fontSize','eyeCare'].forEach(k => {
+    const v = load(k); if (v !== null) state[k] = v;
+  });
+  state.readingHistory = state.readingHistory || [];
+  state.favorites = state.favorites || [];
+  state.wordBook = state.wordBook || [];
+  state.stats = state.stats || { totalMinutes: 0, totalArticles: 0, currentStreak: 0, lastReadDate: '' };
+}
+function saveAll() { ['level','interests','readingHistory','favorites','wordBook','stats','dailyGoal','fontSize','eyeCare'].forEach(save); }
+
+// ============ NAV ============
+function switchTab(tab) {
+  pageHistory = ['index'];
+  showPage(tab);
+  document.querySelectorAll('.tab-item').forEach(t => t.classList.toggle('active', t.dataset.tab === tab));
+  if (tab === 'index') renderIndex();
+  if (tab === 'history') renderHistory();
+  if (tab === 'profile') renderProfile();
+}
+function navigateTo(page) {
+  pageHistory.push(state.page);
+  showPage(page);
+  document.getElementById('tabBar').style.display = page === 'reading' ? 'none' : 'flex';
+  if (page === 'level-test') renderLevelTest();
+}
+function navigateBack() {
+  const prev = pageHistory.pop() || 'index';
+  showPage(prev);
+  document.getElementById('tabBar').style.display = 'flex';
+  if (prev === 'index') renderIndex();
+}
+function showPage(page) {
+  state.page = page;
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  const el = document.getElementById('page-' + page);
+  if (el) el.classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+// ============ TOAST ============
+function toast(msg) {
+  const t = document.createElement('div'); t.className = 'toast'; t.textContent = msg;
+  document.body.appendChild(t); setTimeout(() => t.remove(), 1900);
+}
+
+// ============ INDEX ============
+function renderIndex() {
+  const h = new Date().getHours();
+  document.getElementById('greeting').textContent = h < 6 ? '夜深了' : h < 12 ? '早上好' : h < 14 ? '中午好' : h < 18 ? '下午好' : '晚上好';
+
+  if (state.stats.currentStreak > 0) {
+    document.getElementById('streak').style.display = 'block';
+    document.getElementById('streak').textContent = '🔥 连续阅读 ' + state.stats.currentStreak + ' 天';
+  }
+
+  if (!state.level) {
+    document.getElementById('levelTip').style.display = 'flex';
+    document.getElementById('interestCard').style.display = 'none';
+    document.getElementById('recommendCard').style.display = 'none';
+    document.getElementById('statsCard').style.display = 'none';
+  } else {
+    document.getElementById('levelTip').style.display = 'none';
+    if (state.interests.length > 0) {
+      document.getElementById('interestCard').style.display = 'none';
+      document.getElementById('recommendCard').style.display = 'block';
+      loadDaily();
+    } else {
+      document.getElementById('interestCard').style.display = 'block';
+      renderInterestSelector();
+    }
+    document.getElementById('statsCard').style.display = 'block';
+    document.getElementById('statArticles').textContent = state.stats.totalArticles;
+    document.getElementById('statMinutes').textContent = state.stats.totalMinutes;
+    document.getElementById('statWords').textContent = state.wordBook.length;
+  }
+}
+function renderInterestSelector() {
+  selectedInterests = [...state.interests];
+  const list = document.getElementById('interestList');
+  if (!list) return;
+  list.innerHTML = '';
+  INTERESTS.forEach(i => {
+    const tag = document.createElement('div');
+    tag.className = 'interest-tag' + (selectedInterests.includes(i.key) ? ' active' : '');
+    tag.textContent = i.icon + ' ' + i.name;
+    tag.addEventListener('click', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      toggleInterest(i.key);
+    });
+    list.appendChild(tag);
+  });
+}
+function toggleInterest(key) {
+  const idx = selectedInterests.indexOf(key);
+  if (idx > -1) selectedInterests.splice(idx, 1);
+  else if (selectedInterests.length < 3) selectedInterests.push(key);
+  else { toast('最多选择3个兴趣'); return; }
+  renderInterestSelector();
+}
+function confirmInterests() {
+  if (!selectedInterests.length) { toast('请至少选择1个'); return; }
+  state.interests = [...selectedInterests]; save('interests');
+  document.getElementById('interestCard').style.display = 'none';
+  document.getElementById('recommendCard').style.display = 'block';
+  loadDaily(); toast('设置成功');
+}
+function shuffle(arr) {
+  const a = [...arr]; for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]; } return a;
+}
+function getArticles(level, interests, count) {
+  const all = ARTICLES[level] || [];
+  if (!interests.length) return shuffle(all).slice(0, count);
+  const matched = all.filter(a => a.tags.some(t => interests.includes(t)));
+  if (matched.length >= count) return shuffle(matched).slice(0, count);
+  return [...shuffle(matched), ...shuffle(all.filter(a => !matched.includes(a)))].slice(0, count);
+}
+function loadDaily() {
+  const arts = getArticles(state.level, state.interests, 4);
+  document.getElementById('dailyList').innerHTML = arts.map(a => `
+    <div class="article-card" onclick="openArticle('${a.id}')">
+      <div class="ac-header">
+        <div class="ac-tags"><span class="ltag ltag-${a.level.toLowerCase()}">${a.level}</span>${a.tags.map(t=>`<span class="ac-tag">${t}</span>`).join('')}</div>
+        <span class="ac-time">${a.readMinutes} 分钟</span>
+      </div>
+      <span class="ac-title">${a.title}</span>
+      <span class="ac-cn">${a.titleCn}</span>
+      <div class="ac-footer"><span class="ac-words">${a.wordCount} 词</span><span class="ac-read">开始阅读 →</span></div>
+    </div>
+  `).join('');
+}
+
+// ============ READING ============
+function findArticle(id) {
+  for (const lv of Object.values(ARTICLES)) { const a = lv.find(x => x.id === id); if (a) return a; } return null;
+}
+function openArticle(id) {
+  const a = findArticle(id); if (!a) return;
+  state.currentArticle = a; state.readingStart = Date.now(); state.wordClicks = 0;
+  const tag = document.getElementById('readLevelTag');
+  tag.className = 'ltag ltag-' + a.level.toLowerCase(); tag.textContent = a.level;
+  document.getElementById('readWordCount').textContent = a.wordCount + ' 词';
+  document.getElementById('readTitle').textContent = a.title;
+  document.getElementById('readCn').textContent = a.titleCn;
+  document.getElementById('readTags').innerHTML = a.tags.map(t => `<span class="rm-tag">${t}</span>`).join('') + `<span class="rm-tag">${a.readMinutes} 分钟</span>`;
+  document.getElementById('readProgress').textContent = '0%';
+  document.getElementById('favBtn').textContent = state.favorites.some(f=>f.id===a.id) ? '❤️' : '🤍';
+  const hlSet = new Set((a.hl||[]).map(w=>w.toLowerCase()));
+  const body = document.getElementById('readingBody');
+  body.innerHTML = a.content.split('\n').filter(p=>p.trim()).map(para => {
+    const words = para.split(/(\s+)/);
+    return '<p>' + words.map(w => {
+      const clean = w.replace(/[^a-zA-Z'-]/g,'').toLowerCase();
+      const cls = hlSet.has(clean) ? 'wh' : '';
+      return `<span class="${cls}" onclick="tapWord(this,'${clean.replace(/'/g,"\\'")}')">${w}</span>`;
+    }).join('') + '</p>';
+  }).join('');
+  body.style.fontSize = state.fontSize + 'px';
+  body.style.lineHeight = '2';
+  body.parentElement.classList.toggle('eye-care', state.eyeCare);
+  navigateTo('reading');
+  // scroll progress
+  body.parentElement.onscroll = () => {
+    const el = body.parentElement;
+    const pct = Math.min(100, Math.round((el.scrollTop / (el.scrollHeight - el.clientHeight)) * 100));
+    document.getElementById('readProgress').textContent = pct + '%';
+  };
+}
+function tapWord(el, clean) {
+  if (!clean) return;
+  state.wordClicks++;
+  el.classList.add('wc'); el.classList.remove('wh');
+  // look up
+  let entry = DICT[clean];
+  if (!entry) {
+    const a = state.currentArticle;
+    const v = (a.vocab||[]).find(x => x.word.toLowerCase() === clean);
+    if (v) entry = { p:'', d: v.d };
+  }
+  if (!entry) entry = { p:'', d: `Try to understand "${clean}" from the context. Reading without translating is key to language acquisition!` };
+  document.getElementById('wpWord').textContent = clean;
+  document.getElementById('wpPhonetic').textContent = entry.p;
+  document.getElementById('wpDef').textContent = entry.d;
+  document.getElementById('wordPopup').classList.add('show');
+  // save word
+  const existing = state.wordBook.find(w => w.word === clean);
+  if (existing) existing.count++;
+  else state.wordBook.unshift({ word: clean, def: entry.d, count: 1, time: Date.now() });
+  save('wordBook');
+}
+function closeWordPopup(e) {
+  if (e && e.target !== document.getElementById('wordPopup')) return;
+  document.getElementById('wordPopup').classList.remove('show');
+}
+function toggleFav() {
+  const a = state.currentArticle; if (!a) return;
+  const idx = state.favorites.findIndex(f=>f.id===a.id);
+  if (idx > -1) state.favorites.splice(idx, 1);
+  else state.favorites.unshift({ id: a.id, title: a.title, titleCn: a.titleCn, level: a.level, tags: a.tags, wordCount: a.wordCount });
+  save('favorites');
+  document.getElementById('favBtn').textContent = idx > -1 ? '🤍' : '❤️';
+  toast(idx > -1 ? '已取消收藏' : '已收藏');
+}
+function showSettings() { document.getElementById('settingsPanel').classList.add('show'); }
+function hideSettings(e) { if (!e || e.target === document.getElementById('settingsPanel')) document.getElementById('settingsPanel').classList.remove('show'); }
+function changeFontSize(d) {
+  state.fontSize = Math.max(14, Math.min(22, state.fontSize + d));
+  document.getElementById('readingBody').style.fontSize = state.fontSize + 'px';
+  save('fontSize');
+}
+function toggleEyeCare(v) {
+  state.eyeCare = v;
+  document.getElementById('readingBody').parentElement.classList.toggle('eye-care', v);
+  save('eyeCare');
+}
+function completeReading() {
+  const mins = Math.max(1, Math.round((Date.now() - state.readingStart) / 60000));
+  state.stats.totalMinutes += mins;
+  state.stats.totalArticles++;
+  const today = new Date().toISOString().split('T')[0];
+  if (state.stats.lastReadDate) {
+    const diff = Math.floor((new Date(today) - new Date(state.stats.lastReadDate)) / 86400000);
+    state.stats.currentStreak = diff === 1 ? state.stats.currentStreak + 1 : diff === 0 ? state.stats.currentStreak : 1;
+  } else { state.stats.currentStreak = 1; }
+  state.stats.lastReadDate = today;
+  // history
+  const a = state.currentArticle;
+  state.readingHistory.unshift({ ...a, readTime: Date.now() });
+  if (state.readingHistory.length > 100) state.readingHistory.length = 100;
+  saveAll();
+  toast('🎉 阅读完成！');
+  setTimeout(navigateBack, 1000);
+}
+
+// ============ LEVEL TEST ============
+let testIdx = 0, testArticles = [], testClicks = [0,0,0], testStart = 0;
+function renderLevelTest() {
+  document.getElementById('testIntro').style.display = 'block';
+  document.getElementById('testArea').style.display = 'none';
+  document.getElementById('resultArea').style.display = 'none';
+}
+function startTest() {
+  testArticles = [ARTICLES.A1[0], ARTICLES.A2[0], ARTICLES.B1[0]];
+  testIdx = 0; testClicks = [0,0,0]; testStart = Date.now();
+  renderTestArticle();
+}
+function renderTestArticle() {
+  document.getElementById('testIntro').style.display = 'none';
+  document.getElementById('resultArea').style.display = 'none';
+  document.getElementById('testArea').style.display = 'block';
+  const a = testArticles[testIdx];
+  const pct = Math.round(((testIdx) / testArticles.length) * 100);
+  const hlSet = new Set((a.hl||[]).map(w=>w.toLowerCase()));
+  const words = a.content.split(/(\s+)/);
+  const html = words.map(w => {
+    const clean = w.replace(/[^a-zA-Z'-]/g,'').toLowerCase();
+    const cls = hlSet.has(clean) ? 'wh' : '';
+    return `<span class="${cls}" onclick="testTapWord(this,'${clean.replace(/'/g,"\\'")}')">${w}</span>`;
+  }).join(' ');
+  document.getElementById('testArea').innerHTML = `
+    <div class="test-progress">
+      <div class="tp-info"><span>第 ${testIdx+1} / ${testArticles.length} 篇</span><span class="ltag ltag-${a.level.toLowerCase()}">${a.level} 级别</span></div>
+      <div class="tp-bar"><div class="tp-fill" style="width:${pct}%"></div></div>
+    </div>
+    <div class="test-tip">💡 像平时阅读一样，自然地读就好。遇到不认识的词可以点击查看。</div>
+    <div class="test-content"><div class="t-title">${a.title}</div><div style="font-size:${state.fontSize}px;line-height:2">${html}</div></div>
+    <button class="test-next-btn" onclick="${testIdx < testArticles.length-1 ? 'nextTest()' : 'finishTest()'}">${testIdx < testArticles.length-1 ? '读完了，下一篇 →' : '完成定级 ✓'}</button>
+  `;
+}
+function testTapWord(el, clean) {
+  if (!clean) return;
+  el.classList.add('wc'); el.classList.remove('wh');
+  testClicks[testIdx]++;
+  const a = testArticles[testIdx];
+  const v = (a.vocab||[]).find(x => x.word.toLowerCase() === clean);
+  toast(v ? `${clean}: ${v.d}` : `Try to understand "${clean}" from context`);
+}
+function nextTest() { testIdx++; renderTestArticle(); }
+function finishTest() {
+  document.getElementById('testArea').style.display = 'none';
+  document.getElementById('resultArea').style.display = 'block';
+  const cr = testClicks.map((c,i) => c / (testArticles[i].wordCount * 0.3));
+  let score = 0;
+  if (cr[0] < 0.1) score += 1; if (cr[0] < 0.05) score += 1;
+  if (cr[1] < 0.15) score += 1; if (cr[1] < 0.08) score += 1;
+  if (cr[2] < 0.2) score += 1; if (cr[2] < 0.12) score += 1; if (cr[2] < 0.06) score += 2;
+  let level, name, desc, rec;
+  if (score >= 7) { level='C1'; name='高级 Advanced'; desc='你的英语水平很好！可以阅读大部分原版内容。'; rec='B2'; }
+  else if (score >= 5) { level='B2'; name='中高级 Upper-Intermediate'; desc='你有不错的英语基础，可以阅读较复杂的文章。'; rec='B2'; }
+  else if (score >= 3) { level='B1'; name='中级 Intermediate'; desc='适合阅读中等难度的英语内容。'; rec='B1'; }
+  else if (score >= 1.5) { level='A2'; name='初级 Elementary'; desc='适合阅读简单明了的英语内容。'; rec='A2'; }
+  else { level='A1'; name='入门 Beginner'; desc='适合阅读最简单的英语内容。'; rec='A1'; }
+  state.level = level; save('level');
+  document.getElementById('resultArea').innerHTML = `
+    <div class="result-page">
+      <div class="r-icon">🎉</div>
+      <div class="r-title">定级完成！</div>
+      <div class="result-level-card">
+        <div class="rl-label">你的英语水平</div>
+        <div class="rl-badge ltag ltag-${level.toLowerCase()}" style="font-size:48px;padding:8px 32px">${level}</div>
+        <div class="rl-name">${name}</div>
+        <div class="rl-desc">${desc}</div>
+      </div>
+      <div class="result-rec">
+        <div class="rec-label">推荐阅读难度</div>
+        <div class="rec-levels"><span class="ltag ltag-${rec.toLowerCase()}" style="font-size:16px;padding:4px 16px">${rec}</span><span class="rec-hint">系统会自动推荐适合你水平的内容</span></div>
+      </div>
+      <div class="result-tip">💡 你可以随时在"我的"页面手动调整难度等级</div>
+      <button class="result-btn" onclick="switchTab('index');document.getElementById('tabBar').style.display='flex';">开始阅读</button>
+    </div>
+  `;
+}
+
+// ============ HISTORY ============
+function renderHistory() { switchHistTab('history'); }
+function switchHistTab(tab) {
+  document.querySelectorAll('.hist-tab').forEach((t,i) => t.classList.toggle('active', ['history','favorites','wordbook'][i] === tab));
+  const el = document.getElementById('histContent');
+  if (tab === 'history') {
+    if (!state.readingHistory.length) { el.innerHTML = '<div class="empty-state">还没有阅读记录，快去读一篇吧</div>'; return; }
+    const groups = {};
+    state.readingHistory.forEach(h => {
+      const d = new Date(h.readTime).toISOString().split('T')[0];
+      const label = d === new Date().toISOString().split('T')[0] ? '今天' : d;
+      if (!groups[label]) groups[label] = [];
+      groups[label].push(h);
+    });
+    el.innerHTML = Object.entries(groups).map(([label, items]) =>
+      `<div class="date-label">${label}</div>` + items.map(a => `
+        <div class="hist-item" onclick="openArticle('${a.id}')">
+          <div class="hi-header"><span class="ltag ltag-${a.level.toLowerCase()}">${a.level}</span><span style="font-size:11px;color:var(--text3)">${a.titleCn} · ${a.wordCount}词</span></div>
+          <div class="hi-title">${a.title}</div>
+        </div>`).join('')
+    ).join('');
+  } else if (tab === 'favorites') {
+    if (!state.favorites.length) { el.innerHTML = '<div class="empty-state">还没有收藏文章</div>'; return; }
+    el.innerHTML = state.favorites.map(a => `
+      <div class="hist-item" onclick="openArticle('${a.id}')">
+        <div class="hi-header"><span class="ltag ltag-${a.level.toLowerCase()}">${a.level}</span><span>❤️</span></div>
+        <div class="hi-title">${a.title}</div>
+        <div class="hi-desc">${a.titleCn} · ${a.wordCount}词</div>
+      </div>`).join('');
+  } else {
+    if (!state.wordBook.length) { el.innerHTML = '<div class="empty-state">阅读时点击生词，会自动记录在这里</div>'; return; }
+    el.innerHTML = state.wordBook.map(w => `
+      <div class="word-item">
+        <div class="wi-top"><span class="wi-word">${w.word}</span><span class="wi-count">遇见 ${w.count} 次</span></div>
+        <div class="wi-def">${w.def}</div>
+      </div>`).join('');
+  }
+}
+
+// ============ PROFILE ============
+function renderProfile() {
+  const lv = state.level;
+  document.getElementById('profileAvatar').textContent = lv || '?';
+  document.getElementById('profileLevel').textContent = lv ? lv : '未定级';
+  document.getElementById('adjustBtn').style.display = lv ? 'block' : 'none';
+  const lc = LEVELS.find(l => l.key === lv);
+  document.getElementById('profileLevelName').textContent = lc ? `${lc.name} ${lc.desc}` : '';
+  document.getElementById('pArticles').textContent = state.stats.totalArticles;
+  document.getElementById('pMinutes').textContent = state.stats.totalMinutes;
+  document.getElementById('pStreak').textContent = state.stats.currentStreak;
+  document.getElementById('pWords').textContent = state.wordBook.length;
+  document.getElementById('goalDisplay').textContent = state.dailyGoal + '分钟 ›';
+  const tagsEl = document.getElementById('myTags');
+  const noEl = document.getElementById('noInterest');
+  if (state.interests.length) {
+    tagsEl.innerHTML = state.interests.map(k => { const i = INTERESTS.find(x=>x.key===k); return `<span class="my-tag">${i?i.icon+' ':''}${i?i.name:k}</span>`; }).join('');
+    tagsEl.style.display = 'flex'; noEl.style.display = 'none';
+  } else { tagsEl.style.display = 'none'; noEl.style.display = 'block'; }
+}
+function showLevelSelector() { document.getElementById('levelSelector').classList.add('show'); }
+function hideLevelSelector(e) { if (!e || e.target === document.getElementById('levelSelector')) document.getElementById('levelSelector').classList.remove('show'); }
+function setLevel(lv) {
+  state.level = lv; save('level');
+  hideLevelSelector(); renderProfile(); toast('已调整为 ' + lv);
+}
+function setDailyGoal() {
+  const goals = [5, 10, 15, 20, 30];
+  const btns = goals.map(g => `<div class="lo-item" onclick="document.getElementById('levelSelector').classList.remove('show');state.dailyGoal=${g};save('dailyGoal');renderProfile();toast('每日目标：${g}分钟')">${g} 分钟</div>`).join('');
+  document.getElementById('levelSelector').querySelector('.lo-title').textContent = '选择每日阅读时长';
+  document.getElementById('levelSelector').querySelector('.lo-title').nextElementSibling.insertAdjacentHTML;
+  // reuse selector
+  const opts = document.querySelector('.level-options');
+  opts.innerHTML = `<div class="lo-title">每日阅读时长</div>${btns}<div class="lo-cancel" onclick="hideLevelSelector()">取消</div>`;
+  document.getElementById('levelSelector').classList.add('show');
+}
+function showAbout() { document.getElementById('aboutOverlay').classList.add('show'); }
+function hideAbout(e) { if (!e || e.target === document.getElementById('aboutOverlay')) document.getElementById('aboutOverlay').classList.remove('show'); }
+
+// ============ INIT ============
+loadState(); renderIndex();
+</script>
+</body>
+</html>
