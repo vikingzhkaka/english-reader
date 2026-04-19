@@ -251,11 +251,18 @@
     .hist-item .hi-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
     .hist-item .hi-title { font-size: 15px; font-weight: 600; }
     .hist-item .hi-desc { font-size: 12px; color: var(--text3); }
-    .word-item { background: #fff; border-radius: 10px; padding: 14px; margin-bottom: 8px; }
-    .word-item .wi-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+    .word-item { background: #fff; border-radius: 10px; padding: 14px; margin-bottom: 8px; display: flex; align-items: flex-start; gap: 12px; }
+    .word-item .wi-top { flex: 1; }
+    .word-item .wi-top .wi-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
     .word-item .wi-word { font-size: 17px; font-weight: 600; color: var(--primary); }
     .word-item .wi-count { font-size: 11px; color: var(--text3); background: rgba(74,144,217,0.08); padding: 2px 8px; border-radius: 4px; }
     .word-item .wi-def { font-size: 13px; color: var(--text2); line-height: 1.5; }
+    .word-item .wi-del { color: var(--text3); font-size: 18px; cursor: pointer; padding: 4px; flex-shrink: 0; }
+    .word-item .wi-del:active { color: var(--danger); }
+    .wordbook-header { display: flex; justify-content: space-between; align-items: center; padding: 12px 0 8px; }
+    .wordbook-header .wb-title { font-size: 13px; color: var(--text3); }
+    .wordbook-header .wb-actions { display: flex; gap: 8px; }
+    .wordbook-header .wb-btn { font-size: 12px; color: var(--primary); background: rgba(74,144,217,0.08); border: none; border-radius: 14px; padding: 4px 12px; cursor: pointer; touch-action: manipulation; }
     .empty-state { text-align: center; padding: 48px 16px; color: var(--text3); font-size: 14px; }
     /* ===== Profile ===== */
     .profile-card {
@@ -535,7 +542,8 @@ const INTERESTS = [
   {key:'story',name:'故事',icon:'📖'},{key:'science',name:'科普',icon:'🔬'},
   {key:'history',name:'历史',icon:'🏛️'},{key:'psychology',name:'心理',icon:'🧠'},
   {key:'business',name:'商业',icon:'💼'},{key:'life',name:'生活',icon:'🌟'},
-  {key:'tech',name:'科技',icon:'💻'},{key:'movie',name:'影视',icon:'🎬'}
+  {key:'tech',name:'科技',icon:'💻'},{key:'movie',name:'影视',icon:'🎬'},
+  {key:'novel',name:'小说',icon:'📚'}
 ];
 const DICT = {
   pet:{p:'/pet/',d:'An animal you keep at home for pleasure and company.'},
@@ -677,7 +685,26 @@ const ARTICLES = {
       vocab:[{word:'vanishingly',d:'extremely small'},{word:'extraterrestrial',d:'from outside Earth'},{word:'annihilation',d:'complete destruction'}]},
     {id:'c1_3',title:'The Architecture of Loneliness',titleCn:'孤独的建筑学',level:'C1',tags:['psychology','life'],wordCount:250,readMinutes:9,hl:['epidemic','devastating','inflammatory','contagious','albeit'],
       content:'Loneliness has reached epidemic proportions in the 21st century. Recent research suggests it is not merely a social inconvenience — it is a biological signal with profound implications for health.\n\nNeuroscientist John Cacioppo argued that loneliness evolved as a survival mechanism. Just as hunger motivates us to seek food, loneliness motivates us to seek social connection.\n\nChronic loneliness triggers a persistent inflammatory response. The immune system shifts toward a defensive posture, producing elevated levels of pro-inflammatory cytokines. Over time, this damages blood vessels and accelerates cellular aging. Studies found that chronic loneliness increases the risk of premature death by approximately 26 percent.\n\nPerhaps most troublingly, loneliness appears to be contagious. Research demonstrated that loneliness spreads through social networks like a virus. The paradox of the digital age is that we have never been more connected, yet rates of loneliness continue to climb.',
-      vocab:[{word:'epidemic',d:'widespread occurrence'},{word:'devastating',d:'causing great suffering'},{word:'contagious',d:'spreadable between people'}]}
+      vocab:[{word:'epidemic',d:'widespread occurrence'},{word:'devastating',d:'causing great suffering'},{word:'contagious',d:'spreadable between people'}]},
+    // ===== 小说 Novels =====
+    {id:'a1_n1',title:'Alice in Wonderland (Chapter 1)',titleCn:'爱丽丝梦游仙境（第一章）',level:'A1',tags:['novel'],wordCount:120,readMinutes:4,hl:['curious','rabbit','hole','ground','wonderland','hurried'],
+      content:'Alice was beginning to get very tired of sitting by her sister on the bank. She had nothing to do. Once or twice she had peeped into the book her sister was reading, but it had no pictures in it.\n\nSuddenly, a White Rabbit with pink eyes ran close by her. There was nothing so very remarkable in that, but when the Rabbit actually took a watch out of its waistcoat-pocket, Alice started to her feet.\n\n"Oh dear! Oh dear! I shall be late!" said the Rabbit. It was burning with curiosity, so Alice hurried after it, and was just in time to see it pop down a large rabbit-hole under the hedge. In another moment, down went Alice after it, never once considering how she would get out again.',
+      vocab:[{word:'curious',d:'wanting to know about something'},{word:'rabbit',d:'a small animal with long ears'},{word:'waistcoat',d:'a piece of clothing like a jacket'},{word:'hedge',d:'a row of bushes'},{word:'remarkable',d:'unusual or special'}]},
+    {id:'a2_n1',title:'The Secret Garden (Chapter 1)',titleCn:'秘密花园（第一章）',level:'A2',tags:['novel'],wordCount:145,readMinutes:5,hl:['orphan','lonely','mysterious','discovery','mistress','garden'],
+      content:'When Mary Lennox was sent to Misselthwaite Manor to live with her uncle, everybody said she was the most disagreeable-looking child ever seen. She had a thin face and body, thin light hair and a sour expression.\n\nHer hair was yellow, and her face was yellow because she had been born in India and had always been ill. Her father had held a position under the English Government and was always busy. Her mother had been a great beauty who cared only about going to parties.\n\nAfter her parents died, Mary was sent to England. She arrived at the Manor on a dark evening. The house looked large and mysterious. Martha, the housemaid, told her about a secret garden that had been locked up for ten years. "No one has been in it since the old mistress died," Martha whispered.',
+      vocab:[{word:'disagreeable',d:'unpleasant'},{word:'sour',d:'having a sharp taste; unfriendly'},{word:'mysterious',d:'strange and unknown'},{word:'housemaid',d:'a woman who cleans and works in a house'},{word:'whispered',d:'spoke very softly'}]},
+    {id:'a2_n2',title:'The Little Prince (Chapter 1)',titleCn:'小王子（第一章）',level:'A2',tags:['novel'],wordCount:135,readMinutes:5,hl:['drawing','adults','imagination','boa','swallow','desert','asteroid'],
+      content:'Once when I was six years old, I saw a magnificent picture in a book about the forest. It was called "True Stories from Nature." It showed a boa constrictor swallowing a wild beast.\n\nI showed my masterpiece to the grown-ups and asked them whether the drawing frightened them. But they answered, "Frighten? Why should anyone be frightened by a hat?" My drawing was not a picture of a hat. It was a picture of a boa constrictor digesting an elephant.\n\nThe grown-ups never understand anything by themselves, and it is tiresome for children to be always explaining things to them. So I had to choose another profession. I learned to pilot airplanes. And that is why I am now telling you the story of the Little Prince, who lived on a tiny asteroid no bigger than a house.',
+      vocab:[{word:'magnificent',d:'very beautiful or impressive'},{word:'constrictor',d:'a snake that squeezes its prey'},{word:'digesting',d:'breaking down food in the stomach'},{word:'tiresome',d:'making you feel annoyed or bored'},{word:'asteroid',d:'a small rocky object in space'}]},
+    {id:'b1_n1',title:'Magic Tree House: Dinosaurs Before Dark (Ch.1)',titleCn:'神奇树屋：恐龙谷大冒险（第一章）',level:'B1',tags:['novel'],wordCount:190,readMinutes:7,hl:['ancient','enormous','creature','adventure','mysterious','fascinated','prey','carnivore'],
+      content:'Jack opened his eyes. Sunlight was streaming through the window. He sat up and stared at his little sister, Annie, who was standing by the front door. She was putting on her shoes. She was dressed and ready to go somewhere.\n\n"Come on, Jack!" she whispered urgently. "I found something really cool!"\n\nJack followed Annie into the Frog Creek woods. She ran ahead, disappearing into the trees. Jack caught up with her in a small clearing. And there it was — the most magnificent thing he had ever seen.\n\nA tree house. But not just any tree house. It was the highest tree house he had ever seen, sitting in the top of the tallest oak tree. A rope ladder hung down from a wooden door.\n\nInside, they discovered hundreds of books. When Annie pointed to a picture of a dinosaur and said "I wish we could go there," the tree house began to spin. Faster and faster. Everything was whirling. Then everything was still. Absolutely still.',
+      vocab:[{word:'streaming',d:'flowing in a steady stream'},{word:'clearing',d:'an open area in a forest'},{word:'magnificent',d:'very beautiful or impressive'},{word:'whirling',d:'spinning around quickly'}]},
+    {id:'b1_n2',title:'Charlotte\'s Web (Chapter 1)',titleCn:'夏洛的网（第一章）',level:'B1',tags:['novel'],wordCount:185,readMinutes:6,hl:['piglet','runt','rescue','compasion','gorgeous','sorrow','loyalty','devotion'],
+      content:'"Where is Papa going with that axe?" said Fern to her mother as they were setting the table for breakfast.\n\n"Out to the hoghouse," replied Mrs. Arable. "Some pigs were born last night."\n\n"I do not see why he needs an axe," continued Fern, who was only eight.\n"Well," said her mother, "one of the pigs is a runt. It is very small and weak, and it will never amount to anything. So your father has decided to do away with it."\n\n"Do away with it?" shrieked Fern. "You mean kill it? Just because it is smaller than the others?" Fern pushed her chair out of the way and ran outdoors. She caught up with her father just as he was closing the gate. She pleaded with him not to kill the tiny piglet. Mr. Arable finally gave in and handed the pig to Fern. She named him Wilbur.',
+      vocab:[{word:'runt',d:'the smallest animal in a litter'},{word:'shrieked',d:'cried out with a high voice'},{word:'pleaded',d:'asked in a serious and emotional way'},{word:'piglet',d:'a young pig'}]},
+    {id:'b2_n1',title:'Harry Potter: The Boy Who Lived (Ch.1)',titleCn:'哈利·波特：大难不死的男孩（第一章）',level:'B2',tags:['novel'],wordCount:230,readMinutes:8,hl:['mysterious','privet','resemble','dedication','extraordinary','phenomenon','peculiar','paranormal'],
+      content:'Mr. and Mrs. Dursley, of number four, Privet Drive, were proud to say that they were perfectly normal, thank you very much. They were the last people you would expect to be involved in anything strange or mysterious, because they just did not hold with such nonsense.\n\nMr. Dursley was the director of a firm called Grunnings, which made drills. He was a big, beefy man with hardly any neck, although he did have a very large mustache. Mrs. Dursley was thin and blonde and had nearly twice the usual amount of neck, which came in very useful as she spent so much of her time craning over garden fences, spying on the neighbors.\n\nThe Dursleys had a small son called Dudley and in their opinion there was no finer boy anywhere. The Dursleys had everything they wanted, but they also had a secret, and their greatest fear was that somebody would discover it.\n\nOn a dull, gray Tuesday, a most extraordinary thing happened. A cat sat on the wall outside their house. What was extraordinary about it was that it was reading a map. And on the corner of the street, a tall old man in robes appeared out of nowhere.',
+      vocab:[{word:'craning',d:'stretching one\'s neck to see something'},{word:'spying',d:'watching secretly'},{word:'robes',d:'long loose garments'},{word:'extraordinary',d:'very unusual or remarkable'}]},
   ]
 };
 
@@ -1040,11 +1067,23 @@ function switchHistTab(tab) {
       </div>`).join('');
   } else {
     if (!state.wordBook.length) { el.innerHTML = '<div class="empty-state">阅读时点击生词，会自动记录在这里</div>'; return; }
-    el.innerHTML = state.wordBook.map(w => `
-      <div class="word-item">
-        <div class="wi-top"><span class="wi-word">${w.word}</span><span class="wi-count">遇见 ${w.count} 次</span></div>
-        <div class="wi-def">${w.def}</div>
-      </div>`).join('');
+    el.innerHTML = `
+      <div class="wordbook-header">
+        <span class="wb-title">共 ${state.wordBook.length} 个生词</span>
+        <div class="wb-actions">
+          <button class="wb-btn" onclick="exportWordBook('csv')">导出 CSV</button>
+          <button class="wb-btn" onclick="exportWordBook('txt')">导出 TXT</button>
+        </div>
+      </div>
+      ${state.wordBook.map((w,i) => `
+        <div class="word-item">
+          <div class="wi-top">
+            <div class="wi-head"><span class="wi-word">${w.word}</span><span class="wi-count">遇见 ${w.count} 次</span></div>
+            <div class="wi-def">${w.def}</div>
+          </div>
+          <span class="wi-del" onclick="deleteWord(${i})">✕</span>
+        </div>`).join('')}
+    `;
   }
 }
 
@@ -1086,6 +1125,34 @@ function setDailyGoal() {
 }
 function showAbout() { document.getElementById('aboutOverlay').classList.add('show'); }
 function hideAbout(e) { if (!e || e.target === document.getElementById('aboutOverlay')) document.getElementById('aboutOverlay').classList.remove('show'); }
+
+// ============ WORD BOOK ACTIONS ============
+function deleteWord(idx) {
+  state.wordBook.splice(idx, 1);
+  save('wordBook');
+  switchHistTab('wordbook');
+  toast('已删除');
+}
+function exportWordBook(format) {
+  if (!state.wordBook.length) { toast('生词本是空的'); return; }
+  let content, filename, mime;
+  if (format === 'csv') {
+    content = '\uFEFFWord,Definition,Count,Date\n';
+    content += state.wordBook.map(w => `"${w.word}","${w.def}",${w.count},"${w.time ? new Date(w.time).toLocaleDateString() : '-'}"`).join('\n');
+    filename = 'wordbook.csv'; mime = 'text/csv;charset=utf-8';
+  } else {
+    content = '📖 我的生词本\n' + '='.repeat(30) + '\n导出日期: ' + new Date().toLocaleDateString() + '\n共 ' + state.wordBook.length + ' 个生词\n\n';
+    content += state.wordBook.map((w,i) => `${i+1}. ${w.word}\n   ${w.def}\n   遇见 ${w.count} 次\n`).join('\n');
+    filename = 'wordbook.txt'; mime = 'text/plain;charset=utf-8';
+  }
+  const blob = new Blob([content], { type: mime });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = filename;
+  document.body.appendChild(a); a.click();
+  document.body.removeChild(a); URL.revokeObjectURL(url);
+  toast('导出成功: ' + filename);
+}
 
 // ============ INIT ============
 loadState(); renderIndex();
