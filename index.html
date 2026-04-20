@@ -277,6 +277,13 @@
     .wordbook-header .wb-actions { display: flex; gap: 8px; }
     .wordbook-header .wb-btn { font-size: 12px; color: var(--primary); background: rgba(74,144,217,0.08); border: none; border-radius: 14px; padding: 4px 12px; cursor: pointer; touch-action: manipulation; }
     .empty-state { text-align: center; padding: 48px 16px; color: var(--text3); font-size: 14px; }
+    .loading-spinner { display: inline-block; width: 16px; height: 16px; border: 2px solid var(--border); border-top-color: var(--primary); border-radius: 50%; animation: spin .6s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .online-card { padding: 12px; margin-bottom: 10px; border-radius: 10px; border: 1px solid var(--border); cursor: pointer; transition: background .2s; }
+    .online-card:active { background: rgba(74,144,217,.05); }
+    .online-card .oc-title { font-size: 14px; font-weight: 600; color: var(--text1); margin-bottom: 4px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .online-card .oc-meta { font-size: 11px; color: var(--text3); display: flex; gap: 8px; flex-wrap: wrap; }
+    .online-card .oc-source { color: var(--primary); font-weight: 500; }
     /* ===== Profile ===== */
     .profile-card {
       background: linear-gradient(135deg, #4A90D9, #6BA3E0); color: #fff;
@@ -525,6 +532,20 @@
     <div id="dailyList"></div>
   </div>
 
+  <!-- Online Articles Card -->
+  <div class="card" id="onlineCard" style="display:none">
+    <div class="section-header">
+      <div class="section-title">🌐 在线阅读</div>
+      <div class="section-more" id="onlineRefresh" onclick="loadOnlineArticles()">刷新 ↻</div>
+    </div>
+    <div style="font-size:12px;color:var(--text3);margin-bottom:10px">从互联网获取新鲜英文阅读材料</div>
+    <div id="onlineList"></div>
+    <div id="onlineLoading" style="display:none;text-align:center;padding:20px;color:var(--text3);font-size:13px">
+      <span class="loading-spinner"></span> 正在获取在线文章...
+    </div>
+    <div id="onlineEmpty" style="display:none;text-align:center;padding:16px;color:var(--text3);font-size:13px">暂无在线文章，请稍后再试</div>
+  </div>
+
   </div><!-- end quickContent -->
   <!-- Immersive Content -->
   <div class="bookshelf" id="immersiveContent">
@@ -767,6 +788,23 @@
   </div>
 </div>
 
+<!-- Online Reading Page -->
+<div class="page" id="page-online-read">
+  <div class="sub-navbar">
+    <div class="sn-left">
+      <span class="icon-btn" onclick="navigateBack()">←</span>
+      <span class="sn-title" id="onlineReadTitle">在线阅读</span>
+    </div>
+    <div class="sn-right">
+      <span class="icon-btn" onclick="goHome()" title="首页">🏠</span>
+    </div>
+  </div>
+  <div id="onlineReadBody" style="padding:16px;line-height:1.8;font-size:16px"></div>
+  <div style="padding:12px 16px;text-align:center">
+    <button class="btn-confirm" style="padding:10px 32px;border:none;border-radius:20px;font-size:14px;cursor:pointer" onclick="completeOnlineArticle()">✓ 读完了</button>
+  </div>
+</div>
+
 <!-- Uploaded Books Page -->
 <div class="page" id="page-uploaded-books">
   <div class="sub-navbar">
@@ -846,6 +884,7 @@
 <div class="tab-bar" id="tabBar">
   <div class="tab-item active" onclick="switchTab('index')" data-tab="index"><span class="tab-icon">🏠</span><span class="tab-label">首页</span></div>
   <div class="tab-item" onclick="switchTab('history')" data-tab="history"><span class="tab-icon">📋</span><span class="tab-label">历史</span></div>
+  <div id="wordTip" style="display:none"></div>
   <div class="tab-item" onclick="switchTab('profile')" data-tab="profile"><span class="tab-icon">👤</span><span class="tab-label">我的</span></div>
 </div>
 
@@ -1825,6 +1864,7 @@ function renderIndex() {
     }
     document.getElementById('interestCard').style.display = 'none';
     document.getElementById('modeSwitcher').style.display = 'flex';
+    document.getElementById('onlineCard').style.display = 'block';
     var mode = state.readingMode || 'quick';
     switchMode(mode);
     document.getElementById('statsCard').style.display = 'block';
@@ -1869,10 +1909,15 @@ function shuffle(arr) {
 }
 function getArticles(level, interests, count) {
   const all = ARTICLES[level] || [];
-  if (!interests.length) return shuffle(all).slice(0, count);
-  const matched = all.filter(a => a.tags.some(t => interests.includes(t)));
+  // 排除已读文章
+  const readIds = new Set(state.readingHistory.map(h => h.id));
+  const unread = all.filter(a => !readIds.has(a.id));
+  // 如果全部已读，则允许重复出现
+  const pool = unread.length > 0 ? unread : all;
+  if (!interests.length) return shuffle(pool).slice(0, count);
+  const matched = pool.filter(a => a.tags.some(t => interests.includes(t)));
   if (matched.length >= count) return shuffle(matched).slice(0, count);
-  return [...shuffle(matched), ...shuffle(all.filter(a => !matched.includes(a)))].slice(0, count);
+  return [...shuffle(matched), ...shuffle(pool.filter(a => !matched.includes(a)))].slice(0, count);
 }
 function loadDaily() {
   const arts = getArticles(state.level, state.interests, 4);
@@ -2224,8 +2269,8 @@ function switchMode(mode){
   document.getElementById('modeImmersive').classList.toggle('active',mode==='immersive');
   document.getElementById('quickContent').style.display=mode==='quick'?'block':'none';
   document.getElementById('immersiveContent').classList.toggle('active',mode==='immersive');
-  if(mode==='quick'){document.getElementById('recommendCard').style.display='block';loadDaily();}
-  else{document.getElementById('recommendCard').style.display='none';renderBookshelf();}
+  if(mode==='quick'){document.getElementById('recommendCard').style.display='block';document.getElementById('onlineCard').style.display='block';loadDaily();loadOnlineArticles();}
+  else{document.getElementById('recommendCard').style.display='none';document.getElementById('onlineCard').style.display='none';renderBookshelf();}
 }
 
 // ============ BOOKSHELF ============
@@ -2305,6 +2350,196 @@ function showImmersiveToc(){
   document.getElementById('tocOverlay').classList.add('show');
 }
 function closeToc(e){if(e&&e.target!==document.getElementById('tocOverlay'))return;document.getElementById('tocOverlay').classList.remove('show');}
+
+// ============ ONLINE ARTICLES ============
+var onlineArticles = []; // 缓存在线文章
+var currentOnlineArticle = null;
+
+function loadOnlineArticles() {
+  var loading = document.getElementById('onlineLoading');
+  var emptyEl = document.getElementById('onlineEmpty');
+  var list = document.getElementById('onlineList');
+  loading.style.display = 'block';
+  emptyEl.style.display = 'none';
+  list.innerHTML = '';
+
+  // 从多个免费英文阅读源获取文章
+  var promises = [
+    fetchVoaArticles(),
+    fetchBreakingNewsArticles()
+  ];
+
+  Promise.allSettled(promises).then(function(results) {
+    loading.style.display = 'none';
+    var articles = [];
+    results.forEach(function(r) {
+      if (r.status === 'fulfilled' && r.value) {
+        articles = articles.concat(r.value);
+      }
+    });
+
+    if (!articles.length) {
+      emptyEl.style.display = 'block';
+      return;
+    }
+
+    // 按难度筛选并排序（优先匹配用户等级）
+    var readIds = new Set(state.readingHistory.map(function(h){return h.id;}));
+    articles = articles.filter(function(a){return !readIds.has(a.id);});
+    onlineArticles = articles.slice(0, 10);
+
+    list.innerHTML = onlineArticles.map(function(a, i) {
+      return '<div class="online-card" onclick="openOnlineArticle('+i+')">'
+        + '<div class="oc-title">'+a.title+'</div>'
+        + '<div class="oc-meta">'
+        + '<span class="oc-source">'+a.source+'</span>'
+        + '<span>'+a.level+'</span>'
+        + '<span>'+(a.wordCount||'')+' 词</span>'
+        + '</div></div>';
+    }).join('');
+  });
+}
+
+function fetchVoaArticles() {
+  // VOA Learning English RSS
+  return fetch('https://api.rss2json.com/v1/api.json?rss_url=https://feeds.bbci.co.uk/learningenglish/english/features/6-minute-english/rss.xml')
+    .then(function(r){return r.json();})
+    .then(function(data){
+      if(!data.items) return [];
+      return data.items.slice(0,5).map(function(item){
+        var wc = (item.description||'').replace(/<[^>]*>/g,'').split(/\s+/).length;
+        return {
+          id: 'voa_' + Date.now() + '_' + Math.random().toString(36).substr(2,6),
+          title: item.title || 'Untitled',
+          titleCn: '',
+          level: 'A2',
+          tags: ['news'],
+          wordCount: wc,
+          readMinutes: Math.max(3, Math.round(wc / 80)),
+          source: 'BBC Learning English',
+          link: item.link,
+          content: (item.description||'').replace(/<[^>]*>/g,''),
+          vocab: []
+        };
+      });
+    })
+    .catch(function(){return [];});
+}
+
+function fetchBreakingNewsArticles() {
+  // 使用 breaking news API
+  return fetch('https://api.rss2json.com/v1/api.json?rss_url=https://feeds.bbci.co.uk/news/world/us_and_canada/rss.xml')
+    .then(function(r){return r.json();})
+    .then(function(data){
+      if(!data.items) return [];
+      var levelMap = {'A1':0,'A2':1,'B1':2,'B2':3,'C1':4};
+      var userLv = levelMap[state.level] || 1;
+      var levels = ['A1','A2','B1','B2','C1'];
+      return data.items.slice(0,5).map(function(item){
+        var desc = (item.description||'').replace(/<[^>]*>/g,'');
+        var wc = desc.split(/\s+/).length;
+        var autoLv = wc < 80 ? 'A1' : wc < 150 ? 'A2' : wc < 300 ? 'B1' : wc < 500 ? 'B2' : 'C1';
+        // 优先匹配用户等级附近的
+        var lvIdx = levelMap[autoLv] || 1;
+        var closest = levels[Math.min(Math.max(lvIdx + (userLv > lvIdx ? 1 : userLv < lvIdx ? -1 : 0), 0), 4)];
+        return {
+          id: 'news_' + Date.now() + '_' + Math.random().toString(36).substr(2,6),
+          title: item.title || 'Untitled',
+          titleCn: '',
+          level: closest,
+          tags: ['news'],
+          wordCount: wc,
+          readMinutes: Math.max(3, Math.round(wc / 80)),
+          source: 'BBC News',
+          link: item.link,
+          content: desc,
+          vocab: []
+        };
+      });
+    })
+    .catch(function(){return [];});
+}
+
+function openOnlineArticle(idx) {
+  currentOnlineArticle = onlineArticles[idx];
+  if (!currentOnlineArticle) return;
+  state.currentArticle = currentOnlineArticle;
+  state.readingStart = Date.now();
+  state.wordClicks = 0;
+  document.getElementById('onlineReadTitle').textContent = currentOnlineArticle.title;
+
+  // 渲染正文：将每个单词包装为可点击的 span
+  var body = document.getElementById('onlineReadBody');
+  var text = currentOnlineArticle.content;
+  var paragraphs = text.split(/\n+/).filter(function(p){return p.trim();});
+  body.innerHTML = paragraphs.map(function(para) {
+    var words = para.split(/(\s+)/);
+    return '<p style="margin-bottom:16px;text-align:justify">' + words.map(function(w) {
+      var clean = w.replace(/[^a-zA-Z'\-]/g,'').toLowerCase();
+      if (!clean) return w;
+      return '<span style="cursor:pointer;border-bottom:1.5px solid rgba(108,92,231,.15)" onclick="tapOnlineWord(this,\'' + clean.replace(/'/g,"\\'") + '\')">' + w + '</span>';
+    }).join('') + '</p>';
+  }).join('');
+
+  body.style.fontSize = state.fontSize + 'px';
+  navigateTo('online-read');
+}
+
+function tapOnlineWord(el, word) {
+  // 点击单词：弹窗显示（使用内置简单翻译提示）
+  state.wordClicks++;
+  if (!state.wordBook.find(function(w){return w.word === word;})) {
+    state.wordBook.push({word: word, d: '', time: Date.now()});
+    if (state.wordBook.length > 200) state.wordBook.length = 200;
+    save('wordBook');
+  }
+  el.style.background = 'rgba(108,92,231,.12)';
+  el.style.borderRadius = '3px';
+  el.style.padding = '0 2px';
+  // 简易提示
+  var tip = document.getElementById('wordTip');
+  if (tip) {
+    tip.textContent = word;
+    tip.style.display = 'block';
+    tip.style.position = 'fixed';
+    tip.style.bottom = '80px';
+    tip.style.left = '50%';
+    tip.style.transform = 'translateX(-50%)';
+    tip.style.background = 'var(--primary)';
+    tip.style.color = '#fff';
+    tip.style.padding = '6px 16px';
+    tip.style.borderRadius = '20px';
+    tip.style.fontSize = '14px';
+    tip.style.fontWeight = '600';
+    tip.style.zIndex = '200';
+    tip.style.boxShadow = '0 2px 12px rgba(74,144,217,.3)';
+    clearTimeout(tip._timer);
+    tip._timer = setTimeout(function(){tip.style.display='none';}, 1500);
+  }
+}
+
+function completeOnlineArticle() {
+  if (!currentOnlineArticle) return;
+  var a = currentOnlineArticle;
+  var mins = Math.max(1, Math.round((Date.now() - state.readingStart) / 60000));
+  state.stats.totalMinutes += mins;
+  state.stats.totalArticles++;
+  // 更新连续阅读
+  var today = new Date().toISOString().split('T')[0];
+  if (state.stats.lastReadDate) {
+    var diff = Math.floor((new Date(today) - new Date(state.stats.lastReadDate)) / 86400000);
+    state.stats.currentStreak = diff === 1 ? state.stats.currentStreak + 1 : diff === 0 ? state.stats.currentStreak : 1;
+  } else { state.stats.currentStreak = 1; }
+  state.stats.lastReadDate = today;
+  state.readingHistory.unshift({id: a.id, title: a.title, titleCn: a.titleCn, level: a.level, tags: a.tags, wordCount: a.wordCount, readMinutes: a.readMinutes, readTime: Date.now(), source: 'online', link: a.link});
+  if (state.readingHistory.length > 100) state.readingHistory.length = 100;
+  saveAll();
+  toast('🎉 阅读完成！' + mins + ' 分钟');
+  currentOnlineArticle = null;
+  navigateBack();
+  loadDaily(); // 刷新推荐
+  loadOnlineArticles(); // 刷新在线列表
+}
 
 // ============ INIT ============
 initUserSystem(); renderIndex();
