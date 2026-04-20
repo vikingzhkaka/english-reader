@@ -125,7 +125,14 @@
     .stat-lbl { font-size: 12px; color: var(--text3); }
     /* ===== Reading Page ===== */
     .reading-page { background: #fff; min-height: 100vh; }
-    .reading-page.eye-care { background: #F5EDD8; }
+    body.eye-care { background: #F5EDD8 !important; }
+    body.eye-care .reading-page { background: #F5EDD8 !important; }
+    body.eye-care .reading-topbar { background: #C9B97A !important; }
+    body.eye-care .immersive-page { background: #F5EDD8 !important; }
+    body.eye-care .imm-topbar { background: #C9B97A !important; }
+    body.eye-care .test-intro, body.eye-care .test-area, body.eye-care .result-page { background: #F5EDD8 !important; }
+    body.eye-care .settings-content, body.eye-care .settings-panel { background: #F5EDD8 !important; }
+    body.eye-care .navbar { background: #C9B97A !important; }
     .reading-topbar {
       display: flex; justify-content: space-between; align-items: center; padding: 10px 16px;
       background: var(--primary); color: #fff;
@@ -389,7 +396,6 @@
     .toc-item .toc-ch-meta{font-size:11px;color:var(--text3);margin-top:2px}
     /* ===== Immersive Reading ===== */
     .immersive-page{background:#fff;min-height:100vh}
-    .immersive-page.eye-care{background:#F5EDD8}
     .immersive-topbar{display:flex;justify-content:space-between;align-items:center;padding:10px 16px;background:var(--immersive);color:#fff}
     .immersive-topbar .it-left{display:flex;gap:10px;align-items:center}
     .immersive-topbar .it-right{display:flex;gap:16px}
@@ -538,11 +544,11 @@
   <div class="test-intro" id="testIntro">
     <div class="ti-icon">📚</div>
     <div class="ti-title">了解你的英语水平</div>
-    <div class="ti-desc">只需阅读 3 篇不同难度的短文<br>系统会根据你的阅读情况自动判断水平</div>
+    <div class="ti-desc">系统会根据你的阅读表现<br>自动调整难度，精确定位你的水平</div>
     <div class="ti-features">
       <div class="ti-feat">✅ 无需考试答题</div>
       <div class="ti-feat">✅ 无压力无焦虑</div>
-      <div class="ti-feat">✅ 3分钟完成</div>
+      <div class="ti-feat">✅ 自适应难度</div>
     </div>
     <div class="ti-levels">
       <span class="ltag ltag-a1">A1 入门</span>
@@ -863,6 +869,7 @@ function loadState() {
   state.wordBook = state.wordBook || [];
   state.stats = state.stats || { totalMinutes: 0, totalArticles: 0, currentStreak: 0, lastReadDate: '' };
   state.bookProgress = state.bookProgress || {};
+  if (state.eyeCare) document.body.classList.add('eye-care');
 }
 function saveAll() { ['level','interests','readingHistory','favorites','wordBook','stats','dailyGoal','fontSize','eyeCare','readingMode','bookProgress'].forEach(save); }
 
@@ -1016,7 +1023,7 @@ function openArticle(id) {
   }).join('');
   body.style.fontSize = state.fontSize + 'px';
   body.style.lineHeight = '2';
-  body.parentElement.classList.toggle('eye-care', state.eyeCare);
+  document.body.classList.toggle('eye-care', state.eyeCare);
   navigateTo('reading');
   // scroll progress
   body.parentElement.onscroll = () => {
@@ -1069,7 +1076,7 @@ function changeFontSize(d) {
 }
 function toggleEyeCare(v) {
   state.eyeCare = v;
-  document.getElementById('readingBody').parentElement.classList.toggle('eye-care', v);
+  document.body.classList.toggle('eye-care', v);
   save('eyeCare');
 }
 function completeReading() {
@@ -1364,7 +1371,7 @@ function openChapter(ci){
   const endCard=isLast?'<div class="chapter-end"><div class="ce-icon">🎉</div><div class="ce-title">恭喜读完整本书！</div><div class="ce-desc">'+book.titleCn+' · '+book.chapters.length+' 章</div><button class="ce-btn" onclick="exitImmersive()">返回首页</button></div>':'<div class="chapter-end"><div class="ce-icon">📖</div><div class="ce-title">本章结束</div><div class="ce-desc">'+ch.titleCn+' · 下一章：'+book.chapters[ci+1].titleCn+'</div><button class="ce-btn" onclick="immNextChapter()">继续下一章 →</button></div>';
   body.innerHTML=chHTML+endCard;
   body.style.fontSize=state.fontSize+'px';body.style.lineHeight='2';
-  body.parentElement.classList.toggle('eye-care',state.eyeCare);
+  document.body.classList.toggle('eye-care',state.eyeCare);
   const pct=Math.round(((ci+1)/book.chapters.length)*100);
   document.getElementById('immProgressText').textContent='第 '+(ci+1)+' / '+book.chapters.length+' 章 · '+pct+'%';
   document.getElementById('immProgressFill').style.width=pct+'%';
