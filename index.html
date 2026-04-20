@@ -17,6 +17,8 @@
       --success: #00B578;
       --warning: #ED7B2F;
       --danger: #ff4757;
+      --immersive: #6C5CE7;
+      --immersive-light: #A29BFE;
     }
     * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
     body {
@@ -342,6 +344,76 @@
       animation: fadeInOut 1.8s ease forwards;
     }
     @keyframes fadeInOut { 0%{opacity:0} 15%{opacity:1} 75%{opacity:1} 100%{opacity:0} }
+  
+    /* ===== Mode Switcher ===== */
+    .mode-switcher{display:flex;background:#fff;border-radius:10px;padding:4px;margin-bottom:14px;box-shadow:0 1px 6px rgba(0,0,0,.04)}
+    .mode-btn{flex:1;text-align:center;padding:10px 0;border-radius:8px;font-size:14px;font-weight:500;cursor:pointer;color:var(--text3);transition:all .25s}
+    .mode-btn.active{background:var(--primary);color:#fff;box-shadow:0 2px 8px rgba(74,144,217,.3)}
+    .mode-btn .mode-icon{font-size:20px;display:block;margin-bottom:2px}
+    .mode-btn .mode-label{font-size:13px}
+    /* ===== Book Shelf ===== */
+    .bookshelf{display:none}.bookshelf.active{display:block}
+    .book-grid{display:flex;gap:14px;overflow-x:auto;padding:4px 0 12px;-webkit-overflow-scrolling:touch}
+    .book-grid::-webkit-scrollbar{display:none}
+    .book-card{flex-shrink:0;width:140px;cursor:pointer;transition:transform .2s}
+    .book-card:active{transform:scale(.96)}
+    .book-cover{width:140px;height:190px;border-radius:8px;overflow:hidden;box-shadow:0 3px 12px rgba(0,0,0,.12);position:relative}
+    .book-cover .bc-bg{width:100%;height:100%;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:16px;color:#fff;text-align:center}
+    .book-cover .bc-icon{font-size:36px;margin-bottom:8px}
+    .book-cover .bc-title{font-size:14px;font-weight:700;line-height:1.3}
+    .book-cover .bc-author{font-size:11px;opacity:.85;margin-top:4px}
+    .book-cover .bc-level{position:absolute;top:8px;right:8px;font-size:10px;font-weight:700;background:rgba(255,255,255,.25);padding:2px 8px;border-radius:4px}
+    .book-cover .bc-progress{position:absolute;bottom:0;left:0;right:0;height:3px;background:rgba(255,255,255,.3)}
+    .book-cover .bc-progress-fill{height:100%;background:#fff;transition:width .3s}
+    .book-info{padding:8px 4px 0}
+    .book-info .bi-title{font-size:13px;font-weight:600;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .book-info .bi-meta{font-size:11px;color:var(--text3);display:block;margin-top:2px}
+    .book-info .bi-continue{font-size:12px;color:var(--immersive);font-weight:500;margin-top:2px;display:none}
+    /* ===== TOC ===== */
+    .toc-overlay{display:none;position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.5)}
+    .toc-overlay.show{display:flex}
+    .toc-panel{background:#fff;border-radius:16px 16px 0 0;width:100%;max-width:500px;max-height:70vh;animation:slideUp .25s ease;overflow:hidden;display:flex;flex-direction:column}
+    .toc-header{padding:20px 24px 12px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border)}
+    .toc-header .toc-title{font-size:17px;font-weight:600}
+    .toc-header .toc-close{font-size:20px;cursor:pointer;color:var(--text3);background:none;border:none;padding:4px}
+    .toc-list{overflow-y:auto;padding:8px 24px 24px}
+    .toc-item{display:flex;align-items:center;padding:14px 12px;border-radius:10px;cursor:pointer;transition:background .15s;gap:12px}
+    .toc-item:active{background:rgba(74,144,217,.08)}
+    .toc-item.toc-current{background:rgba(108,92,231,.08)}
+    .toc-item.toc-read{opacity:.6}
+    .toc-item .toc-num{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;background:var(--bg);color:var(--text3);flex-shrink:0}
+    .toc-item.toc-current .toc-num{background:var(--immersive);color:#fff}
+    .toc-item.toc-read .toc-num{background:var(--success);color:#fff}
+    .toc-item .toc-info{flex:1}
+    .toc-item .toc-ch-title{font-size:14px;font-weight:500}
+    .toc-item .toc-ch-meta{font-size:11px;color:var(--text3);margin-top:2px}
+    /* ===== Immersive Reading ===== */
+    .immersive-page{background:#fff;min-height:100vh}
+    .immersive-page.eye-care{background:#F5EDD8}
+    .immersive-topbar{display:flex;justify-content:space-between;align-items:center;padding:10px 16px;background:var(--immersive);color:#fff}
+    .immersive-topbar .it-left{display:flex;gap:10px;align-items:center}
+    .immersive-topbar .it-right{display:flex;gap:16px}
+    .immersive-chapter-title{padding:20px 16px 0;font-size:22px;font-weight:700;line-height:1.3}
+    .immersive-chapter-sub{padding:8px 16px 16px;font-size:13px;color:var(--text3)}
+    .immersive-body{padding:0 16px 140px}
+    .immersive-body p{margin-bottom:20px;text-align:justify;letter-spacing:.3px}
+    .immersive-body .wh{color:var(--immersive);font-weight:500;cursor:pointer;border-bottom:1.5px solid rgba(108,92,231,.2)}
+    .immersive-body .wc{color:var(--success);font-weight:500;border-bottom-color:rgba(0,181,120,.2)}
+    .immersive-fbar{position:fixed;bottom:0;left:0;right:0;z-index:100;background:#fff;padding:12px 16px;box-shadow:0 -1px 8px rgba(0,0,0,.06)}
+    .immersive-progress{font-size:13px;color:var(--immersive);font-weight:600;margin-bottom:10px;text-align:center}
+    .immersive-progress .ip-bar{height:4px;background:var(--border);border-radius:2px;margin-top:6px;overflow:hidden}
+    .immersive-progress .ip-fill{height:100%;background:var(--immersive);border-radius:2px;transition:width .3s}
+    .immersive-btns{display:flex;gap:10px}
+    .immersive-btns .ib-btn{flex:1;padding:10px;border-radius:20px;font-size:13px;cursor:pointer;border:none;text-align:center}
+    .ib-toc{background:rgba(108,92,231,.1);color:var(--immersive);font-weight:500}
+    .ib-prev{background:var(--bg);color:var(--text2)}
+    .ib-done{background:var(--immersive);color:#fff;font-weight:600}
+    .chapter-end{text-align:center;padding:40px 20px;margin:20px 0;background:linear-gradient(135deg,rgba(108,92,231,.05),rgba(162,155,254,.08));border-radius:14px}
+    .chapter-end .ce-icon{font-size:40px;margin-bottom:12px}
+    .chapter-end .ce-title{font-size:17px;font-weight:600;margin-bottom:8px}
+    .chapter-end .ce-desc{font-size:13px;color:var(--text3);margin-bottom:20px}
+    .chapter-end .ce-btn{display:inline-block;background:var(--immersive);color:#fff;border:none;border-radius:20px;padding:10px 28px;font-size:14px;font-weight:600;cursor:pointer}
+
   </style>
 </head>
 <body>
@@ -367,6 +439,16 @@
     <button class="confirm-btn" onclick="confirmInterests()">确认选择</button>
   </div>
 
+  <!-- Mode Switcher -->
+  <div class="mode-switcher" id="modeSwitcher" style="display:none">
+    <div class="mode-btn active" id="modeQuick" onclick="switchMode('quick')">
+      <span class="mode-icon">📰</span><span class="mode-label">碎片化阅读</span>
+    </div>
+    <div class="mode-btn" id="modeImmersive" onclick="switchMode('immersive')">
+      <span class="mode-icon">📚</span><span class="mode-label">沉浸式阅读</span>
+    </div>
+  </div>
+  <div id="quickContent">
   <div class="card" id="recommendCard" style="display:none">
     <div class="section-header">
       <div class="section-title">今日推荐</div>
@@ -375,6 +457,15 @@
     <div id="dailyList"></div>
   </div>
 
+  </div><!-- end quickContent -->
+  <!-- Immersive Content -->
+  <div class="bookshelf" id="immersiveContent">
+    <div class="card">
+      <div class="section-title">📖 选择一本书开始沉浸式阅读</div>
+      <div style="font-size:12px;color:var(--text3);margin-bottom:14px">整本书分章节连续阅读，自动保存进度</div>
+      <div class="book-grid" id="bookGrid"></div>
+    </div>
+  </div>
   <div class="card" id="statsCard" style="display:none">
     <div class="section-title">我的阅读</div>
     <div class="stats-grid">
@@ -409,6 +500,35 @@
     <div class="fbar-btns">
       <button class="fb-btn fb-back" onclick="navigateBack()">← 返回</button>
       <button class="fb-btn fb-done" onclick="completeReading()">读完了 ✓</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- ===================== IMMERSIVE READING PAGE ===================== -->
+<div class="page" id="page-immersive">
+  <div class="immersive-topbar">
+    <div class="it-left">
+      <span class="icon-btn" onclick="exitImmersive()">←</span>
+      <span style="font-size:14px;font-weight:600" id="immBookTitle"></span>
+    </div>
+    <div class="it-right">
+      <span class="icon-btn" onclick="showImmersiveToc()">📋</span>
+      <span class="icon-btn" onclick="showSettings()">⚙️</span>
+    </div>
+  </div>
+  <div class="immersive-chapter-title" id="immChTitle"></div>
+  <div class="immersive-chapter-sub" id="immChSub"></div>
+  <div class="immersive-body" id="immersiveBody"></div>
+  <div class="immersive-fbar">
+    <div class="immersive-progress">
+      <span id="immProgressText">第 1/5 章</span>
+      <div class="ip-bar"><div class="ip-fill" id="immProgressFill" style="width:0%"></div></div>
+    </div>
+    <div class="immersive-btns">
+      <button class="ib-btn ib-prev" id="immPrevBtn" onclick="immPrevChapter()" style="display:none">← 上一章</button>
+      <button class="ib-btn ib-toc" onclick="showImmersiveToc()">📖 目录</button>
+      <button class="ib-btn ib-done" onclick="immCompleteChapter()">读完了 ✓</button>
     </div>
   </div>
 </div>
@@ -491,6 +611,17 @@
   </div>
 </div>
 
+
+<!-- TOC Overlay -->
+<div class="toc-overlay" id="tocOverlay" onclick="closeToc(event)">
+  <div class="toc-panel">
+    <div class="toc-header">
+      <span class="toc-title" id="tocTitle">目录</span>
+      <button class="toc-close" onclick="closeToc()">✕</button>
+    </div>
+    <div class="toc-list" id="tocList"></div>
+  </div>
+</div>
 <div class="settings-panel" id="settingsPanel" onclick="hideSettings(event)">
   <div class="settings-content">
     <div style="font-size:17px;font-weight:600;margin-bottom:16px">阅读设置</div>
@@ -519,7 +650,7 @@
     🎯 兴趣驱动<br>
     😌 低焦虑环境<br>
     🔄 大量沉浸式输入<br><br>
-    不背单词、不做题、不考试，真正实现无痛英语习得。</p>
+    不背单词、不做题、不考试，真正实现无痛英语习得。<br>支持碎片化阅读（短篇）和沉浸式阅读（整本书）双模式。</p>
     <button class="ad-btn" onclick="hideAbout()">知道了</button>
   </div>
 </div>
@@ -714,7 +845,8 @@ let state = {
   readingHistory: [], favorites: [], wordBook: [],
   stats: { totalMinutes: 0, totalArticles: 0, currentStreak: 0, lastReadDate: '' },
   dailyGoal: 10, fontSize: 16, eyeCare: false,
-  currentArticle: null, readingStart: 0, wordClicks: 0
+  currentArticle: null, readingStart: 0, wordClicks: 0,
+  readingMode: 'quick', bookProgress: {}, currentBook: null, currentChapterIdx: 0
 };
 let selectedInterests = [];
 let pageHistory = [];
@@ -723,15 +855,16 @@ let pageHistory = [];
 function save(k) { try { localStorage.setItem('er_' + k, JSON.stringify(state[k])); } catch(e) {} }
 function load(k) { try { const v = localStorage.getItem('er_' + k); return v ? JSON.parse(v) : null; } catch(e) { return null; } }
 function loadState() {
-  ['level','interests','readingHistory','favorites','wordBook','stats','dailyGoal','fontSize','eyeCare'].forEach(k => {
+  ['level','interests','readingHistory','favorites','wordBook','stats','dailyGoal','fontSize','eyeCare','readingMode','bookProgress'].forEach(k => {
     const v = load(k); if (v !== null) state[k] = v;
   });
   state.readingHistory = state.readingHistory || [];
   state.favorites = state.favorites || [];
   state.wordBook = state.wordBook || [];
   state.stats = state.stats || { totalMinutes: 0, totalArticles: 0, currentStreak: 0, lastReadDate: '' };
+  state.bookProgress = state.bookProgress || {};
 }
-function saveAll() { ['level','interests','readingHistory','favorites','wordBook','stats','dailyGoal','fontSize','eyeCare'].forEach(save); }
+function saveAll() { ['level','interests','readingHistory','favorites','wordBook','stats','dailyGoal','fontSize','eyeCare','readingMode','bookProgress'].forEach(save); }
 
 // ============ NAV ============
 function switchTab(tab) {
@@ -745,7 +878,7 @@ function switchTab(tab) {
 function navigateTo(page) {
   pageHistory.push(state.page);
   showPage(page);
-  document.getElementById('tabBar').style.display = page === 'reading' ? 'none' : 'flex';
+  document.getElementById('tabBar').style.display = (page === 'reading' || page === 'immersive') ? 'none' : 'flex';
   if (page === 'level-test') renderLevelTest();
 }
 function navigateBack() {
@@ -791,8 +924,9 @@ function renderIndex() {
       save('interests');
     }
     document.getElementById('interestCard').style.display = 'none';
-    document.getElementById('recommendCard').style.display = 'block';
-    loadDaily();
+    document.getElementById('modeSwitcher').style.display = 'flex';
+    var mode = state.readingMode || 'quick';
+    switchMode(mode);
     document.getElementById('statsCard').style.display = 'block';
     document.getElementById('statArticles').textContent = state.stats.totalArticles;
     document.getElementById('statMinutes').textContent = state.stats.totalMinutes;
@@ -1157,6 +1291,122 @@ function exportWordBook(format) {
   document.body.removeChild(a); URL.revokeObjectURL(url);
   toast('已导出: ' + filename);
 }
+
+
+// ============ BOOKS DATA ============
+const BOOKS=[
+{id:'alice',title:'Alice in Wonderland',titleCn:'爱丽丝梦游仙境',author:'Lewis Carroll',level:'A1',color:'#6C5CE7',icon:'🐰',chapters:[
+{id:1,title:'Down the Rabbit Hole',titleCn:'掉进兔子洞',wordCount:150,readMinutes:5,hl:['curious','waistcoat','rabbit','hedge','remarkable','hurried'],content:'Alice was beginning to get very tired of sitting by her sister on the bank. She had nothing to do. Once or twice she had peeped into the book her sister was reading, but it had no pictures or conversations in it.\n\nSuddenly, a White Rabbit with pink eyes ran close by her. When the Rabbit actually took a watch out of its waistcoat-pocket, Alice started to her feet.\n\n"Burning with curiosity," she ran across the field after it, and was just in time to see it pop down a large rabbit-hole under the hedge. In another moment, down went Alice after it, never once considering how she would get out again.\n\nThe rabbit-hole went straight on like a tunnel for some way, and then dipped suddenly down, so suddenly that Alice had not a moment to think about stopping herself before she found herself falling down what seemed to be a very deep well.',vocab:[{word:'curious',d:'wanting to know'},{word:'waistcoat',d:'a vest-like garment'},{word:'hedge',d:'a row of bushes'},{word:'remarkable',d:'unusual'},{word:'tunnel',d:'underground passage'}]},
+{id:2,title:'The Pool of Tears',titleCn:'泪水池',wordCount:140,readMinutes:5,hl:['enormous','desperate','sob','shore'],content:'Down, down, down. Would the fall never come to an end? "I wonder how many miles I have fallen by this time?" Alice said aloud.\n\nDown, down, down. There was nothing else to do, so Alice soon began talking again. "Dinah will miss me very much tonight," she thought. Dinah was her cat.\n\nSplash! She was now in a pool of salty water. It was the pool of tears she had cried. But she was not desperate now. She was swimming happily.\n\nJust then she heard something splashing about in the pool a little way off. She swam nearer to see what it was. At first she thought it must be a walrus or hippopotamus, but then she remembered how small she was, and it was just a mouse.',vocab:[{word:'enormous',d:'extremely large'},{word:'desperate',d:'hopeless'},{word:'sob',d:'cry loudly'},{word:'shore',d:'edge of water'}]},
+{id:3,title:'A Mad Tea Party',titleCn:'疯狂的茶会',wordCount:155,readMinutes:5,hl:['dormouse','riddle','mutter','curious','uncomfortable'],content:'There was a table set out under a tree in front of the house, and the March Hare and the Hatter were having tea at it. A Dormouse was sitting between them, fast asleep.\n\nThe table was a large one, but the three were all crowded together at one corner. "No room! No room!" they cried out when they saw Alice coming. "There is plenty of room!" said Alice, and she sat down in a large arm-chair.\n\n"Have some wine," the March Hare said. "I don\'t see any wine," Alice remarked. "There isn\'t any," said the March Hare.\n\n"Tell me a riddle," said the Mad Hatter. "Why is a raven like a writing-desk?" Alice could not guess the answer.',vocab:[{word:'dormouse',d:'a small sleeping rodent'},{word:'riddle',d:'a puzzling question'},{word:'mutter',d:'speak in low voice'}]},
+{id:4,title:'The Queen of Hearts',titleCn:'红心王后',wordCount:145,readMinutes:5,hl:['procession','frightened','terrified','polite'],content:'A large rose-tree stood near the entrance of the garden, and the roses growing on it were white, but there were three gardeners at it, busily painting them red. "Why are you painting those roses?" Alice asked.\n\nThen the Queen came. "Off with their heads!" she shouted at the top of her voice. Nobody moved. The soldiers were very frightened.\n\n"Who are you?" said the Queen to Alice. Alice was not at all frightened. "My name is Alice, Your Majesty," she said politely.\n\n"Can you play croquet?" shouted the Queen. The game was very strange. The balls were live hedgehogs, and the mallets were live flamingos. Alice found it very difficult to manage her flamingo.',vocab:[{word:'procession',d:'a line of people moving'},{word:'frightened',d:'afraid'},{word:'polite',d:'having good manners'}]},
+{id:5,title:'Alice\'s Evidence',titleCn:'爱丽丝的证词',wordCount:135,readMinutes:5,hl:['witness','accuse','nonsense','jury'],content:'"Here!" cried Alice. She jumped up in such a hurry that she tipped over the jury-box, upsetting all the jury on to the heads of the crowd below.\n\n"Oh, I beg your pardon!" exclaimed Alice. "The trial cannot go on," said the King, "until all the jury are in their places."\n\n"What do you know about this business?" the King asked Alice. "Nothing," said Alice.\n\n"Off with her head!" shouted the Queen. "Nonsense!" said Alice, very loudly and decidedly.\n\n"You are nothing but a pack of cards!" cried Alice. At this, the whole pack rose up into the air and came flying down upon her. She gave a little scream and woke up to find herself on the bank, with her head in the lap of her sister, who was gently brushing away some dead leaves that had fallen on her face.',vocab:[{word:'witness',d:'a person who sees something'},{word:'accuse',d:'to say someone did wrong'},{word:'jury',d:'a group deciding a case'}]}
+]},
+{id:'wizard',title:'The Wonderful Wizard of Oz',titleCn:'绿野仙踪',author:'L. Frank Baum',level:'A2',color:'#00B894',icon:'🧙',chapters:[
+{id:1,title:'The Cyclone',titleCn:'龙卷风',wordCount:155,readMinutes:5,hl:['cyclone','desperate','tornado','prairie'],content:'Dorothy lived in the midst of the great Kansas prairies. Her uncle and aunt were farmers, and their house was a small one. The great prairie stretched on every side.\n\nOne day, the sky turned a deep gray. The wind began to blow. Uncle Henry stood at the door. "There is a cyclone coming," he said. Dorothy was not afraid, for she had never seen a cyclone before.\n\nBut the wind grew stronger. The house shook. Toto, her little dog, jumped from her arms and hid under the bed. Dorothy caught him. Then the house rose slowly into the air.\n\nHours passed. Dorothy felt very strange. The house was spinning in the great cyclone, moving through the sky like a balloon. She crawled to her bed and lay down. Toto lay down beside her.',vocab:[{word:'cyclone',d:'a violent windstorm'},{word:'prairie',d:'a large open grassland'},{word:'desperate',d:'feeling hopeless'}]},
+{id:2,title:'The Land of Oz',titleCn:'奥兹国',wordCount:160,readMinutes:5,hl:['extraordinary','astonished','delighted','wander','sparkling'],content:'The house came down with a great crash. Dorothy was not hurt. When she looked around, she saw the most extraordinary sight.\n\nThe country was beautiful. There were lovely patches of green grass, and trees with rich fruit. Birds sang in the branches. A little way off was a small brook, sparkling in the sunlight.\n\nA group of strange people came toward her. They were not as big as Dorothy. They were very small. The men were dressed in blue, the women in white.\n\n"Welcome to the Land of Oz," said one of the little people. "Thank you for killing the Wicked Witch of the East." Dorothy looked and saw two silver shoes sticking out from under the house. "But I did not kill anyone," said Dorothy, feeling very confused.',vocab:[{word:'extraordinary',d:'very unusual'},{word:'astonished',d:'very surprised'},{word:'wander',d:'walk without direction'},{word:'sparkling',d:'shining brightly'}]},
+{id:3,title:'The Scarecrow',titleCn:'稻草人',wordCount:145,readMinutes:5,hl:['scarecrow','stuffed','sorrow','companion','clever'],content:'Dorothy set off along the road of yellow brick. She came to a large field. In the middle was a scarecrow, placed on a pole to frighten away the crows.\n\nDorothy looked at the scarecrow with interest. Its head was a small sack stuffed with straw, with eyes, nose, and mouth painted on it.\n\n"Good day," said the Scarecrow. "Did you speak?" asked Dorothy in surprise. "Certainly," answered the Scarecrow.\n\nDorothy helped the Scarecrow off the pole. "What do you want more than anything?" she asked. "I want a brain," said the Scarecrow sadly. "I am tired of being a fool." "Come with me to Oz," said Dorothy. "Perhaps he can help you."',vocab:[{word:'scarecrow',d:'a figure to scare birds'},{word:'sorrow',d:'sadness'},{word:'companion',d:'a person you travel with'}]},
+{id:4,title:'The Tin Woodman',titleCn:'铁皮人',wordCount:150,readMinutes:5,hl:['rusty','axe','affection','kindness','bewitch'],content:'As they walked, they heard a groan. Dorothy saw something shining in the grass. It was a man made entirely of tin. He was holding an axe.\n\n"Did you groan?" asked Dorothy. "Yes," answered the Tin Man. "I have been holding this axe for a long time, and I am very stiff and rusty."\n\nDorothy found an oil-can and oiled his joints. Soon the Tin Man could move freely.\n\n"What do you want?" asked the Scarecrow. "I want a heart," said the Tin Woodman. "When I was a man of flesh and blood, I was in love. But my enemy bewitched my axe, and it cut off my arms and legs. A tinsmith replaced them with tin. But he forgot to give me a heart."',vocab:[{word:'rusty',d:'covered with rust'},{word:'affection',d:'feeling of love'},{word:'kindness',d:'quality of being kind'}]},
+{id:5,title:'The Wizard',titleCn:'伟大的奥兹',wordCount:140,readMinutes:5,hl:['wizard','terrified','courage','request','promise'],content:'At last they reached the Emerald City. Everything was green. The people wore green clothes and green shoes.\n\nThey were taken to the great hall where the Wizard sat upon a throne of green marble. But he was surrounded by green fire and smoke. They could not see his face.\n\n"I am Oz, the Great and Terrible," said a voice. "Why do you seek me?"\n\n"I want a brain," said the Scarecrow. "I want a heart," said the Tin Woodman. "I want courage," said the Lion. "I want to go home," said Dorothy.\n\n"You must first destroy the Wicked Witch of the West," said Oz. Dorothy felt afraid, but she said, "I will try."',vocab:[{word:'wizard',d:'a man with magical powers'},{word:'courage',d:'bravery'},{word:'request',d:'something you ask for'},{word:'promise',d:'to say you will do something'}]}
+]},
+{id:'prince',title:'The Little Prince',titleCn:'小王子',author:'Saint-Exupery',level:'B2',color:'#FDCB6E',icon:'✨',chapters:[
+{id:1,title:'The Drawing',titleCn:'画与大人',wordCount:180,readMinutes:6,hl:['magnificent','constrictor','digesting','tiresome','asteroid','pilot'],content:'Once when I was six, I saw a magnificent picture in a book about the forest. It showed a boa constrictor swallowing a wild beast.\n\nI showed my masterpiece to the grown-ups. "Does this drawing frighten you?" But they answered, "Why should anyone be frightened by a hat?" My drawing was not a hat. It was a boa constrictor digesting an elephant.\n\nThe grown-ups never understand anything by themselves, and it is tiresome for children to be always explaining things to them. So I chose another profession. I learned to pilot airplanes.\n\nThat is why, at the age of six, I abandoned the magnificent career as an artist. Grown-ups never understood anything.',vocab:[{word:'magnificent',d:'very beautiful'},{word:'constrictor',d:'a squeezing snake'},{word:'digest',d:'break down food'},{word:'tiresome',d:'boring'}]},
+{id:2,title:'The Desert',titleCn:'沙漠中的相遇',wordCount:175,readMinutes:6,hl:['fragile','solitude','fascinating','isolated','habitation'],content:'I lived my life alone, without anyone that I could really talk to, until I had to make a landing in the Sahara Desert. Something had broken in my engine. I set myself to attempt the difficult repairs all alone. It was a question of life or death. I had scarcely enough drinking water to last a week.\n\nThe first night, I went to sleep on the sand, a thousand miles from any human habitation. I was more isolated than a shipwrecked sailor on a raft in the middle of the ocean.\n\nImagine my surprise, then, when at daybreak I was awakened by an odd little voice. It said: "If you please, draw me a sheep!"\n\nI leaped up as if I had been struck by lightning. I rubbed my eyes. And there, sitting in front of me, was an extraordinary little man who looked at me with great seriousness.',vocab:[{word:'fragile',d:'easily broken'},{word:'solitude',d:'being alone'},{word:'isolated',d:'separated from others'},{word:'habitation',d:'a place to live'}]},
+{id:3,title:'The Rose',titleCn:'玫瑰与虚荣',wordCount:190,readMinutes:7,hl:['vanity','absurd','complicated','innocent','demand','sincere'],content:'One day, a new rose grew on the little prince\'s planet. "Ah!" said the little prince. "You are very beautiful." "Am I not?" the rose responded sweetly.\n\nThe little prince could guess that she was not a very modest flower. But she was so dazzling that he could not help loving her.\n\n"I am thirsty," she said. The little prince watered her, protected her from the wind, and killed the caterpillars. But the rose was vain and demanding. She complained constantly.\n\n"Then I should have judged her by her deeds, not her words," the little prince said to himself. "She perfumed my planet and lit up my life. I should never have run away! I ought to have guessed the sweetness behind her poor little lies."\n\nFlowers are so inconsistent! But I was too young to know how to love her.',vocab:[{word:'vanity',d:'too much pride'},{word:'absurd',d:'unreasonable'},{word:'sincere',d:'genuine'},{word:'inconsistent',d:'not reliable'}]},
+{id:4,title:'The Fox',titleCn:'狐狸与驯养',wordCount:195,readMinutes:7,hl:['tame','essential','invisible','devotion','responsibility','unique'],content:'It was then that the fox appeared. "Good morning," said the fox. "Good morning," the little prince responded.\n\n"Come and play with me," proposed the little prince. "I cannot play with you," the fox said. "I am not tamed."\n\n"What does that mean?" "It means to establish ties. To me, you are still nothing more than a little boy. But if you tame me, then we shall need each other. To me, you will be unique in all the world."\n\nThe little prince tamed the fox. When the hour of departure drew near, the fox said, "I shall cry." "It is your own fault," said the little prince. "I never wished you any sort of harm."\n\n"You become responsible, forever, for what you have tamed," the fox said. And he added: "Go and look again at the roses. You will understand that yours is unique in all the world."',vocab:[{word:'tame',d:'to make friendly'},{word:'essential',d:'absolutely necessary'},{word:'devotion',d:'deep love and loyalty'},{word:'unique',d:'one of a kind'}]},
+{id:5,title:'The Departure',titleCn:'离别',wordCount:160,readMinutes:6,hl:['departure','reveal','precious','wisdom','endure','forever'],content:'The little prince was leaving. His departure was simple. He took advantage of the migration of a flock of wild birds.\n\nOn the morning of his departure, he put his planet in perfect order. He cleaned his active volcanoes.\n\n"What does it mean to die?" asked the little prince. "It means to change into something older. When you look at the sky at night, because I live on one of them, because I laugh on one of them, for you it will be as if all the stars were laughing."\n\nThe little prince smiled. "When you look at the sky at night, I shall be living on one of them, laughing. And so it will be as if all the stars were laughing, when you look at the sky at night. You, only you, will have stars that can laugh."\n\nAnd then he laughed.',vocab:[{word:'departure',d:'the act of leaving'},{word:'wisdom',d:'ability to judge well'},{word:'endure',d:'suffer patiently'},{word:'reveal',d:'to make known'}]}
+]}
+];
+
+// ============ MODE SWITCHER ============
+function switchMode(mode){
+  state.readingMode=mode;save('readingMode');
+  document.getElementById('modeQuick').classList.toggle('active',mode==='quick');
+  document.getElementById('modeImmersive').classList.toggle('active',mode==='immersive');
+  document.getElementById('quickContent').style.display=mode==='quick'?'block':'none';
+  document.getElementById('immersiveContent').classList.toggle('active',mode==='immersive');
+  if(mode==='quick'){document.getElementById('recommendCard').style.display='block';loadDaily();}
+  else{document.getElementById('recommendCard').style.display='none';renderBookshelf();}
+}
+
+// ============ BOOKSHELF ============
+function renderBookshelf(){
+  const grid=document.getElementById('bookGrid');if(!grid)return;
+  grid.innerHTML=BOOKS.map(book=>{
+    const p=state.bookProgress[book.id];const ci=p?p.chapterIdx:0;
+    const pct=Math.round((ci/book.chapters.length)*100);
+    const hasP=p&&ci>0;const done=ci>=book.chapters.length;
+    return '<div class="book-card" onclick="openBook(\''+book.id+'\')"><div class="book-cover"><div class="bc-bg" style="background:linear-gradient(135deg,'+book.color+','+book.color+'dd)"><span class="bc-icon">'+book.icon+'</span><span class="bc-title">'+book.title+'</span><span class="bc-author">'+book.author+'</span><span class="bc-level">'+book.level+'</span><div class="bc-progress"><div class="bc-progress-fill" style="width:'+pct+'%"></div></div></div></div><div class="book-info"><span class="bi-title">'+book.titleCn+'</span><span class="bi-meta">'+book.level+' · '+book.chapters.length+' 章</span><span class="bi-continue" style="display:'+(hasP&&!done?'block':'none')+'">▶ 继续第 '+(ci+1)+' 章</span><span class="bi-continue" style="display:'+(done?'block':'none')+';color:var(--success)">✓ 已读完</span></div></div>';
+  }).join('');
+}
+
+// ============ IMMERSIVE READING ============
+function openBook(bookId){
+  const book=BOOKS.find(b=>b.id===bookId);if(!book)return;
+  state.currentBook=book;
+  const p=state.bookProgress[bookId];const ci=p?Math.min(p.chapterIdx,book.chapters.length-1):0;
+  openChapter(ci);
+}
+function openChapter(ci){
+  const book=state.currentBook;if(!book||ci<0||ci>=book.chapters.length)return;
+  state.currentChapterIdx=ci;state.readingStart=Date.now();state.wordClicks=0;
+  const ch=book.chapters[ci];
+  document.getElementById('immBookTitle').textContent=book.titleCn;
+  document.getElementById('immChTitle').textContent=ch.title;
+  document.getElementById('immChSub').textContent='第 '+(ci+1)+' / '+book.chapters.length+' 章 · '+ch.wordCount+' 词 · 约 '+ch.readMinutes+' 分钟';
+  const hlSet=new Set((ch.hl||[]).map(w=>w.toLowerCase()));
+  const body=document.getElementById('immersiveBody');
+  const chHTML=ch.content.split('\n').filter(p=>p.trim()).map(para=>{
+    const words=para.split(/(\s+)/);
+    return '<p>'+words.map(w=>{const clean=w.replace(/[^a-zA-Z\'-]/g,'').toLowerCase();const cls=hlSet.has(clean)?'wh':'';return '<span class="'+cls+'" onclick="tapWord(this,\''+clean.replace(/'/g,"\\'")+'\')">'+w+'</span>';}).join('')+'</p>';
+  }).join('');
+  const isLast=ci>=book.chapters.length-1;
+  const endCard=isLast?'<div class="chapter-end"><div class="ce-icon">🎉</div><div class="ce-title">恭喜读完整本书！</div><div class="ce-desc">'+book.titleCn+' · '+book.chapters.length+' 章</div><button class="ce-btn" onclick="exitImmersive()">返回首页</button></div>':'<div class="chapter-end"><div class="ce-icon">📖</div><div class="ce-title">本章结束</div><div class="ce-desc">'+ch.titleCn+' · 下一章：'+book.chapters[ci+1].titleCn+'</div><button class="ce-btn" onclick="immNextChapter()">继续下一章 →</button></div>';
+  body.innerHTML=chHTML+endCard;
+  body.style.fontSize=state.fontSize+'px';body.style.lineHeight='2';
+  body.parentElement.classList.toggle('eye-care',state.eyeCare);
+  const pct=Math.round(((ci+1)/book.chapters.length)*100);
+  document.getElementById('immProgressText').textContent='第 '+(ci+1)+' / '+book.chapters.length+' 章 · '+pct+'%';
+  document.getElementById('immProgressFill').style.width=pct+'%';
+  document.getElementById('immPrevBtn').style.display=ci>0?'block':'none';
+  if(!state.bookProgress[book.id])state.bookProgress[book.id]={chapterIdx:0};
+  state.bookProgress[book.id].chapterIdx=ci;save('bookProgress');
+  navigateTo('immersive');
+}
+function updateStreak(){
+  const today=new Date().toISOString().split('T')[0];
+  if(state.stats.lastReadDate){
+    const diff=Math.floor((new Date(today)-new Date(state.stats.lastReadDate))/86400000);
+    state.stats.currentStreak=diff===1?state.stats.currentStreak+1:diff===0?state.stats.currentStreak:1;
+  }else{state.stats.currentStreak=1;}
+  state.stats.lastReadDate=today;
+}
+function immCompleteChapter(){
+  const book=state.currentBook;if(!book)return;
+  const mins=Math.max(1,Math.round((Date.now()-state.readingStart)/60000));
+  state.stats.totalMinutes+=mins;state.stats.totalArticles++;updateStreak();
+  const ch=book.chapters[state.currentChapterIdx];
+  state.readingHistory.unshift({id:book.id+'_ch'+ch.id,title:ch.title+' ('+book.titleCn+')',titleCn:ch.titleCn+' - '+book.titleCn,level:book.level,tags:['novel','book'],wordCount:ch.wordCount,readTime:Date.now()});
+  if(state.readingHistory.length>100)state.readingHistory.length=100;
+  saveAll();toast('🎉 第 '+(state.currentChapterIdx+1)+' 章完成！');
+  if(state.currentChapterIdx<book.chapters.length-1)setTimeout(()=>immNextChapter(),800);
+  else setTimeout(()=>exitImmersive(),800);
+}
+function immNextChapter(){openChapter(state.currentChapterIdx+1);}
+function immPrevChapter(){openChapter(state.currentChapterIdx-1);}
+function exitImmersive(){navigateBack();if(state.readingMode==='immersive')renderBookshelf();}
+
+// ============ TOC ============
+function showImmersiveToc(){
+  const book=state.currentBook;if(!book)return;
+  document.getElementById('tocTitle').textContent=book.titleCn+' · 目录';
+  document.getElementById('tocList').innerHTML=book.chapters.map((ch,i)=>{
+    const cur=i===state.currentChapterIdx;const read=i<state.currentChapterIdx;
+    return '<div class="toc-item '+(cur?'toc-current':'')+' '+(read?'toc-read':'')+'" onclick="closeToc();openChapter('+i+')"><div class="toc-num">'+(read?'✓':(i+1))+'</div><div class="toc-info"><div class="toc-ch-title">'+ch.title+'</div><div class="toc-ch-meta">'+ch.titleCn+' · '+ch.wordCount+' 词 · '+ch.readMinutes+' 分钟</div></div></div>';
+  }).join('');
+  document.getElementById('tocOverlay').classList.add('show');
+}
+function closeToc(e){if(e&&e.target!==document.getElementById('tocOverlay'))return;document.getElementById('tocOverlay').classList.remove('show');}
 
 // ============ INIT ============
 loadState(); renderIndex();
