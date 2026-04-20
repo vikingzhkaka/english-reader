@@ -743,8 +743,13 @@
     </div>
     <!-- WebDAV Panel -->
     <div id="syncWebdavPanel" style="display:none">
-      <div style="font-size:12px;color:var(--text3);margin-bottom:8px">通过坚果云 WebDAV 同步数据</div>
-      <input id="webdavServer" placeholder="服务器地址" value="https://dav.jianguoyun.com/dav/">
+      <div style="font-size:12px;color:var(--text3);margin-bottom:8px">通过坚果云 WebDAV 同步数据（需配置 CORS 代理）</div>
+      <div style="font-size:11px;color:var(--warning);background:rgba(237,123,47,0.08);padding:8px;border-radius:6px;margin-bottom:10px;line-height:1.5">
+        ⚠️ 坚果云不支持浏览器跨域请求，需先部署 CORS 代理<br>
+        <a href="javascript:void(0)" onclick="showCorsHelp()" style="color:var(--primary);text-decoration:underline">查看代理部署教程（免费，2分钟）</a>
+      </div>
+      <input id="corsProxy" placeholder="CORS 代理地址（必填）" style="margin-top:8px">
+      <input id="webdavServer" placeholder="服务器地址" value="https://dav.jianguoyun.com/dav/" style="margin-top:8px">
       <input id="webdavUser" placeholder="坚果云账号（邮箱）" style="margin-top:8px">
       <input id="webdavPass" type="password" placeholder="应用密码（非登录密码）" style="margin-top:8px" onkeydown="if(event.key==='Enter')doWebdavSync()">
       <div style="font-size:11px;color:var(--text3);text-align:left;margin:4px 0 10px;line-height:1.5">
@@ -1406,6 +1411,7 @@ function showSyncSettings() {
   document.getElementById('gistToken').value = localStorage.getItem('er_gistToken') || '';
   document.getElementById('gistResult').style.display = 'none';
   document.getElementById('webdavResult').style.display = 'none';
+  document.getElementById('corsProxy').value = localStorage.getItem('er_corsProxy') || '';
   document.getElementById('webdavServer').value = localStorage.getItem('er_webdavServer') || 'https://dav.jianguoyun.com/dav/';
   document.getElementById('webdavUser').value = localStorage.getItem('er_webdavUser') || '';
   document.getElementById('webdavPass').value = '';
@@ -1413,6 +1419,29 @@ function showSyncSettings() {
   updateSyncStatus();
 }
 function hideSyncSettings() { document.getElementById('syncOverlay').style.display = 'none'; }
+function showCorsHelp() {
+  var html = '<div style="text-align:left;font-size:13px;line-height:1.7">';
+  html += '<b>为什么需要 CORS 代理？</b><br>坚果云 WebDAV 不允许浏览器跨域访问，需要通过中间代理转发请求。<br><br>';
+  html += '<b>部署步骤（Cloudflare Workers，免费）：</b><br>';
+  html += '1. 注册 <a href="https://dash.cloudflare.com/sign-up" target="_blank" style="color:var(--primary)">Cloudflare</a> 账号<br>';
+  html += '2. 进入 Workers & Pages → 创建 Worker<br>';
+  html += '3. 将以下代码粘贴到编辑器中：<br>';
+  html += '<textarea readonly style="width:100%;height:120px;font-size:11px;margin:6px 0;border-radius:6px;border:1px solid var(--border);padding:6px;background:#f8f8f8;font-family:monospace">export default {\n  async fetch(request) {\n    const url = new URL(request.url);\n    const target = url.searchParams.get("url");\n    if (!target) return new Response("Missing url", { status: 400 });\n    const method = request.headers.get("X-Method") || "GET";\n    const auth = request.headers.get("X-Authorization") || "";\n    const headers = {};\n    if (auth) headers["Authorization"] = auth;\n    let body = undefined;\n    if (method !== "GET" && method !== "HEAD") {\n      try {\n        const j = await request.json();\n        if (j.body) body = j.body;\n        if (j.contentType) headers["Content-Type"] = j.contentType;\n      } catch(e) {}\n    }\n    const resp = await fetch(target, { method, headers, body });\n    const respBody = await resp.text();\n    return new Response(JSON.stringify({\n      status: resp.status, body: respBody\n    }), {\n      status: 200,\n      headers: {\n        "Content-Type": "application/json",\n        "Access-Control-Allow-Origin": "*"\n      }\n    });\n  }\n};</textarea>';
+  html += '4. 部署后，复制 Worker 地址（如 https://xxx.workers.dev）<br>';
+  html += '5. 粘贴到上方的"CORS 代理地址"输入框中<br><br>';
+  html += '<b>注意：</b>代理会处理你的账号密码，请自行部署以确保安全。';
+  html += '</div>';
+  var overlay = document.createElement('div');
+  overlay.className = 'user-input-overlay';
+  overlay.style.cssText = 'display:flex;z-index:999';
+  overlay.innerHTML = '<div class="user-input-dialog" style="width:360px;max-height:80vh;overflow-y:auto">'
+    + '<div style="font-size:15px;font-weight:600;margin-bottom:10px">CORS 代理部署教程</div>'
+    + html
+    + '<div class="dialog-btns" style="margin-top:12px"><button class="btn-cancel" onclick="this.closest(\'.user-input-overlay\').remove()" style="flex:1">关闭</button></div>'
+    + '</div>';
+  overlay.addEventListener('click', function(e) { if (e.target === overlay) overlay.remove(); });
+  document.body.appendChild(overlay);
+}
 function switchSyncTab(tab) {
   currentSyncTab = tab;
   var gistTab = document.getElementById('syncTabGist');
@@ -1521,12 +1550,37 @@ function uploadToGist(gist, headers) {
 }
 
 // ============ WEBDAV SYNC (Jianguoyun) ============
+// 坚果云 WebDAV 不支持浏览器 CORS，需要通过 Cloudflare Worker 代理中转
+// 代理将请求转发到目标 URL 并附加正确的 Authorization 和 Method 头
+function getCorsProxy() { return (localStorage.getItem('er_corsProxy') || '').replace(/\/+$/, ''); }
+function webdavXhr(method, url, auth, bodyStr) {
+  return new Promise(function(resolve, reject) {
+    var proxy = getCorsProxy();
+    var req = new XMLHttpRequest();
+    req.open('POST', proxy + '/?url=' + encodeURIComponent(url), true);
+    req.setRequestHeader('Content-Type', 'application/json');
+    req.setRequestHeader('X-Method', method);
+    req.setRequestHeader('X-Authorization', auth || '');
+    req.onload = function() {
+      try {
+        var j = JSON.parse(req.responseText);
+        if (j.error) reject(new Error(j.error));
+        else resolve({ status: j.status, body: j.body });
+      } catch(e) { reject(new Error('代理响应解析失败')); }
+    };
+    req.onerror = function() { reject(new Error('网络错误，请检查代理地址是否正确')); };
+    req.send(bodyStr ? JSON.stringify({ body: bodyStr }) : '');
+  });
+}
 function doWebdavSync(forceUpload) {
+  var proxy = document.getElementById('corsProxy').value.trim();
   var server = document.getElementById('webdavServer').value.trim();
   var user = document.getElementById('webdavUser').value.trim();
   var pass = document.getElementById('webdavPass').value.trim();
+  if (!proxy) { showSyncResult('webdavResult','请先填写 CORS 代理地址（点击上方教程部署）',false); return; }
   if (!server || !user) { toast('请填写服务器地址和账号'); return; }
   if (!pass && !localStorage.getItem('er_webdavPass')) { toast('请填写应用密码'); return; }
+  localStorage.setItem('er_corsProxy', proxy);
   localStorage.setItem('er_webdavServer', server);
   localStorage.setItem('er_webdavUser', user);
   if (pass) localStorage.setItem('er_webdavPass', pass);
@@ -1534,33 +1588,26 @@ function doWebdavSync(forceUpload) {
   btn.textContent = '同步中...'; btn.disabled = true;
   var url = server.replace(/\/+$/, '') + WEBDAV_FILENAME;
   var auth = 'Basic ' + btoa(user + ':' + (pass || localStorage.getItem('er_webdavPass')));
-  // Step 1: try GET
-  fetch(url, { method: 'GET', headers: { 'Authorization': auth } })
+  webdavXhr('GET', url, auth)
   .then(function(r) {
-    if (r.status === 404) {
-      if (forceUpload) { return {action:'upload'}; }
+    if (r.status === 404 || !r.body) {
       return webdavUpload(url, auth).then(function() { return {msg:'云端无数据，已上传本地数据',ok:true}; });
     }
-    if (!r.ok) throw new Error('下载失败 ('+r.status+')');
-    return r.json().then(function(remote) {
-      if (forceUpload) return webdavUpload(url, auth).then(function() { return {msg:'已强制上传',ok:true}; });
-      if (remote._time && remote._time > (state._lastSync||0)) {
-        applyRemoteData(remote);
-        return {msg:'已同步云端数据 ('+new Date(remote._time).toLocaleString()+')',ok:true};
-      } else {
-        return webdavUpload(url, auth).then(function() { return {msg:'本地更新，已上传',ok:true}; });
-      }
-    });
+    var remote = JSON.parse(r.body);
+    if (forceUpload) return webdavUpload(url, auth).then(function() { return {msg:'已强制上传',ok:true}; });
+    if (remote._time && remote._time > (state._lastSync||0)) {
+      applyRemoteData(remote);
+      return {msg:'已同步云端数据 ('+new Date(remote._time).toLocaleString()+')',ok:true};
+    } else {
+      return webdavUpload(url, auth).then(function() { return {msg:'本地更新，已上传',ok:true}; });
+    }
   })
   .then(function(r) { if(r) showSyncResult('webdavResult',r.msg,r.ok); btn.textContent='同步'; btn.disabled=false; updateSyncStatus(); })
   .catch(function(e) { showSyncResult('webdavResult','失败: '+e.message,false); btn.textContent='同步'; btn.disabled=false; });
 }
 function webdavUpload(url, auth) {
   var data = collectAllData();
-  return fetch(url, {
-    method: 'PUT', headers: { 'Authorization': auth, 'Content-Type': 'application/json' },
-    body: JSON.stringify(data)
-  }).then(function(r) {
+  return webdavXhr('PUT', url, auth, JSON.stringify(data)).then(function(r) {
     if (r.status === 204 || r.status === 200 || r.status === 201) { state._lastSync=Date.now(); save('_lastSync'); }
     else throw new Error('上传失败 ('+r.status+')');
   });
