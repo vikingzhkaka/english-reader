@@ -1502,51 +1502,136 @@ function doGistSync() {
   localStorage.setItem('er_gistToken', token);
   var headers = getGistHeaders();
   if (!headers) return;
-  var gistId = localStorage.getItem('er_gistId_' + currentUser) || '';
   var btn = document.getElementById('gistSyncBtn');
   btn.textContent = '同步中...'; btn.disabled = true;
+  // Step 1: 获取或查找 Gist
+  var gistId = localStorage.getItem('er_gistId_' + currentUser) || '';
   if (gistId) {
     fetch('https://api.github.com/gists/' + gistId, {headers: headers})
     .then(function(r) {
-      if (r.status === 404) { localStorage.removeItem('er_gistId_' + currentUser); return createGist(headers); }
+      if (r.status === 404) { localStorage.removeItem('er_gistId_' + currentUser); return findExistingGist(headers); }
       if (!r.ok) throw new Error('获取失败: ' + r.status);
       return r.json();
     })
-    .then(function(gist) {
-      if (!gist) return;
-      var rf = gist.files[GIST_FILENAME];
-      if (rf) { var remote = JSON.parse(rf.content); if (remote._time && remote._time > (state._lastSync||0)) return {a:'dl',g:gist,r:remote}; }
-      return {a:'ul',g:gist};
-    })
-    .then(function(ctx) {
-      if (!ctx) return;
-      if (ctx.a === 'dl') { applyRemoteData(ctx.r); return {m:'已同步云端数据 ('+new Date(ctx.r._time).toLocaleString()+')',ok:true}; }
-      else { return uploadToGist(ctx.g, headers); }
-    })
-    .then(function(r) { if(r) showSyncResult('gistResult',r.m||(r.ok?'同步成功':'同步失败'),r.ok); btn.textContent='同步'; btn.disabled=false; updateSyncStatus(); })
+    .then(function(gist) { handleGistCompare(gist, headers, btn); })
     .catch(function(e) { showSyncResult('gistResult','失败: '+e.message,false); btn.textContent='同步'; btn.disabled=false; });
-  } else { createGist(headers); }
+  } else {
+    // 首次同步：先搜索是否已有该用户的 Gist
+    findExistingGist(headers)
+    .then(function(gist) { handleGistCompare(gist, headers, btn); })
+    .catch(function(e) { showSyncResult('gistResult','失败: '+e.message,false); btn.textContent='同步'; btn.disabled=false; });
+  }
 }
-function createGist(headers) {
-  var data = collectAllData();
-  var f = {}; f[GIST_FILENAME] = { content: JSON.stringify(data) };
-  var btn = document.getElementById('gistSyncBtn');
-  return fetch('https://api.github.com/gists', { method:'POST', headers:headers, body: JSON.stringify({description:'English Reader Sync',public:false,files:f}) })
-  .then(function(r) { if(!r.ok) throw new Error('创建失败: '+r.status); return r.json(); })
-  .then(function(gist) {
-    localStorage.setItem('er_gistId_'+currentUser, gist.id);
-    state._lastSync = Date.now(); save('_lastSync');
-    showSyncResult('gistResult','已创建同步，数据已上传',true);
-    updateSyncStatus(); btn.textContent='同步'; btn.disabled=false;
-    return {m:'数据已上传',ok:true};
-  })
-  .catch(function(e) { showSyncResult('gistResult','失败: '+e.message,false); btn.textContent='同步'; btn.disabled=false; });
+function findExistingGist(headers) {
+  // 搜索用户的 Gist 列表，找到描述匹配的
+  var page = 1;
+  function searchPage() {
+    return fetch('https://api.github.com/gists?per_page=100&page=' + page, {headers: headers})
+    .then(function(r) {
+      if (!r.ok) throw new Error('搜索 Gist 失败: ' + r.status);
+      return r.json().then(function(list) {
+        if (!list.length) return null;
+        for (var i = 0; i < list.length; i++) {
+          if (list[i].description === 'ER-Sync-' + currentUser && list[i].files && list[i].files[GIST_FILENAME]) {
+            return list[i];
+          }
+        }
+        // 如果还有更多页继续搜索（通常不会超过1页）
+        if (list.length === 100) { page++; return searchPage(); }
+        return null;
+      });
+    });
+  }
+  return searchPage();
 }
-function uploadToGist(gist, headers) {
-  var data = collectAllData();
+function handleGistCompare(gist, headers, btn) {
+  var localTime = state._lastSync || 0;
+  var remoteData = null;
+  var remoteTime = 0;
+  if (gist && gist.files && gist.files[GIST_FILENAME]) {
+    try { remoteData = JSON.parse(gist.files[GIST_FILENAME].content); remoteTime = remoteData._time || 0; } catch(e) {}
+  }
+  var localData = collectAllData();
+  var localDataTime = localData._time || Date.now();
+  if (!gist || !remoteData) {
+    // 云端无数据 → 直接上传
+    createOrUploadGist(gist, headers, localData, btn)
+    .then(function(msg) { showSyncResult('gistResult', msg, true); btn.textContent='同步'; btn.disabled=false; updateSyncStatus(); })
+    .catch(function(e) { showSyncResult('gistResult','失败: '+e.message,false); btn.textContent='同步'; btn.disabled=false; });
+  } else if (remoteTime > localTime && localDataTime > localTime) {
+    // 双方都有新改动 → 让用户选择
+    var remoteStr = new Date(remoteTime).toLocaleString();
+    var localStr = new Date(localDataTime).toLocaleString();
+    showSyncConfirm(
+      '检测到冲突：云端和本地都有新数据\n\n' +
+      '☁️ 云端更新时间：' + remoteStr + '\n' +
+      '📱 本地更新时间：' + localStr + '\n\n' +
+      '请选择操作：',
+      '覆盖本地（用云端数据）',
+      '覆盖云端（用本地数据）',
+      function() {
+        applyRemoteData(remoteData);
+        localStorage.setItem('er_gistId_'+currentUser, gist.id);
+        showSyncResult('gistResult','已用云端数据覆盖本地 ('+remoteStr+')',true);
+        btn.textContent='同步'; btn.disabled=false; updateSyncStatus();
+      },
+      function() {
+        createOrUploadGist(gist, headers, localData, btn)
+        .then(function(msg) { showSyncResult('gistResult', msg, true); btn.textContent='同步'; btn.disabled=false; updateSyncStatus(); })
+        .catch(function(e) { showSyncResult('gistResult','失败: '+e.message,false); btn.textContent='同步'; btn.disabled=false; });
+      }
+    );
+  } else if (remoteTime > localTime) {
+    // 云端更新 → 下载覆盖本地
+    showSyncConfirm(
+      '☁️ 云端有更新数据（' + new Date(remoteTime).toLocaleString() + '）\n是否用云端数据覆盖本地？',
+      '下载并覆盖',
+      '取消',
+      function() {
+        applyRemoteData(remoteData);
+        localStorage.setItem('er_gistId_'+currentUser, gist.id);
+        showSyncResult('gistResult','已同步云端数据 ('+new Date(remoteTime).toLocaleString()+')',true);
+        btn.textContent='同步'; btn.disabled=false; updateSyncStatus();
+      },
+      function() { btn.textContent='同步'; btn.disabled=false; }
+    );
+  } else if (localDataTime > localTime) {
+    // 本地更新 → 上传覆盖云端
+    createOrUploadGist(gist, headers, localData, btn)
+    .then(function(msg) { showSyncResult('gistResult', msg, true); btn.textContent='同步'; btn.disabled=false; updateSyncStatus(); })
+    .catch(function(e) { showSyncResult('gistResult','失败: '+e.message,false); btn.textContent='同步'; btn.disabled=false; });
+  } else {
+    showSyncResult('gistResult','数据已是最新，无需同步',true);
+    btn.textContent='同步'; btn.disabled=false; updateSyncStatus();
+  }
+}
+function showSyncConfirm(message, confirmText, cancelText, onConfirm, onCancel) {
+  var overlay = document.createElement('div');
+  overlay.className = 'user-input-overlay';
+  overlay.style.cssText = 'display:flex;z-index:999';
+  overlay.innerHTML = '<div class="user-input-dialog" style="width:300px">'
+    + '<div style="font-size:14px;line-height:1.7;white-space:pre-line;text-align:left;padding:8px 0">'+message+'</div>'
+    + '<div style="display:flex;gap:8px;margin-top:8px">'
+    + '<button class="btn-confirm" style="flex:1;padding:10px;border:none;border-radius:8px;font-size:14px;cursor:pointer;background:var(--primary);color:#fff" id="syncConfirmOk">'+confirmText+'</button>'
+    + '<button style="flex:1;padding:10px;border:1px solid var(--border);border-radius:8px;font-size:14px;cursor:pointer;background:#fff" id="syncConfirmNo">'+cancelText+'</button>'
+    + '</div></div>';
+  overlay.addEventListener('click', function(e) { if (e.target === overlay) { overlay.remove(); if(onCancel) onCancel(); } });
+  document.body.appendChild(overlay);
+  overlay.querySelector('#syncConfirmOk').addEventListener('click', function() { overlay.remove(); onConfirm(); });
+  overlay.querySelector('#syncConfirmNo').addEventListener('click', function() { overlay.remove(); if(onCancel) onCancel(); });
+}
+function createOrUploadGist(gist, headers, data, btn) {
   var f = {}; f[GIST_FILENAME] = { content: JSON.stringify(data) };
-  return fetch('https://api.github.com/gists/'+gist.id, { method:'PATCH', headers:headers, body: JSON.stringify({files:f}) })
-  .then(function(r) { if(!r.ok) throw new Error('上传失败: '+r.status); state._lastSync=Date.now(); save('_lastSync'); return {m:'数据已上传到云端',ok:true}; });
+  if (gist) {
+    // 已有 Gist → 更新
+    return fetch('https://api.github.com/gists/' + gist.id, { method:'PATCH', headers:headers, body: JSON.stringify({files:f}) })
+    .then(function(r) { if(!r.ok) throw new Error('上传失败: '+r.status); state._lastSync=Date.now(); save('_lastSync'); return '本地数据已上传到云端'; });
+  } else {
+    // 无 Gist → 创建
+    return fetch('https://api.github.com/gists', { method:'POST', headers:headers, body: JSON.stringify({description:'ER-Sync-'+currentUser, public:false, files:f}) })
+    .then(function(r) { if(!r.ok) throw new Error('创建失败: '+r.status); return r.json(); })
+    .then(function(g) { localStorage.setItem('er_gistId_'+currentUser, g.id); state._lastSync=Date.now(); save('_lastSync'); return '已创建云端同步，数据已上传'; });
+  }
 }
 
 // ============ WEBDAV SYNC (Jianguoyun) ============
@@ -1595,12 +1680,46 @@ function doWebdavSync(forceUpload) {
     }
     var remote = JSON.parse(r.body);
     if (forceUpload) return webdavUpload(url, auth).then(function() { return {msg:'已强制上传',ok:true}; });
-    if (remote._time && remote._time > (state._lastSync||0)) {
-      applyRemoteData(remote);
-      return {msg:'已同步云端数据 ('+new Date(remote._time).toLocaleString()+')',ok:true};
-    } else {
-      return webdavUpload(url, auth).then(function() { return {msg:'本地更新，已上传',ok:true}; });
+    var remoteTime = remote._time || 0;
+    var localTime = state._lastSync || 0;
+    var localDataTime = (collectAllData())._time || Date.now();
+    if (remoteTime > localTime && localDataTime > localTime) {
+      // 双方都有改动 → 确认弹窗
+      btn.textContent='同步'; btn.disabled=false;
+      return new Promise(function(resolve) {
+        showSyncConfirm(
+          '检测到冲突：云端和本地都有新数据\n\n' +
+          '☁️ 云端更新时间：' + new Date(remoteTime).toLocaleString() + '\n' +
+          '📱 本地更新时间：' + new Date(localDataTime).toLocaleString() + '\n\n' +
+          '请选择操作：',
+          '覆盖本地（用云端数据）',
+          '覆盖云端（用本地数据）',
+          function() {
+            applyRemoteData(remote);
+            resolve({msg:'已用云端数据覆盖本地',ok:true});
+          },
+          function() {
+            btn.textContent='同步中...'; btn.disabled=true;
+            webdavUpload(url, auth).then(function() { resolve({msg:'本地数据已上传到云端',ok:true}); });
+          }
+        );
+      });
     }
+    if (remoteTime > localTime) {
+      // 云端更新 → 确认后下载
+      btn.textContent='同步'; btn.disabled=false;
+      return new Promise(function(resolve) {
+        showSyncConfirm(
+          '☁️ 云端有更新数据（' + new Date(remoteTime).toLocaleString() + '）\n是否用云端数据覆盖本地？',
+          '下载并覆盖',
+          '取消',
+          function() { applyRemoteData(remote); resolve({msg:'已同步云端数据',ok:true}); },
+          function() { resolve(null); }
+        );
+      });
+    }
+    // 本地更新或同步 → 上传
+    return webdavUpload(url, auth).then(function() { return {msg:'本地更新，已上传',ok:true}; });
   })
   .then(function(r) { if(r) showSyncResult('webdavResult',r.msg,r.ok); btn.textContent='同步'; btn.disabled=false; updateSyncStatus(); })
   .catch(function(e) { showSyncResult('webdavResult','失败: '+e.message,false); btn.textContent='同步'; btn.disabled=false; });
