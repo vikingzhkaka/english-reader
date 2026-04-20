@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>轻松英语阅读 - Graded Reader</title>
+  <title> - Graded Reader</title>
   <style>
     :root {
       --primary: #4A90D9;
@@ -125,20 +125,41 @@
     .stat-lbl { font-size: 12px; color: var(--text3); }
     /* ===== Reading Page ===== */
     .reading-page { background: #fff; min-height: 100vh; }
-    body.eye-care { background: #F5EDD8 !important; }
-    body.eye-care .reading-page { background: #F5EDD8 !important; }
-    body.eye-care .reading-topbar { background: #C9B97A !important; }
-    body.eye-care .immersive-page { background: #F5EDD8 !important; }
-    body.eye-care .imm-topbar { background: #C9B97A !important; }
-    body.eye-care .test-intro, body.eye-care .test-area, body.eye-care .result-page { background: #F5EDD8 !important; }
-    body.eye-care .settings-content, body.eye-care .settings-panel { background: #F5EDD8 !important; }
-    body.eye-care .navbar { background: #C9B97A !important; }
-    body.eye-care .settings-content { background: #FAF3E0 !important; color: #4A3728 !important; }
-    body.eye-care .settings-content > div { color: #4A3728 !important; }
-    body.eye-care .setting-row label { color: #4A3728 !important; }
-    body.eye-care .setting-row { border-bottom-color: #D8C9A8 !important; }
-    body.eye-care .font-btn { color: #6B4226 !important; font-weight: bold !important; }
-    body.eye-care { color: #4A3728 !important; }
+    /* ===== User Management ===== */
+    .user-switch-bar { display: flex; align-items: center; padding: 8px 16px; background: #fff; border-bottom: 1px solid var(--border); gap: 8px; overflow-x: auto; }
+    .user-avatar-sm { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600; cursor: pointer; flex-shrink: 0; border: 2px solid transparent; transition: border-color 0.2s; }
+    .user-avatar-sm.active { border-color: var(--primary); }
+    .user-add-btn { width: 32px; height: 32px; border-radius: 50%; border: 2px dashed var(--text3); display: flex; align-items: center; justify-content: center; font-size: 18px; cursor: pointer; flex-shrink: 0; color: var(--text3); }
+    .user-input-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 200; }
+    .user-input-dialog { background: #fff; border-radius: 16px; padding: 24px; width: 280px; text-align: center; }
+    .user-input-dialog input { width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: 8px; font-size: 16px; margin: 12px 0; text-align: center; outline: none; }
+    .user-input-dialog input:focus { border-color: var(--primary); }
+    .user-input-dialog .dialog-btns { display: flex; gap: 12px; justify-content: center; margin-top: 16px; }
+    .user-input-dialog .dialog-btns button { padding: 8px 24px; border-radius: 8px; border: none; font-size: 14px; cursor: pointer; }
+    .user-input-dialog .btn-cancel { background: #f0f0f0; color: var(--text2); }
+    .user-input-dialog .btn-confirm { background: var(--primary); color: #fff; }
+    /* ===== Book Upload ===== */
+    .upload-section { padding: 16px; }
+    .upload-area { border: 2px dashed var(--border); border-radius: 12px; padding: 24px; text-align: center; cursor: pointer; transition: border-color 0.2s; background: #FAFAFA; }
+    .upload-area:hover { border-color: var(--primary); background: #F0F7FF; }
+    .upload-area .upload-icon { font-size: 36px; margin-bottom: 8px; }
+    .upload-area .upload-text { font-size: 14px; color: var(--text2); }
+    .upload-area .upload-hint { font-size: 12px; color: var(--text3); margin-top: 4px; }
+    .upload-input { display: none; }
+    .uploaded-book-item { display: flex; align-items: center; padding: 12px 16px; background: #fff; border-bottom: 1px solid var(--border); cursor: pointer; }
+    .uploaded-book-item:hover { background: #FAFAFA; }
+    .uploaded-book-item .ub-info { flex: 1; margin-left: 12px; }
+    .uploaded-book-item .ub-title { font-size: 14px; font-weight: 500; }
+    .uploaded-book-item .ub-meta { font-size: 12px; color: var(--text3); margin-top: 2px; }
+    .uploaded-book-item .ub-delete { font-size: 18px; color: var(--text3); padding: 4px 8px; }
+    .parse-dialog { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 200; }
+    .parse-dialog-inner { background: #fff; border-radius: 16px; padding: 24px; width: 300px; }
+    .parse-dialog-inner input, .parse-dialog-inner select { width: 100%; padding: 8px 12px; border: 1px solid var(--border); border-radius: 8px; font-size: 14px; margin: 6px 0; outline: none; }
+    .parse-dialog-inner label { font-size: 13px; color: var(--text2); display: block; margin-top: 8px; }
+    .parse-dialog-inner .dialog-btns { display: flex; gap: 12px; margin-top: 16px; }
+    .parse-dialog-inner .dialog-btns button { flex: 1; padding: 10px; border-radius: 8px; border: none; font-size: 14px; cursor: pointer; }
+    .parse-dialog-inner .btn-cancel { background: #f0f0f0; color: var(--text2); }
+    .parse-dialog-inner .btn-confirm { background: var(--primary); color: #fff; }
     .reading-topbar {
       display: flex; justify-content: space-between; align-items: center; padding: 10px 16px;
       background: var(--primary); color: #fff;
@@ -436,35 +457,35 @@
   <div class="streak" id="streak" style="display:none"></div>
 
   <div class="level-tip" id="levelTip">
-    <div class="tip-icon">🎯</div>
+    <div class="tip-icon">�</div>
     <div class="tip-content">
-      <div class="tip-title">开始你的英语阅读之旅</div>
-      <div class="tip-desc">只需阅读3篇短文，系统自动判断你的英语水平</div>
+      <div class="tip-title"></div>
+      <div class="tip-desc">3�</div>
     </div>
-    <button class="tip-btn" onclick="navigateTo('level-test')">开始定级</button>
+    <button class="tip-btn" onclick="navigateTo('level-test')"></button>
   </div>
 
   <div class="card" id="interestCard" style="display:none">
-    <div class="section-title">选择你感兴趣的领域</div>
-    <div style="font-size:12px;color:var(--text3);margin-bottom:10px">帮助我们推荐更合适的内容</div>
+    <div class="section-title"></div>
+    <div style="font-size:12px;color:var(--text3);margin-bottom:10px"></div>
     <div class="interest-list" id="interestList"></div>
-    <button class="confirm-btn" onclick="confirmInterests()">确认选择</button>
+    <button class="confirm-btn" onclick="confirmInterests()"></button>
   </div>
 
   <!-- Mode Switcher -->
   <div class="mode-switcher" id="modeSwitcher" style="display:none">
     <div class="mode-btn active" id="modeQuick" onclick="switchMode('quick')">
-      <span class="mode-icon">📰</span><span class="mode-label">碎片化阅读</span>
+      <span class="mode-icon">�</span><span class="mode-label"></span>
     </div>
     <div class="mode-btn" id="modeImmersive" onclick="switchMode('immersive')">
-      <span class="mode-icon">📚</span><span class="mode-label">沉浸式阅读</span>
+      <span class="mode-icon">�</span><span class="mode-label"></span>
     </div>
   </div>
   <div id="quickContent">
   <div class="card" id="recommendCard" style="display:none">
     <div class="section-header">
-      <div class="section-title">今日推荐</div>
-      <div class="section-more" onclick="loadDaily()">换一批 ↻</div>
+      <div class="section-title"></div>
+      <div class="section-more" onclick="loadDaily()"> </div>
     </div>
     <div id="dailyList"></div>
   </div>
@@ -473,17 +494,17 @@
   <!-- Immersive Content -->
   <div class="bookshelf" id="immersiveContent">
     <div class="card">
-      <div class="section-title">📖 选择一本书开始沉浸式阅读</div>
-      <div style="font-size:12px;color:var(--text3);margin-bottom:14px">整本书分章节连续阅读，自动保存进度</div>
+      <div class="section-title">� </div>
+      <div style="font-size:12px;color:var(--text3);margin-bottom:14px">�</div>
       <div class="book-grid" id="bookGrid"></div>
     </div>
   </div>
   <div class="card" id="statsCard" style="display:none">
-    <div class="section-title">我的阅读</div>
+    <div class="section-title"></div>
     <div class="stats-grid">
-      <div class="stat-item"><span class="stat-val" id="statArticles">0</span><span class="stat-lbl">篇</span></div>
-      <div class="stat-item"><span class="stat-val" id="statMinutes">0</span><span class="stat-lbl">分钟</span></div>
-      <div class="stat-item"><span class="stat-val" id="statWords">0</span><span class="stat-lbl">生词</span></div>
+      <div class="stat-item"><span class="stat-val" id="statArticles">0</span><span class="stat-lbl"></span></div>
+      <div class="stat-item"><span class="stat-val" id="statMinutes">0</span><span class="stat-lbl"></span></div>
+      <div class="stat-item"><span class="stat-val" id="statWords">0</span><span class="stat-lbl"></span></div>
     </div>
   </div>
 </div>
@@ -496,8 +517,8 @@
       <span style="font-size:12px" id="readWordCount"></span>
     </div>
     <div class="rt-right">
-      <span class="icon-btn" id="favBtn" onclick="toggleFav()">🤍</span>
-      <span class="icon-btn" onclick="showSettings()">⚙️</span>
+      <span class="icon-btn" id="favBtn" onclick="toggleFav()">�</span>
+      <span class="icon-btn" onclick="showSettings()">�</span>
     </div>
   </div>
   <div class="reading-meta">
@@ -510,8 +531,8 @@
   <div class="reading-fbar">
     <span class="progress" id="readProgress">0%</span>
     <div class="fbar-btns">
-      <button class="fb-btn fb-back" onclick="navigateBack()">← 返回</button>
-      <button class="fb-btn fb-done" onclick="completeReading()">读完了 ✓</button>
+      <button class="fb-btn fb-back" onclick="navigateBack()"> </button>
+      <button class="fb-btn fb-done" onclick="completeReading()"> </button>
     </div>
   </div>
 </div>
@@ -521,12 +542,12 @@
 <div class="page" id="page-immersive">
   <div class="immersive-topbar">
     <div class="it-left">
-      <span class="icon-btn" onclick="exitImmersive()">←</span>
+      <span class="icon-btn" onclick="exitImmersive()"></span>
       <span style="font-size:14px;font-weight:600" id="immBookTitle"></span>
     </div>
     <div class="it-right">
-      <span class="icon-btn" onclick="showImmersiveToc()">📋</span>
-      <span class="icon-btn" onclick="showSettings()">⚙️</span>
+      <span class="icon-btn" onclick="showImmersiveToc()">�</span>
+      <span class="icon-btn" onclick="showSettings()">�</span>
     </div>
   </div>
   <div class="immersive-chapter-title" id="immChTitle"></div>
@@ -534,13 +555,13 @@
   <div class="immersive-body" id="immersiveBody"></div>
   <div class="immersive-fbar">
     <div class="immersive-progress">
-      <span id="immProgressText">第 1/5 章</span>
+      <span id="immProgressText"> 1/5 </span>
       <div class="ip-bar"><div class="ip-fill" id="immProgressFill" style="width:0%"></div></div>
     </div>
     <div class="immersive-btns">
-      <button class="ib-btn ib-prev" id="immPrevBtn" onclick="immPrevChapter()" style="display:none">← 上一章</button>
-      <button class="ib-btn ib-toc" onclick="showImmersiveToc()">📖 目录</button>
-      <button class="ib-btn ib-done" onclick="immCompleteChapter()">读完了 ✓</button>
+      <button class="ib-btn ib-prev" id="immPrevBtn" onclick="immPrevChapter()" style="display:none"> </button>
+      <button class="ib-btn ib-toc" onclick="showImmersiveToc()">� </button>
+      <button class="ib-btn ib-done" onclick="immCompleteChapter()"> </button>
     </div>
   </div>
 </div>
@@ -548,22 +569,22 @@
 <!-- ===================== LEVEL TEST PAGE ===================== -->
 <div class="page" id="page-level-test">
   <div class="test-intro" id="testIntro">
-    <div class="ti-icon">📚</div>
-    <div class="ti-title">了解你的英语水平</div>
-    <div class="ti-desc">系统会根据你的阅读表现<br>自动调整难度，精确定位你的水平</div>
+    <div class="ti-icon">�</div>
+    <div class="ti-title"></div>
+    <div class="ti-desc"><br>�</div>
     <div class="ti-features">
-      <div class="ti-feat">✅ 无需考试答题</div>
-      <div class="ti-feat">✅ 无压力无焦虑</div>
-      <div class="ti-feat">✅ 自适应难度</div>
+      <div class="ti-feat"> </div>
+      <div class="ti-feat"> </div>
+      <div class="ti-feat"> </div>
     </div>
     <div class="ti-levels">
-      <span class="ltag ltag-a1">A1 入门</span>
-      <span class="ltag ltag-a2">A2 初级</span>
-      <span class="ltag ltag-b1">B1 中级</span>
-      <span class="ltag ltag-b2">B2 中高级</span>
-      <span class="ltag ltag-c1">C1 高级</span>
+      <span class="ltag ltag-a1">A1 </span>
+      <span class="ltag ltag-a2">A2 </span>
+      <span class="ltag ltag-b1">B1 </span>
+      <span class="ltag ltag-b2">B2 </span>
+      <span class="ltag ltag-c1">C1 </span>
     </div>
-    <button class="ti-btn" onclick="startTest()">开始阅读</button>
+    <button class="ti-btn" onclick="startTest()"></button>
   </div>
   <div id="testArea" style="display:none"></div>
   <div id="resultArea" style="display:none"></div>
@@ -572,9 +593,9 @@
 <!-- ===================== HISTORY PAGE ===================== -->
 <div class="page" id="page-history">
   <div class="hist-tabs">
-    <div class="hist-tab active" onclick="switchHistTab('history')">阅读历史</div>
-    <div class="hist-tab" onclick="switchHistTab('favorites')">我的收藏</div>
-    <div class="hist-tab" onclick="switchHistTab('wordbook')">生词本</div>
+    <div class="hist-tab active" onclick="switchHistTab('history')"></div>
+    <div class="hist-tab" onclick="switchHistTab('favorites')"></div>
+    <div class="hist-tab" onclick="switchHistTab('wordbook')"></div>
   </div>
   <div id="histContent"></div>
 </div>
@@ -584,42 +605,93 @@
   <div class="profile-card">
     <div class="profile-avatar" id="profileAvatar">?</div>
     <div class="profile-info">
-      <div class="pi-label">当前等级</div>
-      <div class="pi-level" id="profileLevel">未定级</div>
+      <div class="pi-label" id="profileUserLabel">Current User</div>
+      <div class="pi-level" id="profileUserName">Me</div>
       <div class="pi-name" id="profileLevelName"></div>
     </div>
-    <button class="profile-adjust" id="adjustBtn" onclick="showLevelSelector()" style="display:none">调整</button>
+    <button class="profile-adjust" onclick="showAddUser()" style="display:inline-block">Switch</button>
+    <button class="profile-adjust" id="adjustBtn" onclick="showLevelSelector()" style="display:none">Adjust</button>
   </div>
   <div class="card">
-    <div class="section-title">阅读统计</div>
+    <div class="section-title">Reading Stats</div>
     <div class="stats-grid-4">
-      <div class="stat-box"><span class="sb-val" id="pArticles">0</span><span class="sb-unit">篇</span><div class="sb-lbl">已读文章</div></div>
-      <div class="stat-box"><span class="sb-val" id="pMinutes">0</span><span class="sb-unit">分</span><div class="sb-lbl">阅读时长</div></div>
-      <div class="stat-box"><span class="sb-val" id="pStreak">0</span><span class="sb-unit">天</span><div class="sb-lbl">连续阅读</div></div>
-      <div class="stat-box"><span class="sb-val" id="pWords">0</span><span class="sb-unit">个</span><div class="sb-lbl">生词积累</div></div>
+      <div class="stat-box"><span class="sb-val" id="pArticles">0</span><span class="sb-unit">篇</span><div class="sb-lbl">Articles</div></div>
+      <div class="stat-box"><span class="sb-val" id="pMinutes">0</span><span class="sb-unit">min</span><div class="sb-lbl">Minutes</div></div>
+      <div class="stat-box"><span class="sb-val" id="pStreak">0</span><span class="sb-unit">days</span><div class="sb-lbl">Streak</div></div>
+      <div class="stat-box"><span class="sb-val" id="pWords">0</span><span class="sb-unit">个</span><div class="sb-lbl">Words</div></div>
     </div>
   </div>
   <div class="card">
-    <div class="section-title">我的兴趣</div>
+    <div class="section-title">My Interests</div>
     <div class="my-tags" id="myTags"></div>
-    <div id="noInterest" style="font-size:13px;color:var(--text3)">未设置兴趣</div>
+    <div id="noInterest" style="font-size:13px;color:var(--text3)">Not set</div>
   </div>
   <div class="card">
-    <div class="menu-item" onclick="navigateTo('level-test')"><span class="mi-label">📊 重新定级</span><span class="mi-arrow">›</span></div>
-    <div class="menu-item" onclick="setDailyGoal()"><span class="mi-label">⏱️ 每日阅读时长</span><span class="mi-arrow" id="goalDisplay">10分钟 ›</span></div>
-    <div class="menu-item" onclick="showAbout()"><span class="mi-label">ℹ️ 关于应用</span><span class="mi-arrow">›</span></div>
+    <div class="menu-item" onclick="navigateTo('level-test')"><span class="mi-label">📊 Retake Test</span><span class="mi-arrow">›</span></div>
+    <div class="menu-item" onclick="setDailyGoal()"><span class="mi-label">⏱️ Daily Goal</span><span class="mi-arrow" id="goalDisplay">10min ›</span></div>
+    <div class="menu-item" onclick="triggerBookUpload()"><span class="mi-label">📤 Import Book</span><span class="mi-arrow">›</span></div>
+    <div class="menu-item" onclick="navigateTo('uploaded-books')"><span class="mi-label">📚 My Bookshelf</span><span class="mi-arrow" id="uploadedCount">0 ›</span></div>
+    <div class="menu-item" onclick="showAbout()"><span class="mi-label">ℹ️ About</span><span class="mi-arrow">›</span></div>
   </div>
-  <div class="app-info">基于罗肖尼（Krashen）二语习得理论<br>可理解输入 · 兴趣驱动 · 低焦虑</div>
+  <div class="app-info">Based on Krashen's SLA Theory<br>Comprehensible Input · Interest-driven · Low Anxiety</div>
+</div>
+
+<!-- User Switch Bar -->
+<div class="user-switch-bar" id="userSwitchBar">
+  <div id="userAvatars" style="display:flex;gap:8px"></div>
+  <div class="user-add-btn" onclick="showAddUser()">+</div>
+</div>
+<!-- Add User Dialog -->
+<div class="user-input-overlay" id="addUserOverlay" style="display:none" onclick="if(event.target===this)hideAddUser()">
+  <div class="user-input-dialog">
+    <div style="font-size:16px;font-weight:600">Add User</div>
+    <input id="newUserName" placeholder="Nickname (max 8)" maxlength="8" onkeydown="if(event.key==='Enter')confirmAddUser()">
+    <div class="dialog-btns">
+      <button class="btn-cancel" onclick="hideAddUser()">Cancel</button>
+      <button class="btn-confirm" onclick="confirmAddUser()">OK</button>
+    </div>
+  </div>
+</div>
+<!-- Book Parse Dialog -->
+<div class="parse-dialog" id="parseDialog" style="display:none" onclick="if(event.target===this)hideParseDialog()">
+  <div class="parse-dialog-inner">
+    <div style="font-size:16px;font-weight:600;margin-bottom:8px">📖 Import Book</div>
+    <label>Title (English)</label>
+    <input id="parseTitle" placeholder="Book Title">
+    <label>Title (Chinese)</label>
+    <input id="parseTitleCn" placeholder="中文名">
+    <label>Level</label>
+    <select id="parseLevel"><option value="A1">A1</option><option value="A2">A2</option><option value="B1">B1</option><option value="B2" selected>B2</option><option value="C1">C1</option></select>
+    <label>Author</label>
+    <input id="parseAuthor" placeholder="Author (optional)">
+    <div class="dialog-btns">
+      <button class="btn-cancel" onclick="hideParseDialog()">Cancel</button>
+      <button class="btn-confirm" onclick="confirmParseBook()">Import</button>
+    </div>
+  </div>
+</div>
+<input type="file" class="upload-input" id="bookFileInput" accept=".txt,.text" onchange="handleBookFile(event)">
+
+<!-- Uploaded Books Page -->
+<div class="page" id="page-uploaded-books">
+  <div class="upload-section">
+    <div class="upload-area" onclick="triggerBookUpload()">
+      <div class="upload-icon">📤</div>
+      <div class="upload-text">Click to upload TXT file</div>
+      <div class="upload-hint">Supports .txt format. Use "Chapter X" to split chapters, or paragraphs to split parts.</div>
+    </div>
+  </div>
+  <div id="uploadedBooksList"></div>
 </div>
 
 <!-- ===== OVERLAYS ===== -->
 <div class="word-popup-overlay" id="wordPopup" onclick="closeWordPopup(event)">
   <div class="word-popup">
-    <div class="wp-header"><span class="wp-word" id="wpWord"></span><button class="wp-close" onclick="closeWordPopup()">✕</button></div>
+    <div class="wp-header"><span class="wp-word" id="wpWord"></span><button class="wp-close" onclick="closeWordPopup()"></button></div>
     <span class="wp-phonetic" id="wpPhonetic"></span>
     <div class="wp-divider"></div>
     <div class="wp-def" id="wpDef"></div>
-    <span class="wp-hint">💡 点击空白处关闭</span>
+    <span class="wp-hint">� </span>
   </div>
 </div>
 
@@ -628,224 +700,223 @@
 <div class="toc-overlay" id="tocOverlay" onclick="closeToc(event)">
   <div class="toc-panel">
     <div class="toc-header">
-      <span class="toc-title" id="tocTitle">目录</span>
-      <button class="toc-close" onclick="closeToc()">✕</button>
+      <span class="toc-title" id="tocTitle"></span>
+      <button class="toc-close" onclick="closeToc()"></button>
     </div>
     <div class="toc-list" id="tocList"></div>
   </div>
 </div>
 <div class="settings-panel" id="settingsPanel" onclick="hideSettings(event)">
   <div class="settings-content">
-    <div style="font-size:17px;font-weight:600;margin-bottom:16px">阅读设置</div>
-    <div class="setting-row"><label>字体大小</label><div><button class="font-btn" onclick="changeFontSize(-1)">A-</button><button class="font-btn" onclick="changeFontSize(1)">A+</button></div></div>
-    <div class="setting-row"><label>护眼模式</label><input type="checkbox" class="sw" id="eyeCareSwitch" onchange="toggleEyeCare(this.checked)"></div>
+    <div style="font-size:17px;font-weight:600;margin-bottom:16px"></div>
+    <div class="setting-row"><label></label><div><button class="font-btn" onclick="changeFontSize(-1)">A-</button><button class="font-btn" onclick="changeFontSize(1)">A+</button></div></div>
   </div>
 </div>
 
 <div class="level-selector" id="levelSelector" onclick="hideLevelSelector(event)">
   <div class="level-options">
-    <div class="lo-title">选择等级</div>
-    <div class="lo-item" onclick="setLevel('A1')">A1 入门 - Beginner</div>
-    <div class="lo-item" onclick="setLevel('A2')">A2 初级 - Elementary</div>
-    <div class="lo-item" onclick="setLevel('B1')">B1 中级 - Intermediate</div>
-    <div class="lo-item" onclick="setLevel('B2')">B2 中高级 - Upper-Intermediate</div>
-    <div class="lo-item" onclick="setLevel('C1')">C1 高级 - Advanced</div>
-    <div class="lo-cancel" onclick="hideLevelSelector()">取消</div>
+    <div class="lo-title"></div>
+    <div class="lo-item" onclick="setLevel('A1')">A1  - Beginner</div>
+    <div class="lo-item" onclick="setLevel('A2')">A2  - Elementary</div>
+    <div class="lo-item" onclick="setLevel('B1')">B1  - Intermediate</div>
+    <div class="lo-item" onclick="setLevel('B2')">B2  - Upper-Intermediate</div>
+    <div class="lo-item" onclick="setLevel('C1')">C1  - Advanced</div>
+    <div class="lo-cancel" onclick="hideLevelSelector()"></div>
   </div>
 </div>
 
 <div class="about-overlay" id="aboutOverlay" onclick="hideAbout(event)">
   <div class="about-dialog">
-    <h3>关于轻松英语阅读</h3>
-    <p>本应用严格遵循罗肖尼（Stephen Krashen）二语习得理论核心原则：<br><br>
-    📖 i+1可理解输入<br>
-    🎯 兴趣驱动<br>
-    😌 低焦虑环境<br>
-    🔄 大量沉浸式输入<br><br>
-    不背单词、不做题、不考试，真正实现无痛英语习得。<br>支持碎片化阅读（短篇）和沉浸式阅读（整本书）双模式。</p>
-    <button class="ad-btn" onclick="hideAbout()">知道了</button>
+    <h3></h3>
+    <p>�Stephen Krashen��<br><br>
+    � i+1<br>
+    � <br>
+    � <br>
+    � <br><br>
+    �<br>����</p>
+    <button class="ad-btn" onclick="hideAbout()"></button>
   </div>
 </div>
 
 <!-- Tab Bar -->
 <div class="tab-bar" id="tabBar">
-  <div class="tab-item active" onclick="switchTab('index')" data-tab="index"><span class="tab-icon">🏠</span><span class="tab-label">首页</span></div>
-  <div class="tab-item" onclick="switchTab('history')" data-tab="history"><span class="tab-icon">📋</span><span class="tab-label">历史</span></div>
-  <div class="tab-item" onclick="switchTab('profile')" data-tab="profile"><span class="tab-icon">👤</span><span class="tab-label">我的</span></div>
+  <div class="tab-item active" onclick="switchTab('index')" data-tab="index"><span class="tab-icon">�</span><span class="tab-label"></span></div>
+  <div class="tab-item" onclick="switchTab('history')" data-tab="history"><span class="tab-icon">�</span><span class="tab-label"></span></div>
+  <div class="tab-item" onclick="switchTab('profile')" data-tab="profile"><span class="tab-icon">�</span><span class="tab-label"></span></div>
 </div>
 
 <script>
 // ============ DATA ============
 const LEVELS = [
-  {key:'A1',name:'入门',desc:'Beginner'},{key:'A2',name:'初级',desc:'Elementary'},
-  {key:'B1',name:'中级',desc:'Intermediate'},{key:'B2',name:'中高级',desc:'Upper-Intermediate'},
-  {key:'C1',name:'高级',desc:'Advanced'}
+  {key:'A1',name:'',desc:'Beginner'},{key:'A2',name:'',desc:'Elementary'},
+  {key:'B1',name:'',desc:'Intermediate'},{key:'B2',name:'',desc:'Upper-Intermediate'},
+  {key:'C1',name:'',desc:'Advanced'}
 ];
 const INTERESTS = [
-  {key:'story',name:'故事',icon:'📖'},{key:'science',name:'科普',icon:'🔬'},
-  {key:'history',name:'历史',icon:'🏛️'},{key:'psychology',name:'心理',icon:'🧠'},
-  {key:'business',name:'商业',icon:'💼'},{key:'life',name:'生活',icon:'🌟'},
-  {key:'tech',name:'科技',icon:'💻'},{key:'movie',name:'影视',icon:'🎬'},
-  {key:'novel',name:'小说',icon:'📚'}
+  {key:'story',name:'',icon:'�'},{key:'science',name:'',icon:'�'},
+  {key:'history',name:'',icon:'��'},{key:'psychology',name:'',icon:'�'},
+  {key:'business',name:'',icon:'�'},{key:'life',name:'',icon:'�'},
+  {key:'tech',name:'',icon:'�'},{key:'movie',name:'',icon:'�'},
+  {key:'novel',name:'',icon:'�'}
 ];
 const DICT = {
   pet:{p:'/pet/',d:'An animal you keep at home for pleasure and company.'},
-  wake:{p:'/weɪk/',d:'To stop sleeping and become conscious.'},
-  catch:{p:'/kætʃ/',d:'To take hold of something, especially something moving.'},
-  cloud:{p:'/klaʊd/',d:'A white or gray mass in the sky, made of small water drops.'},
-  past:{p:'/pɑːst/',d:'Going by someone or something.'},
-  sing:{p:'/sɪŋ/',d:'To make music with your voice.'},
-  kind:{p:'/kaɪnd/',d:'Friendly, generous, and caring about other people.'},
-  playground:{p:'/ˈpleɪɡraʊnd/',d:'An outdoor area where children can play.'},
-  study:{p:'/ˈstʌdi/',d:'To learn about a subject, especially by reading.'},
-  market:{p:'/ˈmɑːkɪt/',d:'A place where people buy and sell goods.'},
-  shiny:{p:'/ˈʃaɪni/',d:'Bright and reflecting light.'},
-  bite:{p:'/baɪt/',d:'To use your teeth to cut or crush something.'},
-  season:{p:'/ˈsiːzn/',d:'One of the four periods of the year.'},
-  autumn:{p:'/ˈɔːtəm/',d:'The season between summer and winter.'},
-  grow:{p:'/ɡrəʊ/',d:'To increase in size or amount over time.'},
-  delicious:{p:'/dɪˈlɪʃəs/',d:'Very pleasant to taste or smell.'},
-  dolphin:{p:'/ˈdɒlfɪn/',d:'An intelligent sea mammal that looks like a fish.'},
-  picnic:{p:'/ˈpɪknɪk/',d:'A meal that you eat outdoors, usually in a park.'},
-  inventor:{p:'/ɪnˈventər/',d:'A person who creates something never made before.'},
-  garage:{p:'/ˈɡærɑːʒ/',d:'A building where you keep a car.'},
-  glow:{p:'/ɡləʊ/',d:'To produce a soft steady light.'},
-  planet:{p:'/ˈplænɪt/',d:'A large round body in space that moves around a star.'},
-  creature:{p:'/ˈkriːtʃər/',d:'Any living animal, especially an unusual one.'},
-  recycle:{p:'/ˌriːˈsaɪkl/',d:'To process used materials so they can be used again.'},
-  skeleton:{p:'/ˈskelɪtn/',d:'The set of bones that supports a body.'},
-  dynasty:{p:'/ˈdɪnəsti/',d:'A series of rulers from the same family.'},
-  experiment:{p:'/ɪkˈsperɪmənt/',d:'A test to discover or prove something.'},
+  wake:{p:'/wek/',d:'To stop sleeping and become conscious.'},
+  catch:{p:'/kt/',d:'To take hold of something, especially something moving.'},
+  cloud:{p:'/klad/',d:'A white or gray mass in the sky, made of small water drops.'},
+  past:{p:'/pst/',d:'Going by someone or something.'},
+  sing:{p:'/s/',d:'To make music with your voice.'},
+  kind:{p:'/kand/',d:'Friendly, generous, and caring about other people.'},
+  playground:{p:'/plerand/',d:'An outdoor area where children can play.'},
+  study:{p:'/stdi/',d:'To learn about a subject, especially by reading.'},
+  market:{p:'/mkt/',d:'A place where people buy and sell goods.'},
+  shiny:{p:'/ani/',d:'Bright and reflecting light.'},
+  bite:{p:'/bat/',d:'To use your teeth to cut or crush something.'},
+  season:{p:'/sizn/',d:'One of the four periods of the year.'},
+  autumn:{p:'/tm/',d:'The season between summer and winter.'},
+  grow:{p:'/r/',d:'To increase in size or amount over time.'},
+  delicious:{p:'/dls/',d:'Very pleasant to taste or smell.'},
+  dolphin:{p:'/dlfn/',d:'An intelligent sea mammal that looks like a fish.'},
+  picnic:{p:'/pknk/',d:'A meal that you eat outdoors, usually in a park.'},
+  inventor:{p:'/nventr/',d:'A person who creates something never made before.'},
+  garage:{p:'/r/',d:'A building where you keep a car.'},
+  glow:{p:'/l/',d:'To produce a soft steady light.'},
+  planet:{p:'/plnt/',d:'A large round body in space that moves around a star.'},
+  creature:{p:'/kritr/',d:'Any living animal, especially an unusual one.'},
+  recycle:{p:'/risakl/',d:'To process used materials so they can be used again.'},
+  skeleton:{p:'/skeltn/',d:'The set of bones that supports a body.'},
+  dynasty:{p:'/dnsti/',d:'A series of rulers from the same family.'},
+  experiment:{p:'/kspermnt/',d:'A test to discover or prove something.'},
   spread:{p:'/spred/',d:'To put a layer of something over a surface.'},
-  slice:{p:'/slaɪs/',d:'A thin flat piece cut from something.'},
-  surface:{p:'/ˈsɜːfɪs/',d:'The outside part of something.'},
-  achieve:{p:'/əˈtʃiːv/',d:'To successfully reach a goal.'},
-  struggle:{p:'/ˈstrʌɡl/',d:'To try hard to do something difficult.'},
-  consistency:{p:'/kənˈsɪstənsi/',d:'The quality of always behaving the same way.'},
-  bioluminescence:{p:'/ˌbaɪəʊˌluːmɪˈnesəns/',d:'Light produced by living organisms.'},
-  hydrothermal:{p:'/ˌhaɪdrəʊˈθɜːml/',d:'Related to hot water from deep in the earth.'},
-  ecosystem:{p:'/ˈiːkəʊsɪstəm/',d:'All living and non-living things in an area as a system.'},
-  influential:{p:'/ˌɪnfluˈenʃl/',d:'Having a lot of influence on people or events.'},
-  equator:{p:'/ɪˈkweɪtər/',d:'An imaginary line around the middle of the earth.'},
-  calming:{p:'/ˈkɑːmɪŋ/',d:'Making you feel calm and relaxed.'},
-  concentration:{p:'/ˌkɒnsnˈtreɪʃn/',d:'The ability to focus your attention.'},
-  purity:{p:'/ˈpjʊərəti/',d:'The state of being clean and free from harmful substances.'},
-  humanity:{p:'/hjuːˈmænɪti/',d:'People in general; the human race.'},
-  detect:{p:'/dɪˈtekt/',d:'To discover or notice something hidden.'},
-  bias:{p:'/ˈbaɪəs/',d:'An unfair preference for or against something.'},
-  sophisticated:{p:'/səˈfɪstɪkeɪtɪd/',d:'Very advanced or complex.'},
-  deliberately:{p:'/dɪˈlɪbərətli/',d:'Done on purpose, not by chance.'},
-  disrupt:{p:'/dɪsˈrʌpt/',d:'To change the normal way something works.'},
-  controversy:{p:'/ˈkɒntrəvɜːsi/',d:'A serious disagreement about something.'},
-  possession:{p:'/pəˈzeʃn/',d:'Something that you own.'},
-  contentious:{p:'/kənˈtenʃəs/',d:'Causing a lot of disagreement.'},
-  albeit:{p:'/ɔːlˈbiːɪt/',d:'Although; even though.'},
-  vanishingly:{p:'/ˈvænɪʃɪŋli/',d:'Extremely small; almost zero.'},
-  extraterrestrial:{p:'/ˌekstrətəˈrestriəl/',d:'Coming from outside the Earth.'},
-  annihilation:{p:'/əˌnaɪəˈleɪʃn/',d:'Complete destruction.'},
-  epidemic:{p:'/ˌepɪˈdemɪk/',d:'A sudden increase in disease cases.'},
-  devastating:{p:'/ˈdevəsteɪtɪŋ/',d:'Causing great damage or suffering.'},
-  contagious:{p:'/kənˈteɪdʒəs/',d:'Able to spread from one person to another.'},
-  inflammatory:{p:'/ɪnˈflæmətəri/',d:'Related to redness, swelling, and pain.'},
-  achieve:{p:'/əˈtʃiːv/',d:'To successfully reach a goal or result.'},
-  habit:{p:'/ˈhæbɪt/',d:'Something you do regularly, often without thinking.'},
-  signal:{p:'/ˈsɪɡnəl/',d:'A movement, sound, or sign that gives information.'},
-  propose:{p:'/prəˈpəʊz/',d:'To suggest a plan or idea for others to consider.'},
-  guarantee:{p:'/ˌɡærənˈtiː/',d:'A promise that something will be done or happen.'}
+  slice:{p:'/slas/',d:'A thin flat piece cut from something.'},
+  surface:{p:'/sfs/',d:'The outside part of something.'},
+  achieve:{p:'/tiv/',d:'To successfully reach a goal.'},
+  struggle:{p:'/strl/',d:'To try hard to do something difficult.'},
+  consistency:{p:'/knsstnsi/',d:'The quality of always behaving the same way.'},
+  bioluminescence:{p:'/balumnesns/',d:'Light produced by living organisms.'},
+  hydrothermal:{p:'/hadrml/',d:'Related to hot water from deep in the earth.'},
+  ecosystem:{p:'/iksstm/',d:'All living and non-living things in an area as a system.'},
+  influential:{p:'/nfluenl/',d:'Having a lot of influence on people or events.'},
+  equator:{p:'/kwetr/',d:'An imaginary line around the middle of the earth.'},
+  calming:{p:'/km/',d:'Making you feel calm and relaxed.'},
+  concentration:{p:'/knsntren/',d:'The ability to focus your attention.'},
+  purity:{p:'/pjrti/',d:'The state of being clean and free from harmful substances.'},
+  humanity:{p:'/hjumnti/',d:'People in general; the human race.'},
+  detect:{p:'/dtekt/',d:'To discover or notice something hidden.'},
+  bias:{p:'/bas/',d:'An unfair preference for or against something.'},
+  sophisticated:{p:'/sfstketd/',d:'Very advanced or complex.'},
+  deliberately:{p:'/dlbrtli/',d:'Done on purpose, not by chance.'},
+  disrupt:{p:'/dsrpt/',d:'To change the normal way something works.'},
+  controversy:{p:'/kntrvsi/',d:'A serious disagreement about something.'},
+  possession:{p:'/pzen/',d:'Something that you own.'},
+  contentious:{p:'/kntens/',d:'Causing a lot of disagreement.'},
+  albeit:{p:'/lbit/',d:'Although; even though.'},
+  vanishingly:{p:'/vnli/',d:'Extremely small; almost zero.'},
+  extraterrestrial:{p:'/ekstrtrestril/',d:'Coming from outside the Earth.'},
+  annihilation:{p:'/nalen/',d:'Complete destruction.'},
+  epidemic:{p:'/epdemk/',d:'A sudden increase in disease cases.'},
+  devastating:{p:'/devstet/',d:'Causing great damage or suffering.'},
+  contagious:{p:'/knteds/',d:'Able to spread from one person to another.'},
+  inflammatory:{p:'/nflmtri/',d:'Related to redness, swelling, and pain.'},
+  achieve:{p:'/tiv/',d:'To successfully reach a goal or result.'},
+  habit:{p:'/hbt/',d:'Something you do regularly, often without thinking.'},
+  signal:{p:'/snl/',d:'A movement, sound, or sign that gives information.'},
+  propose:{p:'/prpz/',d:'To suggest a plan or idea for others to consider.'},
+  guarantee:{p:'/rnti/',d:'A promise that something will be done or happen.'}
 };
 const ARTICLES = {
   A1:[
-    {id:'a1_1',title:'My Pet Cat',titleCn:'我的宠物猫',level:'A1',tags:['life','story'],wordCount:85,readMinutes:3,hl:['morning','fast','catches','friend','after'],
+    {id:'a1_1',title:'My Pet Cat',titleCn:'',level:'A1',tags:['life','story'],wordCount:85,readMinutes:3,hl:['morning','fast','catches','friend','after'],
       content:'I have a cat. Her name is Lily. She is small and white. She likes to sleep on my bed. Every morning, Lily wakes me up. She sits on my face and says "meow". I give her food and water. She likes fish very much. After school, I play with Lily. She runs after a ball. She is very fast. Sometimes she catches a toy mouse. I love my cat. She is my best friend.',
       vocab:[{word:'pet',d:'an animal you keep at home'},{word:'wake',d:'to stop sleeping'},{word:'catch',d:'to take hold of something'}]},
-    {id:'a1_2',title:'A Sunny Day',titleCn:'晴天',level:'A1',tags:['life'],wordCount:92,readMinutes:3,hl:['sunny','clouds','flowers','grass','happy'],
+    {id:'a1_2',title:'A Sunny Day',titleCn:'',level:'A1',tags:['life'],wordCount:92,readMinutes:3,hl:['sunny','clouds','flowers','grass','happy'],
       content:'Today is a sunny day. The sky is blue. There are no clouds. I go to the park with my mom. We walk on the grass. I see many flowers. They are red, yellow, and pink. A dog runs past us. It is very happy. We sit under a big tree. I eat an apple. My mom drinks tea. Birds sing in the tree. I feel very happy. I love sunny days.',
       vocab:[{word:'cloud',d:'white things in the sky'},{word:'past',d:'going by'},{word:'sing',d:'make music with voice'}]},
-    {id:'a1_3',title:'The Red Apple',titleCn:'红苹果',level:'A1',tags:['story'],wordCount:78,readMinutes:2,hl:['market','shiny','sweet','shared','smiled'],
+    {id:'a1_3',title:'The Red Apple',titleCn:'',level:'A1',tags:['story'],wordCount:78,readMinutes:2,hl:['market','shiny','sweet','shared','smiled'],
       content:'Once upon a time, a little girl went to the market. She saw a big red apple. "I want this apple," she said. The apple was very shiny. She paid one coin and took it home. She washed it with water. Then she took a big bite. "Mmm, it is so sweet!" she said. She shared the apple with her little brother. They both smiled. It was a happy day.',
       vocab:[{word:'market',d:'place to buy things'},{word:'shiny',d:'bright'},{word:'bite',d:'use teeth to cut'}]},
-    {id:'a1_4',title:'The Four Seasons',titleCn:'四季',level:'A1',tags:['science'],wordCount:105,readMinutes:3,hl:['seasons','autumn','leaves','snows','snowmen'],
+    {id:'a1_4',title:'The Four Seasons',titleCn:'',level:'A1',tags:['science'],wordCount:105,readMinutes:3,hl:['seasons','autumn','leaves','snows','snowmen'],
       content:'There are four seasons in a year. Spring is warm. Flowers grow and birds sing. Summer is hot. We eat ice cream and go swimming. Autumn is cool. Leaves fall from the trees. They turn red and yellow. Winter is cold. Sometimes it snows. We wear warm clothes and make snowmen. Each season is beautiful in its own way. I love all the seasons.',
       vocab:[{word:'season',d:'one part of the year'},{word:'autumn',d:'between summer and winter'},{word:'grow',d:'get bigger'}]},
-    {id:'a1_5',title:'My School',titleCn:'我的学校',level:'A1',tags:['life'],wordCount:98,readMinutes:3,hl:['classroom','kind','playground','basketball','learn'],
+    {id:'a1_5',title:'My School',titleCn:'',level:'A1',tags:['life'],wordCount:98,readMinutes:3,hl:['classroom','kind','playground','basketball','learn'],
       content:'I go to school every day. My school is big. It has many rooms. My classroom is on the second floor. I have many friends at school. We study English, math, and art. My English teacher is Miss Wang. She is very kind. After class, we play in the playground. We run and jump. Sometimes we play basketball. I like school because I can learn new things and play with my friends.',
       vocab:[{word:'kind',d:'nice and friendly'},{word:'playground',d:'place to play'},{word:'study',d:'learn about something'}]}
   ],
   A2:[
-    {id:'a2_1',title:'A Letter to My Friend',titleCn:'给朋友的信',level:'A2',tags:['life','story'],wordCount:120,readMinutes:4,hl:['library','dolphins','delicious','garden','wonderful'],
+    {id:'a2_1',title:'A Letter to My Friend',titleCn:'',level:'A2',tags:['life','story'],wordCount:120,readMinutes:4,hl:['library','dolphins','delicious','garden','wonderful'],
       content:'Dear Tom,\n\nHow are you? I hope you are doing well. I want to tell you about my weekend. On Saturday morning, I went to the library with my sister. We read some interesting books about animals. I learned that dolphins can talk to each other using sounds.\n\nIn the afternoon, we visited my grandmother. She made delicious cookies for us. We helped her clean the garden and water the plants.\n\nOn Sunday, my family had a picnic in the park. We played games and ate sandwiches. It was a wonderful weekend. I hope we can meet soon!\n\nYour friend,\nLisa',
       vocab:[{word:'delicious',d:'very pleasant to taste'},{word:'dolphin',d:'smart sea animal'},{word:'picnic',d:'meal eaten outside'}]},
-    {id:'a2_2',title:'The Little Inventor',titleCn:'小小发明家',level:'A2',tags:['tech','story'],wordCount:130,readMinutes:5,hl:['inventor','carefully','batteries','amazing','inventing'],
+    {id:'a2_2',title:'The Little Inventor',titleCn:'',level:'A2',tags:['tech','story'],wordCount:130,readMinutes:5,hl:['inventor','carefully','batteries','amazing','inventing'],
       content:'Jack was ten years old. He loved to build things. One day, he found an old clock in the garage. He took it apart carefully and looked at all the pieces inside. "How does this work?" he thought.\n\nJack started to put the pieces together in a new way. He added some batteries and a small light. When he turned it on, the clock started to glow in the dark! His mother was very surprised. "That is amazing, Jack!" she said.\n\nJack kept inventing new things. He made a pencil that could write in the rain, and a cup that kept water cold all day. His teacher said he would be a great inventor someday.',
       vocab:[{word:'inventor',d:'person who creates new things'},{word:'garage',d:'building for car'},{word:'glow',d:'produce soft light'}]},
-    {id:'a2_3',title:'Our Beautiful Earth',titleCn:'我们美丽的地球',level:'A2',tags:['science'],wordCount:115,readMinutes:4,hl:['planet','surface','creatures','rainforest','protect'],
+    {id:'a2_3',title:'Our Beautiful Earth',titleCn:'',level:'A2',tags:['science'],wordCount:115,readMinutes:4,hl:['planet','surface','creatures','rainforest','protect'],
       content:'Our Earth is a beautiful planet. About 71 percent of its surface is covered by water. The oceans are home to millions of fish and other sea creatures.\n\nOn land, we can find forests, deserts, and mountains. The Amazon rainforest is the biggest forest in the world. It produces a lot of oxygen for us to breathe.\n\nBut our planet is in danger. People cut down too many trees and make the air dirty. We should protect the Earth. We can start by planting trees, saving water, and recycling rubbish. Every small action helps.',
       vocab:[{word:'planet',d:'large round object in space'},{word:'creature',d:'living animal'},{word:'recycle',d:'use things again'}]},
-    {id:'a2_4',title:'A Day at the Museum',titleCn:'博物馆的一天',level:'A2',tags:['history'],wordCount:125,readMinutes:4,hl:['museum','skeleton','dinosaurs','pottery','experiments'],
+    {id:'a2_4',title:'A Day at the Museum',titleCn:'',level:'A2',tags:['history'],wordCount:125,readMinutes:4,hl:['museum','skeleton','dinosaurs','pottery','experiments'],
       content:'Last Friday, our class went to the city museum. I was very excited because I had never been there before.\n\nFirst, we visited the dinosaur hall. There was a huge skeleton of a T-Rex. It was much bigger than I imagined. Our guide told us that dinosaurs lived on Earth over 65 million years ago.\n\nThen we saw old Chinese pottery and paintings from the Ming Dynasty. The colors were still bright and beautiful after hundreds of years.\n\nFinally, we went to the science room. We could try many experiments. I made a small robot move using a computer. It was the best school trip ever!',
       vocab:[{word:'skeleton',d:'bones of a body'},{word:'dynasty',d:'period of ruling family'},{word:'experiment',d:'test to learn'}]},
-    {id:'a2_5',title:'How to Make a Sandwich',titleCn:'如何做三明治',level:'A2',tags:['life'],wordCount:110,readMinutes:3,hl:['spread','surface','slice','important','enjoy'],
+    {id:'a2_5',title:'How to Make a Sandwich',titleCn:'',level:'A2',tags:['life'],wordCount:110,readMinutes:3,hl:['spread','surface','slice','important','enjoy'],
       content:'Today I will teach you how to make a simple sandwich. You will need: two slices of bread, butter, cheese, lettuce, tomato, and some ham.\n\nStep one: Wash your hands. This is very important!\n\nStep two: Spread butter on both slices of bread. Make sure to cover the whole surface.\n\nStep three: Put the ham on one slice. Then add the cheese and lettuce.\n\nStep four: Cut the tomato into thin slices and place them on top.\n\nStep five: Put the other slice of bread on top. Cut the sandwich in half.\n\nNow your sandwich is ready. Enjoy your meal!',
       vocab:[{word:'spread',d:'put layer on surface'},{word:'slice',d:'thin flat piece'},{word:'surface',d:'outside part'}]}
   ],
   B1:[
-    {id:'b1_1',title:'The Power of Habit',titleCn:'习惯的力量',level:'B1',tags:['psychology','life'],wordCount:180,readMinutes:6,hl:['achieve','struggle','researchers','consistency','automatic'],
+    {id:'b1_1',title:'The Power of Habit',titleCn:'',level:'B1',tags:['psychology','life'],wordCount:180,readMinutes:6,hl:['achieve','struggle','researchers','consistency','automatic'],
       content:'Have you ever wondered why some people seem to achieve their goals easily while others struggle? The answer might lie in their habits.\n\nA habit is a behavior that you repeat regularly, often without thinking about it. Researchers at Duke University found that habits, not decisions, shape about 40 percent of our daily actions.\n\nThe process of forming a habit has three parts: a cue, a routine, and a reward. For example, when your phone buzzes (cue), you pick it up and check messages (routine), and you feel connected to your friends (reward).\n\nTo build good habits, start small. Instead of trying to exercise for an hour every day, begin with just five minutes. The key is consistency, not intensity. Over time, the behavior becomes automatic.\n\nBreaking bad habits works the same way. First, identify the cue that triggers the habit. Then, replace the routine with something healthier.',
       vocab:[{word:'achieve',d:'successfully reach a goal'},{word:'struggle',d:'try hard with difficulty'},{word:'consistency',d:'same behavior over time'}]},
-    {id:'b1_2',title:'The Coffee Story',titleCn:'咖啡的故事',level:'B1',tags:['history','business'],wordCount:170,readMinutes:6,hl:['phenomenon','legend','energetic','influential','equator'],
+    {id:'b1_2',title:'The Coffee Story',titleCn:'',level:'B1',tags:['history','business'],wordCount:170,readMinutes:6,hl:['phenomenon','legend','energetic','influential','equator'],
       content:'Coffee is the second most traded product in the world, after oil. But how did a simple bean become such a global phenomenon?\n\nAccording to legend, coffee was discovered by an Ethiopian goat herder named Kaldi around 800 AD. He noticed that his goats became unusually energetic after eating berries from a certain tree.\n\nBy the 15th century, coffee had spread to the Arabian Peninsula. Coffee houses became important social gathering places where people discussed politics, philosophy, and business.\n\nToday, coffee is grown in over 70 countries, mostly near the equator. Brazil is the largest producer, followed by Vietnam and Colombia. The global coffee industry is worth more than 400 billion dollars annually.',
       vocab:[{word:'phenomenon',d:'something observed happening'},{word:'influential',d:'having power to affect'},{word:'equator',d:'imaginary middle line of earth'}]},
-    {id:'b1_3',title:'The Psychology of Color',titleCn:'色彩心理学',level:'B1',tags:['psychology'],wordCount:155,readMinutes:5,hl:['intense','calming','concentration','purity','mourning'],
+    {id:'b1_3',title:'The Psychology of Color',titleCn:'',level:'B1',tags:['psychology'],wordCount:155,readMinutes:5,hl:['intense','calming','concentration','purity','mourning'],
       content:'Colors affect our mood and behavior more than most people realize. This field of study is called color psychology.\n\nRed is the most intense color. It can increase your heart rate and make you feel excited or even hungry. That is why many fast food restaurants use red in their logos.\n\nBlue has the opposite effect. It is calming and can lower blood pressure. Many hospitals and offices paint their walls light blue to create a peaceful environment. Blue is also the most popular color in the world.\n\nGreen represents nature and growth. It is restful for the eyes and can improve concentration.\n\nInterestingly, color meanings can vary between cultures. While white represents purity in Western countries, it is associated with mourning in some Asian countries.',
       vocab:[{word:'calming',d:'making feel quiet and relaxed'},{word:'concentration',d:'ability to focus attention'},{word:'purity',d:'state of being clean'}]},
-    {id:'b1_4',title:'The Secret of the Deep Sea',titleCn:'深海的秘密',level:'B1',tags:['science'],wordCount:165,readMinutes:6,hl:['unexplored','bioluminescence','phenomenon','hydrothermal','ecosystems'],
+    {id:'b1_4',title:'The Secret of the Deep Sea',titleCn:'',level:'B1',tags:['science'],wordCount:165,readMinutes:6,hl:['unexplored','bioluminescence','phenomenon','hydrothermal','ecosystems'],
       content:'The deep sea is one of the last unexplored places on Earth. Below 200 meters, sunlight disappears, and the water becomes completely dark. Despite this, life exists in incredible forms.\n\nMany deep-sea creatures have developed the ability to produce their own light, a phenomenon called bioluminescence. The anglerfish has a small glowing lure on its head that attracts smaller fish in the darkness.\n\nScientists have also discovered creatures living near hydrothermal vents, where water temperatures can reach 400 degrees Celsius. These organisms get energy from chemicals released by the vents.\n\nThe deep sea also contains valuable minerals and possibly new medicines. However, scientists worry that deep-sea mining could damage these fragile ecosystems.',
       vocab:[{word:'bioluminescence',d:'living things producing light'},{word:'hydrothermal',d:'hot water from earth'},{word:'ecosystem',d:'living system in area'}]},
-    {id:'b1_5',title:'AI: Friend or Foe?',titleCn:'AI：朋友还是敌人？',level:'B1',tags:['tech'],wordCount:175,readMinutes:6,hl:['humanity','detect','accurately','bias','innovation'],
+    {id:'b1_5',title:'AI: Friend or Foe?',titleCn:'AI��',level:'B1',tags:['tech'],wordCount:175,readMinutes:6,hl:['humanity','detect','accurately','bias','innovation'],
       content:'Artificial Intelligence, or AI, is changing our world at an incredible speed. But is this technology a friend or a threat?\n\nOn the positive side, AI is already making our lives easier. Smart assistants help us with daily tasks. AI doctors can detect diseases more accurately than human doctors in some cases.\n\nHowever, there are also serious concerns. Millions of workers could lose their jobs as machines learn to do their work. AI systems can also show bias, especially when trained on unfair data.\n\nThe solution is not to stop AI development, but to guide it wisely. Governments and companies need to create rules that protect people while allowing innovation to continue.',
       vocab:[{word:'humanity',d:'all people in the world'},{word:'detect',d:'discover or notice'},{word:'bias',d:'unfair preference'}]}
   ],
   B2:[
-    {id:'b2_1',title:'The Attention Economy',titleCn:'注意力经济',level:'B2',tags:['business','psychology'],wordCount:220,readMinutes:8,hl:['sophisticated','deliberately','unpredictability','consequences','discipline'],
-      content:'In the modern digital world, the most valuable resource is not oil or gold — it is your attention. The "attention economy" refers to a business model where companies profit by capturing and keeping people\'s focus.\n\nEvery time you scroll through social media, watch a short video, or click on a notification, tech companies are collecting data about your behavior. They use sophisticated algorithms to predict what will keep you engaged.\n\nThis system has created what researchers call "digital addiction." Apps are deliberately designed using psychological tricks. The pull-to-refresh gesture, for instance, mimics the unpredictability of a slot machine.\n\nThe consequences are significant. Studies show that the average person checks their phone over 150 times per day. This constant distraction reduces our ability to concentrate deeply and think critically.\n\nFighting back requires awareness and discipline. Setting daily screen time limits and scheduling regular "digital detox" periods can help reclaim control.',
+    {id:'b2_1',title:'The Attention Economy',titleCn:'',level:'B2',tags:['business','psychology'],wordCount:220,readMinutes:8,hl:['sophisticated','deliberately','unpredictability','consequences','discipline'],
+      content:'In the modern digital world, the most valuable resource is not oil or gold  it is your attention. The "attention economy" refers to a business model where companies profit by capturing and keeping people\'s focus.\n\nEvery time you scroll through social media, watch a short video, or click on a notification, tech companies are collecting data about your behavior. They use sophisticated algorithms to predict what will keep you engaged.\n\nThis system has created what researchers call "digital addiction." Apps are deliberately designed using psychological tricks. The pull-to-refresh gesture, for instance, mimics the unpredictability of a slot machine.\n\nThe consequences are significant. Studies show that the average person checks their phone over 150 times per day. This constant distraction reduces our ability to concentrate deeply and think critically.\n\nFighting back requires awareness and discipline. Setting daily screen time limits and scheduling regular "digital detox" periods can help reclaim control.',
       vocab:[{word:'sophisticated',d:'very advanced or complex'},{word:'deliberately',d:'done on purpose'},{word:'unpredictability',d:'cannot be predicted'}]},
-    {id:'b2_2',title:'The Quantum Computing Revolution',titleCn:'量子计算革命',level:'B2',tags:['tech','science'],wordCount:210,readMinutes:7,hl:['simultaneously','superposition','exponentially','encryption','millennia'],
-      content:'Classical computers process information using bits that are either 0 or 1. Quantum computers use "qubits" that can exist in both states simultaneously — a property called superposition.\n\nThis might sound abstract, but the implications are enormous. A quantum computer with just 300 qubits could represent more values simultaneously than there are atoms in the observable universe.\n\nDrug discovery is one of the most promising applications. Currently, developing a new drug takes roughly 10 years and costs billions of dollars. Quantum computers could model molecular interactions accurately, potentially reducing development time to just a few years.\n\nCryptography is another area facing disruption. Modern encryption relies on the difficulty of factoring large prime numbers. Quantum computers could theoretically break these codes in hours rather than millennia.',
+    {id:'b2_2',title:'The Quantum Computing Revolution',titleCn:'',level:'B2',tags:['tech','science'],wordCount:210,readMinutes:7,hl:['simultaneously','superposition','exponentially','encryption','millennia'],
+      content:'Classical computers process information using bits that are either 0 or 1. Quantum computers use "qubits" that can exist in both states simultaneously  a property called superposition.\n\nThis might sound abstract, but the implications are enormous. A quantum computer with just 300 qubits could represent more values simultaneously than there are atoms in the observable universe.\n\nDrug discovery is one of the most promising applications. Currently, developing a new drug takes roughly 10 years and costs billions of dollars. Quantum computers could model molecular interactions accurately, potentially reducing development time to just a few years.\n\nCryptography is another area facing disruption. Modern encryption relies on the difficulty of factoring large prime numbers. Quantum computers could theoretically break these codes in hours rather than millennia.',
       vocab:[{word:'superposition',d:'multiple states at once'},{word:'exponentially',d:'at increasingly fast rate'},{word:'cryptography',d:'keeping info secret by codes'}]},
-    {id:'b2_3',title:'The History of Money',titleCn:'货币的历史',level:'B2',tags:['history','business'],wordCount:200,readMinutes:7,hl:['civilization','inefficient','coincidence','intermediaries','abandon'],
-      content:'Money has evolved dramatically over the past 5,000 years. The earliest form was barter — directly exchanging goods. If you had wheat and wanted fish, you had to find someone who wanted wheat and had fish. This was inefficient.\n\nAround 1000 BC, the Chinese created the first metal coins. Later, the Lydians minted coins from electrum, a natural mixture of gold and silver. Paper money emerged in China during the Tang Dynasty as "flying cash."\n\nThe gold standard, established in the 19th century, tied paper money to a fixed amount of gold. Most countries abandoned it during the 1930s.\n\nToday, we are entering a new era with digital currencies and blockchain technology. Cryptocurrencies like Bitcoin challenge traditional banking by removing intermediaries.',
+    {id:'b2_3',title:'The History of Money',titleCn:'',level:'B2',tags:['history','business'],wordCount:200,readMinutes:7,hl:['civilization','inefficient','coincidence','intermediaries','abandon'],
+      content:'Money has evolved dramatically over the past 5,000 years. The earliest form was barter  directly exchanging goods. If you had wheat and wanted fish, you had to find someone who wanted wheat and had fish. This was inefficient.\n\nAround 1000 BC, the Chinese created the first metal coins. Later, the Lydians minted coins from electrum, a natural mixture of gold and silver. Paper money emerged in China during the Tang Dynasty as "flying cash."\n\nThe gold standard, established in the 19th century, tied paper money to a fixed amount of gold. Most countries abandoned it during the 1930s.\n\nToday, we are entering a new era with digital currencies and blockchain technology. Cryptocurrencies like Bitcoin challenge traditional banking by removing intermediaries.',
       vocab:[{word:'intermediary',d:'person helping reach agreement'},{word:'civilization',d:'advanced human society'},{word:'abandon',d:'give up completely'}]},
-    {id:'b2_4',title:'The Gut-Brain Connection',titleCn:'肠脑连接',level:'B2',tags:['science','psychology'],wordCount:190,readMinutes:7,hl:['neurotransmitters','microbiome','crucial','psychiatric','probiotics'],
-      content:'Scientists have discovered that your gut and your brain are in constant communication. The gut contains approximately 100 million neurons — more than in the entire spinal cord. This is sometimes called the "second brain."\n\nAbout 95 percent of the body\'s serotonin — a chemical linked to mood — is produced in the gut. What you eat can directly influence how you feel.\n\nThe gut microbiome, consisting of trillions of bacteria, also plays a crucial role. These bacteria produce compounds that travel through the bloodstream to the brain, affecting emotions, memory, and decision-making.\n\nThese findings suggest that treating mental health might involve more than just therapy and medication. Diet, probiotics, and gut health could become important components of future psychiatric treatment.',
+    {id:'b2_4',title:'The Gut-Brain Connection',titleCn:'',level:'B2',tags:['science','psychology'],wordCount:190,readMinutes:7,hl:['neurotransmitters','microbiome','crucial','psychiatric','probiotics'],
+      content:'Scientists have discovered that your gut and your brain are in constant communication. The gut contains approximately 100 million neurons  more than in the entire spinal cord. This is sometimes called the "second brain."\n\nAbout 95 percent of the body\'s serotonin  a chemical linked to mood  is produced in the gut. What you eat can directly influence how you feel.\n\nThe gut microbiome, consisting of trillions of bacteria, also plays a crucial role. These bacteria produce compounds that travel through the bloodstream to the brain, affecting emotions, memory, and decision-making.\n\nThese findings suggest that treating mental health might involve more than just therapy and medication. Diet, probiotics, and gut health could become important components of future psychiatric treatment.',
       vocab:[{word:'microbiome',d:'microorganisms in an environment'},{word:'neurotransmitter',d:'chemical carrying signals'},{word:'psychiatric',d:'related to mental illness'}]}
   ],
   C1:[
-    {id:'c1_1',title:'The Illusion of Consciousness',titleCn:'意识的幻觉',level:'C1',tags:['psychology','science'],wordCount:260,readMinutes:10,hl:['contentious','retrospectively','preparatory','methodology','accountability'],
-      content:'What if consciousness — the very essence of what makes you "you" — is nothing more than an elaborate illusion constructed by your brain?\n\nThe "illusionist" theory argues that our subjective experience of being a unified, conscious self is a mental construction. The brain processes vast amounts of information simultaneously and then retrospectively weaves these parallel processes into a coherent narrative.\n\nConsider a famous experiment by Benjamin Libet. Participants were asked to perform a simple action, like pressing a button, whenever they felt the urge. Libet discovered that preparatory brain activity began approximately 300 milliseconds before participants reported being consciously aware of their decision to move.\n\nIf our sense of conscious agency is indeed illusory, this challenges fundamental assumptions about moral responsibility, legal accountability, and the very nature of free will.',
+    {id:'c1_1',title:'The Illusion of Consciousness',titleCn:'',level:'C1',tags:['psychology','science'],wordCount:260,readMinutes:10,hl:['contentious','retrospectively','preparatory','methodology','accountability'],
+      content:'What if consciousness  the very essence of what makes you "you"  is nothing more than an elaborate illusion constructed by your brain?\n\nThe "illusionist" theory argues that our subjective experience of being a unified, conscious self is a mental construction. The brain processes vast amounts of information simultaneously and then retrospectively weaves these parallel processes into a coherent narrative.\n\nConsider a famous experiment by Benjamin Libet. Participants were asked to perform a simple action, like pressing a button, whenever they felt the urge. Libet discovered that preparatory brain activity began approximately 300 milliseconds before participants reported being consciously aware of their decision to move.\n\nIf our sense of conscious agency is indeed illusory, this challenges fundamental assumptions about moral responsibility, legal accountability, and the very nature of free will.',
       vocab:[{word:'contentious',d:'causing disagreement'},{word:'retrospectively',d:'looking back at the past'},{word:'albeit',d:'although'}]},
-    {id:'c1_2',title:'The Fermi Paradox',titleCn:'费米悖论',level:'C1',tags:['science'],wordCount:240,readMinutes:9,hl:['vanishingly','extraterrestrial','harboring','annihilation','comprehension'],
+    {id:'c1_2',title:'The Fermi Paradox',titleCn:'',level:'C1',tags:['science'],wordCount:240,readMinutes:9,hl:['vanishingly','extraterrestrial','harboring','annihilation','comprehension'],
       content:'In a universe with an estimated 200 billion trillion stars, the probability that Earth is the only planet harboring life seems vanishingly small. Yet, despite decades of searching, we have found no definitive evidence of extraterrestrial civilizations.\n\nThe "Rare Earth Hypothesis" suggests that while microbial life may be common, the specific conditions for complex life are extraordinarily uncommon.\n\nThe "Great Filter" theory posits that somewhere along the path from simple life to an advanced civilization, there exists a barrier so difficult that virtually no species manages to pass it. The unsettling question is whether this filter lies behind us or ahead.\n\nSome researchers suggest a more sobering explanation: perhaps advanced civilizations tend to self-destruct. The window between developing communication capability and self-annihilation may be remarkably narrow.',
       vocab:[{word:'vanishingly',d:'extremely small'},{word:'extraterrestrial',d:'from outside Earth'},{word:'annihilation',d:'complete destruction'}]},
-    {id:'c1_3',title:'The Architecture of Loneliness',titleCn:'孤独的建筑学',level:'C1',tags:['psychology','life'],wordCount:250,readMinutes:9,hl:['epidemic','devastating','inflammatory','contagious','albeit'],
-      content:'Loneliness has reached epidemic proportions in the 21st century. Recent research suggests it is not merely a social inconvenience — it is a biological signal with profound implications for health.\n\nNeuroscientist John Cacioppo argued that loneliness evolved as a survival mechanism. Just as hunger motivates us to seek food, loneliness motivates us to seek social connection.\n\nChronic loneliness triggers a persistent inflammatory response. The immune system shifts toward a defensive posture, producing elevated levels of pro-inflammatory cytokines. Over time, this damages blood vessels and accelerates cellular aging. Studies found that chronic loneliness increases the risk of premature death by approximately 26 percent.\n\nPerhaps most troublingly, loneliness appears to be contagious. Research demonstrated that loneliness spreads through social networks like a virus. The paradox of the digital age is that we have never been more connected, yet rates of loneliness continue to climb.',
+    {id:'c1_3',title:'The Architecture of Loneliness',titleCn:'',level:'C1',tags:['psychology','life'],wordCount:250,readMinutes:9,hl:['epidemic','devastating','inflammatory','contagious','albeit'],
+      content:'Loneliness has reached epidemic proportions in the 21st century. Recent research suggests it is not merely a social inconvenience  it is a biological signal with profound implications for health.\n\nNeuroscientist John Cacioppo argued that loneliness evolved as a survival mechanism. Just as hunger motivates us to seek food, loneliness motivates us to seek social connection.\n\nChronic loneliness triggers a persistent inflammatory response. The immune system shifts toward a defensive posture, producing elevated levels of pro-inflammatory cytokines. Over time, this damages blood vessels and accelerates cellular aging. Studies found that chronic loneliness increases the risk of premature death by approximately 26 percent.\n\nPerhaps most troublingly, loneliness appears to be contagious. Research demonstrated that loneliness spreads through social networks like a virus. The paradox of the digital age is that we have never been more connected, yet rates of loneliness continue to climb.',
       vocab:[{word:'epidemic',d:'widespread occurrence'},{word:'devastating',d:'causing great suffering'},{word:'contagious',d:'spreadable between people'}]},
-    // ===== 小说 Novels =====
-    {id:'a1_n1',title:'Alice in Wonderland (Chapter 1)',titleCn:'爱丽丝梦游仙境（第一章）',level:'A1',tags:['novel'],wordCount:120,readMinutes:4,hl:['curious','rabbit','hole','ground','wonderland','hurried'],
+    // =====  Novels =====
+    {id:'a1_n1',title:'Alice in Wonderland (Chapter 1)',titleCn:'��',level:'A1',tags:['novel'],wordCount:120,readMinutes:4,hl:['curious','rabbit','hole','ground','wonderland','hurried'],
       content:'Alice was beginning to get very tired of sitting by her sister on the bank. She had nothing to do. Once or twice she had peeped into the book her sister was reading, but it had no pictures in it.\n\nSuddenly, a White Rabbit with pink eyes ran close by her. There was nothing so very remarkable in that, but when the Rabbit actually took a watch out of its waistcoat-pocket, Alice started to her feet.\n\n"Oh dear! Oh dear! I shall be late!" said the Rabbit. It was burning with curiosity, so Alice hurried after it, and was just in time to see it pop down a large rabbit-hole under the hedge. In another moment, down went Alice after it, never once considering how she would get out again.',
       vocab:[{word:'curious',d:'wanting to know about something'},{word:'rabbit',d:'a small animal with long ears'},{word:'waistcoat',d:'a piece of clothing like a jacket'},{word:'hedge',d:'a row of bushes'},{word:'remarkable',d:'unusual or special'}]},
-    {id:'a2_n1',title:'The Secret Garden (Chapter 1)',titleCn:'秘密花园（第一章）',level:'A2',tags:['novel'],wordCount:145,readMinutes:5,hl:['orphan','lonely','mysterious','discovery','mistress','garden'],
+    {id:'a2_n1',title:'The Secret Garden (Chapter 1)',titleCn:'��',level:'A2',tags:['novel'],wordCount:145,readMinutes:5,hl:['orphan','lonely','mysterious','discovery','mistress','garden'],
       content:'When Mary Lennox was sent to Misselthwaite Manor to live with her uncle, everybody said she was the most disagreeable-looking child ever seen. She had a thin face and body, thin light hair and a sour expression.\n\nHer hair was yellow, and her face was yellow because she had been born in India and had always been ill. Her father had held a position under the English Government and was always busy. Her mother had been a great beauty who cared only about going to parties.\n\nAfter her parents died, Mary was sent to England. She arrived at the Manor on a dark evening. The house looked large and mysterious. Martha, the housemaid, told her about a secret garden that had been locked up for ten years. "No one has been in it since the old mistress died," Martha whispered.',
       vocab:[{word:'disagreeable',d:'unpleasant'},{word:'sour',d:'having a sharp taste; unfriendly'},{word:'mysterious',d:'strange and unknown'},{word:'housemaid',d:'a woman who cleans and works in a house'},{word:'whispered',d:'spoke very softly'}]},
-    {id:'a2_n2',title:'The Little Prince (Chapter 1)',titleCn:'小王子（第一章）',level:'A2',tags:['novel'],wordCount:135,readMinutes:5,hl:['drawing','adults','imagination','boa','swallow','desert','asteroid'],
+    {id:'a2_n2',title:'The Little Prince (Chapter 1)',titleCn:'��',level:'A2',tags:['novel'],wordCount:135,readMinutes:5,hl:['drawing','adults','imagination','boa','swallow','desert','asteroid'],
       content:'Once when I was six years old, I saw a magnificent picture in a book about the forest. It was called "True Stories from Nature." It showed a boa constrictor swallowing a wild beast.\n\nI showed my masterpiece to the grown-ups and asked them whether the drawing frightened them. But they answered, "Frighten? Why should anyone be frightened by a hat?" My drawing was not a picture of a hat. It was a picture of a boa constrictor digesting an elephant.\n\nThe grown-ups never understand anything by themselves, and it is tiresome for children to be always explaining things to them. So I had to choose another profession. I learned to pilot airplanes. And that is why I am now telling you the story of the Little Prince, who lived on a tiny asteroid no bigger than a house.',
       vocab:[{word:'magnificent',d:'very beautiful or impressive'},{word:'constrictor',d:'a snake that squeezes its prey'},{word:'digesting',d:'breaking down food in the stomach'},{word:'tiresome',d:'making you feel annoyed or bored'},{word:'asteroid',d:'a small rocky object in space'}]},
-    {id:'b1_n1',title:'Magic Tree House: Dinosaurs Before Dark (Ch.1)',titleCn:'神奇树屋：恐龙谷大冒险（第一章）',level:'B1',tags:['novel'],wordCount:190,readMinutes:7,hl:['ancient','enormous','creature','adventure','mysterious','fascinated','prey','carnivore'],
-      content:'Jack opened his eyes. Sunlight was streaming through the window. He sat up and stared at his little sister, Annie, who was standing by the front door. She was putting on her shoes. She was dressed and ready to go somewhere.\n\n"Come on, Jack!" she whispered urgently. "I found something really cool!"\n\nJack followed Annie into the Frog Creek woods. She ran ahead, disappearing into the trees. Jack caught up with her in a small clearing. And there it was — the most magnificent thing he had ever seen.\n\nA tree house. But not just any tree house. It was the highest tree house he had ever seen, sitting in the top of the tallest oak tree. A rope ladder hung down from a wooden door.\n\nInside, they discovered hundreds of books. When Annie pointed to a picture of a dinosaur and said "I wish we could go there," the tree house began to spin. Faster and faster. Everything was whirling. Then everything was still. Absolutely still.',
+    {id:'b1_n1',title:'Magic Tree House: Dinosaurs Before Dark (Ch.1)',titleCn:'���',level:'B1',tags:['novel'],wordCount:190,readMinutes:7,hl:['ancient','enormous','creature','adventure','mysterious','fascinated','prey','carnivore'],
+      content:'Jack opened his eyes. Sunlight was streaming through the window. He sat up and stared at his little sister, Annie, who was standing by the front door. She was putting on her shoes. She was dressed and ready to go somewhere.\n\n"Come on, Jack!" she whispered urgently. "I found something really cool!"\n\nJack followed Annie into the Frog Creek woods. She ran ahead, disappearing into the trees. Jack caught up with her in a small clearing. And there it was  the most magnificent thing he had ever seen.\n\nA tree house. But not just any tree house. It was the highest tree house he had ever seen, sitting in the top of the tallest oak tree. A rope ladder hung down from a wooden door.\n\nInside, they discovered hundreds of books. When Annie pointed to a picture of a dinosaur and said "I wish we could go there," the tree house began to spin. Faster and faster. Everything was whirling. Then everything was still. Absolutely still.',
       vocab:[{word:'streaming',d:'flowing in a steady stream'},{word:'clearing',d:'an open area in a forest'},{word:'magnificent',d:'very beautiful or impressive'},{word:'whirling',d:'spinning around quickly'}]},
-    {id:'b1_n2',title:'Charlotte\'s Web (Chapter 1)',titleCn:'夏洛的网（第一章）',level:'B1',tags:['novel'],wordCount:185,readMinutes:6,hl:['piglet','runt','rescue','compasion','gorgeous','sorrow','loyalty','devotion'],
+    {id:'b1_n2',title:'Charlotte\'s Web (Chapter 1)',titleCn:'��',level:'B1',tags:['novel'],wordCount:185,readMinutes:6,hl:['piglet','runt','rescue','compasion','gorgeous','sorrow','loyalty','devotion'],
       content:'"Where is Papa going with that axe?" said Fern to her mother as they were setting the table for breakfast.\n\n"Out to the hoghouse," replied Mrs. Arable. "Some pigs were born last night."\n\n"I do not see why he needs an axe," continued Fern, who was only eight.\n"Well," said her mother, "one of the pigs is a runt. It is very small and weak, and it will never amount to anything. So your father has decided to do away with it."\n\n"Do away with it?" shrieked Fern. "You mean kill it? Just because it is smaller than the others?" Fern pushed her chair out of the way and ran outdoors. She caught up with her father just as he was closing the gate. She pleaded with him not to kill the tiny piglet. Mr. Arable finally gave in and handed the pig to Fern. She named him Wilbur.',
       vocab:[{word:'runt',d:'the smallest animal in a litter'},{word:'shrieked',d:'cried out with a high voice'},{word:'pleaded',d:'asked in a serious and emotional way'},{word:'piglet',d:'a young pig'}]},
-    {id:'b2_n1',title:'Harry Potter: The Boy Who Lived (Ch.1)',titleCn:'哈利·波特：大难不死的男孩（第一章）',level:'B2',tags:['novel'],wordCount:230,readMinutes:8,hl:['mysterious','privet','resemble','dedication','extraordinary','phenomenon','peculiar','paranormal'],
+    {id:'b2_n1',title:'Harry Potter: The Boy Who Lived (Ch.1)',titleCn:'���',level:'B2',tags:['novel'],wordCount:230,readMinutes:8,hl:['mysterious','privet','resemble','dedication','extraordinary','phenomenon','peculiar','paranormal'],
       content:'Mr. and Mrs. Dursley, of number four, Privet Drive, were proud to say that they were perfectly normal, thank you very much. They were the last people you would expect to be involved in anything strange or mysterious, because they just did not hold with such nonsense.\n\nMr. Dursley was the director of a firm called Grunnings, which made drills. He was a big, beefy man with hardly any neck, although he did have a very large mustache. Mrs. Dursley was thin and blonde and had nearly twice the usual amount of neck, which came in very useful as she spent so much of her time craning over garden fences, spying on the neighbors.\n\nThe Dursleys had a small son called Dudley and in their opinion there was no finer boy anywhere. The Dursleys had everything they wanted, but they also had a secret, and their greatest fear was that somebody would discover it.\n\nOn a dull, gray Tuesday, a most extraordinary thing happened. A cat sat on the wall outside their house. What was extraordinary about it was that it was reading a map. And on the corner of the street, a tall old man in robes appeared out of nowhere.',
       vocab:[{word:'craning',d:'stretching one\'s neck to see something'},{word:'spying',d:'watching secretly'},{word:'robes',d:'long loose garments'},{word:'extraordinary',d:'very unusual or remarkable'}]},
   ]
@@ -856,18 +927,219 @@ let state = {
   page: 'index', level: null, interests: [],
   readingHistory: [], favorites: [], wordBook: [],
   stats: { totalMinutes: 0, totalArticles: 0, currentStreak: 0, lastReadDate: '' },
-  dailyGoal: 10, fontSize: 16, eyeCare: false,
+  dailyGoal: 10, fontSize: 16,
   currentArticle: null, readingStart: 0, wordClicks: 0,
   readingMode: 'quick', bookProgress: {}, currentBook: null, currentChapterIdx: 0
 };
 let selectedInterests = [];
 let pageHistory = [];
 
+// ============ USER MANAGEMENT ============
+var currentUser = null;
+var allUsers = [];
+var USER_COLORS = ['#4A90D9','#E74C3C','#2ECC71','#F39C12','#9B59B6','#1ABC9C','#E67E22','#3498DB'];
+
+function initUserSystem() {
+  allUsers = JSON.parse(localStorage.getItem('er_allUsers') || '[]');
+  var lastUser = localStorage.getItem('er_currentUser');
+  if (allUsers.length === 0) {
+    allUsers.push({id:'default', name:'Me', color:USER_COLORS[0], created:Date.now()});
+    saveUserList();
+  }
+  if (lastUser && allUsers.find(function(u){return u.id===lastUser})) {
+    switchUser(lastUser, true);
+  } else {
+    switchUser(allUsers[0].id, true);
+  }
+}
+
+function saveUserList() { localStorage.setItem('er_allUsers', JSON.stringify(allUsers)); }
+
+function switchUser(userId, isInit) {
+  if (currentUser && !isInit) saveAll();
+  currentUser = userId;
+  localStorage.setItem('er_currentUser', userId);
+  loadState();
+  renderUserBar();
+  renderProfile();
+  if (!isInit) showPage(state.page || 'index');
+}
+
+function renderUserBar() {
+  var bar = document.getElementById('userAvatars');
+  if (!bar) return;
+  bar.innerHTML = allUsers.map(function(u) {
+    var active = u.id === currentUser ? 'active' : '';
+    var initial = u.name.charAt(0).toUpperCase();
+    return '<div class="user-avatar-sm '+active+'" style="background:'+u.color+';color:#fff" onclick="switchUser(\''+u.id+'\')" title="'+u.name+'">'+initial+'</div>';
+  }).join('');
+}
+
+function showAddUser() {
+  document.getElementById('newUserName').value = '';
+  document.getElementById('addUserOverlay').style.display = 'flex';
+  setTimeout(function(){ document.getElementById('newUserName').focus(); }, 100);
+}
+
+function hideAddUser() { document.getElementById('addUserOverlay').style.display = 'none'; }
+
+function confirmAddUser() {
+  var name = document.getElementById('newUserName').value.trim();
+  if (!name) { toast('Please enter a nickname'); return; }
+  if (name.length > 8) { toast('Max 8 characters'); return; }
+  var id = 'user_' + Date.now();
+  var color = USER_COLORS[allUsers.length % USER_COLORS.length];
+  allUsers.push({id:id, name:name, color:color, created:Date.now()});
+  saveUserList();
+  hideAddUser();
+  switchUser(id);
+  toast('Added: ' + name);
+}
+
+// ============ BOOK UPLOAD ============
+var pendingBookContent = '';
+
+function triggerBookUpload() { document.getElementById('bookFileInput').click(); }
+
+function handleBookFile(event) {
+  var file = event.target.files[0];
+  if (!file) return;
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    pendingBookContent = e.target.result;
+    var fname = file.name.replace(/\.txt$/i, '');
+    document.getElementById('parseTitle').value = fname;
+    document.getElementById('parseTitleCn').value = '';
+    document.getElementById('parseAuthor').value = '';
+    document.getElementById('parseLevel').value = 'B2';
+    document.getElementById('parseDialog').style.display = 'flex';
+  };
+  reader.readAsText(file);
+  event.target.value = '';
+}
+
+function hideParseDialog() { document.getElementById('parseDialog').style.display = 'none'; pendingBookContent = ''; }
+
+function extractHl(text) {
+  var hl = [];
+  text.split(/\s+/).forEach(function(w) {
+    var clean = w.replace(/[^a-zA-Z]/g, '');
+    if (clean.length >= 8 && hl.length < 10 && hl.indexOf(clean.toLowerCase()) === -1) hl.push(clean.toLowerCase());
+  });
+  return hl;
+}
+
+function confirmParseBook() {
+  var title = document.getElementById('parseTitle').value.trim();
+  var titleCn = document.getElementById('parseTitleCn').value.trim() || title;
+  var level = document.getElementById('parseLevel').value;
+  var author = document.getElementById('parseAuthor').value.trim() || 'Unknown';
+  if (!title) { toast('Please enter book title'); return; }
+  if (!pendingBookContent) { toast('No file content'); return; }
+
+  var text = pendingBookContent;
+  var chapters = [];
+  var chapterRe = /(?:^|\n)\s*(?:Chapter\s+\d+|CHAPTER\s+\d+|Chapter\s+[IVXLCDM]+|CHAPTER\s+[IVXLCDM]+)[\s:.\-\n]*/gi;
+  var parts = text.split(chapterRe).filter(function(p){return p.trim();});
+
+  if (parts.length >= 2) {
+    var titles = text.match(chapterRe);
+    for (var i = 0; i < parts.length; i++) {
+      var chTitle = titles && titles[i] ? titles[i].trim() : 'Chapter ' + (i+1);
+      var content = parts[i].trim();
+      if (content.length > 20) {
+        var words = content.split(/\s+/).length;
+        chapters.push({id:i+1, title:chTitle, titleCn:'Ch.'+(i+1), wordCount:words, readMinutes:Math.max(1,Math.round(words/200)), hl:extractHl(content), content:content, vocab:[]});
+      }
+    }
+  } else {
+    var paragraphs = text.split(/\n\n+/).filter(function(p){return p.trim();});
+    var sec = '', sIdx = 0, wc = 0;
+    for (var j = 0; j < paragraphs.length; j++) {
+      var pw = paragraphs[j].trim().split(/\s+/).length;
+      if (sec && wc + pw > 500) {
+        sIdx++;
+        var sw = sec.split(/\s+/).length;
+        chapters.push({id:sIdx, title:'Part '+sIdx, titleCn:'Part '+(sIdx), wordCount:sw, readMinutes:Math.max(1,Math.round(sw/200)), hl:extractHl(sec), content:sec.trim(), vocab:[]});
+        sec = paragraphs[j].trim(); wc = pw;
+      } else { sec += '\n\n' + paragraphs[j].trim(); wc += pw; }
+    }
+    if (sec.trim()) {
+      sIdx++;
+      var sw2 = sec.split(/\s+/).length;
+      chapters.push({id:sIdx, title:'Part '+sIdx, titleCn:'Part '+(sIdx), wordCount:sw2, readMinutes:Math.max(1,Math.round(sw2/200)), hl:extractHl(sec), content:sec.trim(), vocab:[]});
+    }
+  }
+
+  if (chapters.length === 0) { toast('Cannot parse file'); return; }
+
+  var bookId = 'upload_' + Date.now();
+  var book = {id:bookId, title:title, titleCn:titleCn, author:author, level:level, color:USER_COLORS[Math.floor(Math.random()*USER_COLORS.length)], icon:'📖', uploaded:true, chapters:chapters};
+  var uploaded = JSON.parse(localStorage.getItem('er_uploadedBooks_' + currentUser) || '[]');
+  uploaded.push(book);
+  localStorage.setItem('er_uploadedBooks_' + currentUser, JSON.stringify(uploaded));
+  hideParseDialog();
+  toast('Imported! ' + chapters.length + ' chapters');
+  navigateTo('uploaded-books');
+}
+
+function renderUploadedBooks() {
+  var el = document.getElementById('uploadedBooksList');
+  if (!el) return;
+  var uploaded = [];
+  try { uploaded = JSON.parse(localStorage.getItem('er_uploadedBooks_' + currentUser) || '[]'); } catch(e) {}
+  var countEl = document.getElementById('uploadedCount');
+  if (countEl) countEl.textContent = uploaded.length + ' books ›';
+  if (!uploaded.length) {
+    el.innerHTML = '<div style="text-align:center;padding:24px;color:var(--text3);font-size:14px">No uploaded books yet.<br>Upload a TXT file to get started.</div>';
+    return;
+  }
+  el.innerHTML = uploaded.map(function(b, i) {
+    return '<div class="uploaded-book-item" onclick="openUploadedBook('+i+')"><div style="font-size:28px">'+b.icon+'</div><div class="ub-info"><div class="ub-title">'+b.title+'</div><div class="ub-meta">'+b.titleCn+' &middot; <span class="ltag ltag-'+b.level.toLowerCase()+'" style="font-size:11px;padding:1px 6px">'+b.level+'</span> &middot; '+b.chapters.length+' chapters</div></div><div class="ub-delete" onclick="event.stopPropagation();deleteUploadedBook('+i+')">🗑</div></div>';
+  }).join('');
+}
+
+function deleteUploadedBook(idx) {
+  var uploaded = JSON.parse(localStorage.getItem('er_uploadedBooks_' + currentUser) || '[]');
+  uploaded.splice(idx, 1);
+  localStorage.setItem('er_uploadedBooks_' + currentUser, JSON.stringify(uploaded));
+  renderUploadedBooks();
+  toast('Deleted');
+}
+
+function openUploadedBook(idx) {
+  var uploaded = JSON.parse(localStorage.getItem('er_uploadedBooks_' + currentUser) || '[]');
+  if (!uploaded[idx]) return;
+  state.currentBook = uploaded[idx];
+  state.currentChapterIdx = 0;
+  if (!state.bookProgress) state.bookProgress = {};
+  if (state.bookProgress[uploaded[idx].id] && state.bookProgress[uploaded[idx].id].chapterIdx > 0) {
+    state.currentChapterIdx = state.bookProgress[uploaded[idx].id].chapterIdx;
+  }
+  renderImmersiveChapter();
+}
+
+function renderProfile() {
+  var user = allUsers.find(function(u){return u.id===currentUser});
+  var lv = state.level;
+  var lvName = {A1:'Beginner',A2:'Elementary',B1:'Intermediate',B2:'Upper-Intermediate',C1:'Advanced'};
+  var pnEl = document.getElementById('profileUserName');
+  if (pnEl) pnEl.textContent = user ? user.name : 'Unknown';
+  document.getElementById('profileLevel').textContent = lv ? lv : 'Not rated';
+  var plnEl = document.getElementById('profileLevelName');
+  if (plnEl) plnEl.textContent = lv ? (lvName[lv]||'') : '';
+  var avatarEl = document.getElementById('profileAvatar');
+  if (avatarEl) { avatarEl.textContent = user ? user.name.charAt(0).toUpperCase() : '?'; if (user) avatarEl.style.background = user.color; }
+  var adjBtn = document.getElementById('adjustBtn');
+  if (adjBtn) adjBtn.style.display = lv ? 'inline-block' : 'none';
+  renderUploadedBooks();
+}
+
 // ============ PERSISTENCE ============
-function save(k) { try { localStorage.setItem('er_' + k, JSON.stringify(state[k])); } catch(e) {} }
-function load(k) { try { const v = localStorage.getItem('er_' + k); return v ? JSON.parse(v) : null; } catch(e) { return null; } }
+function save(k) { try { localStorage.setItem('er_' + currentUser + '_' + k, JSON.stringify(state[k])); } catch(e) {} }
+function load(k) { try { var v = localStorage.getItem('er_' + currentUser + '_' + k); if (v !== null) return JSON.parse(v); v = localStorage.getItem('er_' + k); return v ? JSON.parse(v) : null; } catch(e) { return null; } }
 function loadState() {
-  ['level','interests','readingHistory','favorites','wordBook','stats','dailyGoal','fontSize','eyeCare','readingMode','bookProgress'].forEach(k => {
+  ['level','interests','readingHistory','favorites','wordBook','stats','dailyGoal','fontSize','readingMode','bookProgress'].forEach(k => {
     const v = load(k); if (v !== null) state[k] = v;
   });
   state.readingHistory = state.readingHistory || [];
@@ -875,9 +1147,8 @@ function loadState() {
   state.wordBook = state.wordBook || [];
   state.stats = state.stats || { totalMinutes: 0, totalArticles: 0, currentStreak: 0, lastReadDate: '' };
   state.bookProgress = state.bookProgress || {};
-  if (state.eyeCare) document.body.classList.add('eye-care');
 }
-function saveAll() { ['level','interests','readingHistory','favorites','wordBook','stats','dailyGoal','fontSize','eyeCare','readingMode','bookProgress'].forEach(save); }
+function saveAll() { ['level','interests','readingHistory','favorites','wordBook','stats','dailyGoal','fontSize','readingMode','bookProgress'].forEach(save); }
 
 // ============ NAV ============
 function switchTab(tab) {
@@ -893,6 +1164,7 @@ function navigateTo(page) {
   showPage(page);
   document.getElementById('tabBar').style.display = (page === 'reading' || page === 'immersive') ? 'none' : 'flex';
   if (page === 'level-test') renderLevelTest();
+  if (page === 'uploaded-books') renderUploadedBooks();
 }
 function navigateBack() {
   const prev = pageHistory.pop() || 'index';
@@ -917,11 +1189,11 @@ function toast(msg) {
 // ============ INDEX ============
 function renderIndex() {
   const h = new Date().getHours();
-  document.getElementById('greeting').textContent = h < 6 ? '夜深了' : h < 12 ? '早上好' : h < 14 ? '中午好' : h < 18 ? '下午好' : '晚上好';
+  document.getElementById('greeting').textContent = h < 6 ? '' : h < 12 ? '' : h < 14 ? '' : h < 18 ? '' : '';
 
   if (state.stats.currentStreak > 0) {
     document.getElementById('streak').style.display = 'block';
-    document.getElementById('streak').textContent = '🔥 连续阅读 ' + state.stats.currentStreak + ' 天';
+    document.getElementById('streak').textContent = '�  ' + state.stats.currentStreak + ' ';
   }
 
   if (!state.level) {
@@ -931,7 +1203,7 @@ function renderIndex() {
     document.getElementById('statsCard').style.display = 'none';
   } else {
     document.getElementById('levelTip').style.display = 'none';
-    // 默认设置全部兴趣，直接显示推荐
+    // �
     if (state.interests.length === 0) {
       state.interests = INTERESTS.map(i => i.key);
       save('interests');
@@ -967,15 +1239,15 @@ function toggleInterest(key) {
   const idx = selectedInterests.indexOf(key);
   if (idx > -1) selectedInterests.splice(idx, 1);
   else if (selectedInterests.length < 3) selectedInterests.push(key);
-  else { toast('最多选择3个兴趣'); return; }
+  else { toast('3'); return; }
   renderInterestSelector();
 }
 function confirmInterests() {
-  if (!selectedInterests.length) { toast('请至少选择1个'); return; }
+  if (!selectedInterests.length) { toast('1'); return; }
   state.interests = [...selectedInterests]; save('interests');
   document.getElementById('interestCard').style.display = 'none';
   document.getElementById('recommendCard').style.display = 'block';
-  loadDaily(); toast('设置成功');
+  loadDaily(); toast('');
 }
 function shuffle(arr) {
   const a = [...arr]; for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]; } return a;
@@ -993,11 +1265,11 @@ function loadDaily() {
     <div class="article-card" onclick="openArticle('${a.id}')">
       <div class="ac-header">
         <div class="ac-tags"><span class="ltag ltag-${a.level.toLowerCase()}">${a.level}</span>${a.tags.map(t=>`<span class="ac-tag">${t}</span>`).join('')}</div>
-        <span class="ac-time">${a.readMinutes} 分钟</span>
+        <span class="ac-time">${a.readMinutes} </span>
       </div>
       <span class="ac-title">${a.title}</span>
       <span class="ac-cn">${a.titleCn}</span>
-      <div class="ac-footer"><span class="ac-words">${a.wordCount} 词</span><span class="ac-read">开始阅读 →</span></div>
+      <div class="ac-footer"><span class="ac-words">${a.wordCount} </span><span class="ac-read"> </span></div>
     </div>
   `).join('');
 }
@@ -1011,12 +1283,12 @@ function openArticle(id) {
   state.currentArticle = a; state.readingStart = Date.now(); state.wordClicks = 0;
   const tag = document.getElementById('readLevelTag');
   tag.className = 'ltag ltag-' + a.level.toLowerCase(); tag.textContent = a.level;
-  document.getElementById('readWordCount').textContent = a.wordCount + ' 词';
+  document.getElementById('readWordCount').textContent = a.wordCount + ' ';
   document.getElementById('readTitle').textContent = a.title;
   document.getElementById('readCn').textContent = a.titleCn;
-  document.getElementById('readTags').innerHTML = a.tags.map(t => `<span class="rm-tag">${t}</span>`).join('') + `<span class="rm-tag">${a.readMinutes} 分钟</span>`;
+  document.getElementById('readTags').innerHTML = a.tags.map(t => `<span class="rm-tag">${t}</span>`).join('') + `<span class="rm-tag">${a.readMinutes} </span>`;
   document.getElementById('readProgress').textContent = '0%';
-  document.getElementById('favBtn').textContent = state.favorites.some(f=>f.id===a.id) ? '❤️' : '🤍';
+  document.getElementById('favBtn').textContent = state.favorites.some(f=>f.id===a.id) ? '�' : '�';
   const hlSet = new Set((a.hl||[]).map(w=>w.toLowerCase()));
   const body = document.getElementById('readingBody');
   body.innerHTML = a.content.split('\n').filter(p=>p.trim()).map(para => {
@@ -1029,7 +1301,6 @@ function openArticle(id) {
   }).join('');
   body.style.fontSize = state.fontSize + 'px';
   body.style.lineHeight = '2';
-  document.body.classList.toggle('eye-care', state.eyeCare);
   navigateTo('reading');
   // scroll progress
   body.parentElement.onscroll = () => {
@@ -1070,8 +1341,8 @@ function toggleFav() {
   if (idx > -1) state.favorites.splice(idx, 1);
   else state.favorites.unshift({ id: a.id, title: a.title, titleCn: a.titleCn, level: a.level, tags: a.tags, wordCount: a.wordCount });
   save('favorites');
-  document.getElementById('favBtn').textContent = idx > -1 ? '🤍' : '❤️';
-  toast(idx > -1 ? '已取消收藏' : '已收藏');
+  document.getElementById('favBtn').textContent = idx > -1 ? '�' : '�';
+  toast(idx > -1 ? '' : '');
 }
 function showSettings() { document.getElementById('settingsPanel').classList.add('show'); }
 function hideSettings(e) { if (!e || e.target === document.getElementById('settingsPanel')) document.getElementById('settingsPanel').classList.remove('show'); }
@@ -1079,11 +1350,6 @@ function changeFontSize(d) {
   state.fontSize = Math.max(14, Math.min(22, state.fontSize + d));
   document.getElementById('readingBody').style.fontSize = state.fontSize + 'px';
   save('fontSize');
-}
-function toggleEyeCare(v) {
-  state.eyeCare = v;
-  document.body.classList.toggle('eye-care', v);
-  save('eyeCare');
 }
 function completeReading() {
   const mins = Math.max(1, Math.round((Date.now() - state.readingStart) / 60000));
@@ -1100,7 +1366,7 @@ function completeReading() {
   state.readingHistory.unshift({ ...a, readTime: Date.now() });
   if (state.readingHistory.length > 100) state.readingHistory.length = 100;
   saveAll();
-  toast('🎉 阅读完成！');
+  toast('� �');
   setTimeout(navigateBack, 1000);
 }
 
@@ -1131,12 +1397,12 @@ function renderTestArticle() {
   }).join(' ');
   document.getElementById('testArea').innerHTML = `
     <div class="test-progress">
-      <div class="tp-info"><span>第 ${testIdx+1} / ${testArticles.length} 篇</span><span class="ltag ltag-${a.level.toLowerCase()}">${a.level} 级别</span></div>
+      <div class="tp-info"><span> ${testIdx+1} / ${testArticles.length} </span><span class="ltag ltag-${a.level.toLowerCase()}">${a.level} </span></div>
       <div class="tp-bar"><div class="tp-fill" style="width:${pct}%"></div></div>
     </div>
-    <div class="test-tip">💡 像平时阅读一样，自然地读就好。遇到不认识的词可以点击查看。</div>
+    <div class="test-tip">� �</div>
     <div class="test-content"><div class="t-title">${a.title}</div><div style="font-size:${state.fontSize}px;line-height:2">${html}</div></div>
-    <button class="test-next-btn" onclick="${testIdx < testArticles.length-1 ? 'nextTest()' : 'finishTest()'}">${testIdx < testArticles.length-1 ? '读完了，下一篇 →' : '完成定级 ✓'}</button>
+    <button class="test-next-btn" onclick="${testIdx < testArticles.length-1 ? 'nextTest()' : 'finishTest()'}">${testIdx < testArticles.length-1 ? '� ' : ' '}</button>
   `;
 }
 function testTapWord(el, clean) {
@@ -1157,28 +1423,28 @@ function finishTest() {
   if (cr[1] < 0.15) score += 1; if (cr[1] < 0.08) score += 1;
   if (cr[2] < 0.2) score += 1; if (cr[2] < 0.12) score += 1; if (cr[2] < 0.06) score += 2;
   let level, name, desc, rec;
-  if (score >= 7) { level='C1'; name='高级 Advanced'; desc='你的英语水平很好！可以阅读大部分原版内容。'; rec='B2'; }
-  else if (score >= 5) { level='B2'; name='中高级 Upper-Intermediate'; desc='你有不错的英语基础，可以阅读较复杂的文章。'; rec='B2'; }
-  else if (score >= 3) { level='B1'; name='中级 Intermediate'; desc='适合阅读中等难度的英语内容。'; rec='B1'; }
-  else if (score >= 1.5) { level='A2'; name='初级 Elementary'; desc='适合阅读简单明了的英语内容。'; rec='A2'; }
-  else { level='A1'; name='入门 Beginner'; desc='适合阅读最简单的英语内容。'; rec='A1'; }
+  if (score >= 7) { level='C1'; name=' Advanced'; desc='�'; rec='B2'; }
+  else if (score >= 5) { level='B2'; name=' Upper-Intermediate'; desc='�'; rec='B2'; }
+  else if (score >= 3) { level='B1'; name=' Intermediate'; desc=''; rec='B1'; }
+  else if (score >= 1.5) { level='A2'; name=' Elementary'; desc=''; rec='A2'; }
+  else { level='A1'; name=' Beginner'; desc=''; rec='A1'; }
   state.level = level; save('level');
   document.getElementById('resultArea').innerHTML = `
     <div class="result-page">
-      <div class="r-icon">🎉</div>
-      <div class="r-title">定级完成！</div>
+      <div class="r-icon">�</div>
+      <div class="r-title">�</div>
       <div class="result-level-card">
-        <div class="rl-label">你的英语水平</div>
+        <div class="rl-label"></div>
         <div class="rl-badge ltag ltag-${level.toLowerCase()}" style="font-size:48px;padding:8px 32px">${level}</div>
         <div class="rl-name">${name}</div>
         <div class="rl-desc">${desc}</div>
       </div>
       <div class="result-rec">
-        <div class="rec-label">推荐阅读难度</div>
-        <div class="rec-levels"><span class="ltag ltag-${rec.toLowerCase()}" style="font-size:16px;padding:4px 16px">${rec}</span><span class="rec-hint">系统会自动推荐适合你水平的内容</span></div>
+        <div class="rec-label"></div>
+        <div class="rec-levels"><span class="ltag ltag-${rec.toLowerCase()}" style="font-size:16px;padding:4px 16px">${rec}</span><span class="rec-hint"></span></div>
       </div>
-      <div class="result-tip">💡 你可以随时在"我的"页面手动调整难度等级</div>
-      <button class="result-btn" onclick="switchTab('index');document.getElementById('tabBar').style.display='flex';">开始阅读</button>
+      <div class="result-tip">� ""</div>
+      <button class="result-btn" onclick="switchTab('index');document.getElementById('tabBar').style.display='flex';"></button>
     </div>
   `;
 }
@@ -1189,47 +1455,47 @@ function switchHistTab(tab) {
   document.querySelectorAll('.hist-tab').forEach((t,i) => t.classList.toggle('active', ['history','favorites','wordbook'][i] === tab));
   const el = document.getElementById('histContent');
   if (tab === 'history') {
-    if (!state.readingHistory.length) { el.innerHTML = '<div class="empty-state">还没有阅读记录，快去读一篇吧</div>'; return; }
+    if (!state.readingHistory.length) { el.innerHTML = '<div class="empty-state">�</div>'; return; }
     const groups = {};
     state.readingHistory.forEach(h => {
       const d = new Date(h.readTime).toISOString().split('T')[0];
-      const label = d === new Date().toISOString().split('T')[0] ? '今天' : d;
+      const label = d === new Date().toISOString().split('T')[0] ? '' : d;
       if (!groups[label]) groups[label] = [];
       groups[label].push(h);
     });
     el.innerHTML = Object.entries(groups).map(([label, items]) =>
       `<div class="date-label">${label}</div>` + items.map(a => `
         <div class="hist-item" onclick="openArticle('${a.id}')">
-          <div class="hi-header"><span class="ltag ltag-${a.level.toLowerCase()}">${a.level}</span><span style="font-size:11px;color:var(--text3)">${a.titleCn} · ${a.wordCount}词</span></div>
+          <div class="hi-header"><span class="ltag ltag-${a.level.toLowerCase()}">${a.level}</span><span style="font-size:11px;color:var(--text3)">${a.titleCn}  ${a.wordCount}</span></div>
           <div class="hi-title">${a.title}</div>
         </div>`).join('')
     ).join('');
   } else if (tab === 'favorites') {
-    if (!state.favorites.length) { el.innerHTML = '<div class="empty-state">还没有收藏文章</div>'; return; }
+    if (!state.favorites.length) { el.innerHTML = '<div class="empty-state"></div>'; return; }
     el.innerHTML = state.favorites.map(a => `
       <div class="hist-item" onclick="openArticle('${a.id}')">
-        <div class="hi-header"><span class="ltag ltag-${a.level.toLowerCase()}">${a.level}</span><span>❤️</span></div>
+        <div class="hi-header"><span class="ltag ltag-${a.level.toLowerCase()}">${a.level}</span><span>�</span></div>
         <div class="hi-title">${a.title}</div>
-        <div class="hi-desc">${a.titleCn} · ${a.wordCount}词</div>
+        <div class="hi-desc">${a.titleCn}  ${a.wordCount}</div>
       </div>`).join('');
   } else {
-    if (!state.wordBook.length) { el.innerHTML = '<div class="empty-state">阅读时点击生词，会自动记录在这里</div>'; return; }
+    if (!state.wordBook.length) { el.innerHTML = '<div class="empty-state">�</div>'; return; }
     el.innerHTML = `
       <div class="wordbook-header">
-        <span class="wb-title">共 ${state.wordBook.length} 个生词</span>
+        <span class="wb-title"> ${state.wordBook.length} </span>
         <div class="wb-actions">
-          <button class="wb-btn" onclick="exportWordBook('words')">纯单词</button>
+          <button class="wb-btn" onclick="exportWordBook('words')"></button>
           <button class="wb-btn" onclick="exportWordBook('csv')">CSV</button>
-          <button class="wb-btn" onclick="exportWordBook('txt')">详细 TXT</button>
+          <button class="wb-btn" onclick="exportWordBook('txt')"> TXT</button>
         </div>
       </div>
       ${state.wordBook.map((w,i) => `
         <div class="word-item">
           <div class="wi-top">
-            <div class="wi-head"><span class="wi-word">${w.word}</span><span class="wi-count">遇见 ${w.count} 次</span></div>
+            <div class="wi-head"><span class="wi-word">${w.word}</span><span class="wi-count"> ${w.count} </span></div>
             <div class="wi-def">${w.def}</div>
           </div>
-          <span class="wi-del" onclick="deleteWord(${i})">✕</span>
+          <span class="wi-del" onclick="deleteWord(${i})"></span>
         </div>`).join('')}
     `;
   }
@@ -1239,7 +1505,7 @@ function switchHistTab(tab) {
 function renderProfile() {
   const lv = state.level;
   document.getElementById('profileAvatar').textContent = lv || '?';
-  document.getElementById('profileLevel').textContent = lv ? lv : '未定级';
+  document.getElementById('profileLevel').textContent = lv ? lv : '';
   document.getElementById('adjustBtn').style.display = lv ? 'block' : 'none';
   const lc = LEVELS.find(l => l.key === lv);
   document.getElementById('profileLevelName').textContent = lc ? `${lc.name} ${lc.desc}` : '';
@@ -1247,7 +1513,7 @@ function renderProfile() {
   document.getElementById('pMinutes').textContent = state.stats.totalMinutes;
   document.getElementById('pStreak').textContent = state.stats.currentStreak;
   document.getElementById('pWords').textContent = state.wordBook.length;
-  document.getElementById('goalDisplay').textContent = state.dailyGoal + '分钟 ›';
+  document.getElementById('goalDisplay').textContent = state.dailyGoal + ' ';
   const tagsEl = document.getElementById('myTags');
   const noEl = document.getElementById('noInterest');
   if (state.interests.length) {
@@ -1259,16 +1525,16 @@ function showLevelSelector() { document.getElementById('levelSelector').classLis
 function hideLevelSelector(e) { if (!e || e.target === document.getElementById('levelSelector')) document.getElementById('levelSelector').classList.remove('show'); }
 function setLevel(lv) {
   state.level = lv; save('level');
-  hideLevelSelector(); renderProfile(); toast('已调整为 ' + lv);
+  hideLevelSelector(); renderProfile(); toast(' ' + lv);
 }
 function setDailyGoal() {
   const goals = [5, 10, 15, 20, 30];
-  const btns = goals.map(g => `<div class="lo-item" onclick="document.getElementById('levelSelector').classList.remove('show');state.dailyGoal=${g};save('dailyGoal');renderProfile();toast('每日目标：${g}分钟')">${g} 分钟</div>`).join('');
-  document.getElementById('levelSelector').querySelector('.lo-title').textContent = '选择每日阅读时长';
+  const btns = goals.map(g => `<div class="lo-item" onclick="document.getElementById('levelSelector').classList.remove('show');state.dailyGoal=${g};save('dailyGoal');renderProfile();toast('�${g}')">${g} </div>`).join('');
+  document.getElementById('levelSelector').querySelector('.lo-title').textContent = '';
   document.getElementById('levelSelector').querySelector('.lo-title').nextElementSibling.insertAdjacentHTML;
   // reuse selector
   const opts = document.querySelector('.level-options');
-  opts.innerHTML = `<div class="lo-title">每日阅读时长</div>${btns}<div class="lo-cancel" onclick="hideLevelSelector()">取消</div>`;
+  opts.innerHTML = `<div class="lo-title"></div>${btns}<div class="lo-cancel" onclick="hideLevelSelector()"></div>`;
   document.getElementById('levelSelector').classList.add('show');
 }
 function showAbout() { document.getElementById('aboutOverlay').classList.add('show'); }
@@ -1279,10 +1545,10 @@ function deleteWord(idx) {
   state.wordBook.splice(idx, 1);
   save('wordBook');
   switchHistTab('wordbook');
-  toast('已删除');
+  toast('');
 }
 function exportWordBook(format) {
-  if (!state.wordBook.length) { toast('生词本是空的'); return; }
+  if (!state.wordBook.length) { toast(''); return; }
   let content, filename, mime;
   if (format === 'words') {
     content = state.wordBook.map(w => w.word).join('\n');
@@ -1292,8 +1558,8 @@ function exportWordBook(format) {
     content += state.wordBook.map(w => `"${w.word}","${w.def}",${w.count},"${w.time ? new Date(w.time).toLocaleDateString() : '-'}"`).join('\n');
     filename = 'wordbook.csv'; mime = 'text/csv;charset=utf-8';
   } else {
-    content = '📖 我的生词本\n' + '='.repeat(30) + '\n导出日期: ' + new Date().toLocaleDateString() + '\n共 ' + state.wordBook.length + ' 个生词\n\n';
-    content += state.wordBook.map((w,i) => `${i+1}. ${w.word}\n   ${w.def}\n   遇见 ${w.count} 次\n`).join('\n');
+    content = '� \n' + '='.repeat(30) + '\n: ' + new Date().toLocaleDateString() + '\n ' + state.wordBook.length + ' \n\n';
+    content += state.wordBook.map((w,i) => `${i+1}. ${w.word}\n   ${w.def}\n    ${w.count} \n`).join('\n');
     filename = 'wordbook.txt'; mime = 'text/plain;charset=utf-8';
   }
   const blob = new Blob([content], { type: mime });
@@ -1302,32 +1568,32 @@ function exportWordBook(format) {
   a.href = url; a.download = filename;
   document.body.appendChild(a); a.click();
   document.body.removeChild(a); URL.revokeObjectURL(url);
-  toast('已导出: ' + filename);
+  toast(': ' + filename);
 }
 
 
 // ============ BOOKS DATA ============
 const BOOKS=[
-{id:'alice',title:'Alice in Wonderland',titleCn:'爱丽丝梦游仙境',author:'Lewis Carroll',level:'A1',color:'#6C5CE7',icon:'🐰',chapters:[
-{id:1,title:'Down the Rabbit Hole',titleCn:'掉进兔子洞',wordCount:150,readMinutes:5,hl:['curious','waistcoat','rabbit','hedge','remarkable','hurried'],content:'Alice was beginning to get very tired of sitting by her sister on the bank. She had nothing to do. Once or twice she had peeped into the book her sister was reading, but it had no pictures or conversations in it.\n\nSuddenly, a White Rabbit with pink eyes ran close by her. When the Rabbit actually took a watch out of its waistcoat-pocket, Alice started to her feet.\n\n"Burning with curiosity," she ran across the field after it, and was just in time to see it pop down a large rabbit-hole under the hedge. In another moment, down went Alice after it, never once considering how she would get out again.\n\nThe rabbit-hole went straight on like a tunnel for some way, and then dipped suddenly down, so suddenly that Alice had not a moment to think about stopping herself before she found herself falling down what seemed to be a very deep well.',vocab:[{word:'curious',d:'wanting to know'},{word:'waistcoat',d:'a vest-like garment'},{word:'hedge',d:'a row of bushes'},{word:'remarkable',d:'unusual'},{word:'tunnel',d:'underground passage'}]},
-{id:2,title:'The Pool of Tears',titleCn:'泪水池',wordCount:140,readMinutes:5,hl:['enormous','desperate','sob','shore'],content:'Down, down, down. Would the fall never come to an end? "I wonder how many miles I have fallen by this time?" Alice said aloud.\n\nDown, down, down. There was nothing else to do, so Alice soon began talking again. "Dinah will miss me very much tonight," she thought. Dinah was her cat.\n\nSplash! She was now in a pool of salty water. It was the pool of tears she had cried. But she was not desperate now. She was swimming happily.\n\nJust then she heard something splashing about in the pool a little way off. She swam nearer to see what it was. At first she thought it must be a walrus or hippopotamus, but then she remembered how small she was, and it was just a mouse.',vocab:[{word:'enormous',d:'extremely large'},{word:'desperate',d:'hopeless'},{word:'sob',d:'cry loudly'},{word:'shore',d:'edge of water'}]},
-{id:3,title:'A Mad Tea Party',titleCn:'疯狂的茶会',wordCount:155,readMinutes:5,hl:['dormouse','riddle','mutter','curious','uncomfortable'],content:'There was a table set out under a tree in front of the house, and the March Hare and the Hatter were having tea at it. A Dormouse was sitting between them, fast asleep.\n\nThe table was a large one, but the three were all crowded together at one corner. "No room! No room!" they cried out when they saw Alice coming. "There is plenty of room!" said Alice, and she sat down in a large arm-chair.\n\n"Have some wine," the March Hare said. "I don\'t see any wine," Alice remarked. "There isn\'t any," said the March Hare.\n\n"Tell me a riddle," said the Mad Hatter. "Why is a raven like a writing-desk?" Alice could not guess the answer.',vocab:[{word:'dormouse',d:'a small sleeping rodent'},{word:'riddle',d:'a puzzling question'},{word:'mutter',d:'speak in low voice'}]},
-{id:4,title:'The Queen of Hearts',titleCn:'红心王后',wordCount:145,readMinutes:5,hl:['procession','frightened','terrified','polite'],content:'A large rose-tree stood near the entrance of the garden, and the roses growing on it were white, but there were three gardeners at it, busily painting them red. "Why are you painting those roses?" Alice asked.\n\nThen the Queen came. "Off with their heads!" she shouted at the top of her voice. Nobody moved. The soldiers were very frightened.\n\n"Who are you?" said the Queen to Alice. Alice was not at all frightened. "My name is Alice, Your Majesty," she said politely.\n\n"Can you play croquet?" shouted the Queen. The game was very strange. The balls were live hedgehogs, and the mallets were live flamingos. Alice found it very difficult to manage her flamingo.',vocab:[{word:'procession',d:'a line of people moving'},{word:'frightened',d:'afraid'},{word:'polite',d:'having good manners'}]},
-{id:5,title:'Alice\'s Evidence',titleCn:'爱丽丝的证词',wordCount:135,readMinutes:5,hl:['witness','accuse','nonsense','jury'],content:'"Here!" cried Alice. She jumped up in such a hurry that she tipped over the jury-box, upsetting all the jury on to the heads of the crowd below.\n\n"Oh, I beg your pardon!" exclaimed Alice. "The trial cannot go on," said the King, "until all the jury are in their places."\n\n"What do you know about this business?" the King asked Alice. "Nothing," said Alice.\n\n"Off with her head!" shouted the Queen. "Nonsense!" said Alice, very loudly and decidedly.\n\n"You are nothing but a pack of cards!" cried Alice. At this, the whole pack rose up into the air and came flying down upon her. She gave a little scream and woke up to find herself on the bank, with her head in the lap of her sister, who was gently brushing away some dead leaves that had fallen on her face.',vocab:[{word:'witness',d:'a person who sees something'},{word:'accuse',d:'to say someone did wrong'},{word:'jury',d:'a group deciding a case'}]}
+{id:'alice',title:'Alice in Wonderland',titleCn:'',author:'Lewis Carroll',level:'A1',color:'#6C5CE7',icon:'�',chapters:[
+{id:1,title:'Down the Rabbit Hole',titleCn:'',wordCount:150,readMinutes:5,hl:['curious','waistcoat','rabbit','hedge','remarkable','hurried'],content:'Alice was beginning to get very tired of sitting by her sister on the bank. She had nothing to do. Once or twice she had peeped into the book her sister was reading, but it had no pictures or conversations in it.\n\nSuddenly, a White Rabbit with pink eyes ran close by her. When the Rabbit actually took a watch out of its waistcoat-pocket, Alice started to her feet.\n\n"Burning with curiosity," she ran across the field after it, and was just in time to see it pop down a large rabbit-hole under the hedge. In another moment, down went Alice after it, never once considering how she would get out again.\n\nThe rabbit-hole went straight on like a tunnel for some way, and then dipped suddenly down, so suddenly that Alice had not a moment to think about stopping herself before she found herself falling down what seemed to be a very deep well.',vocab:[{word:'curious',d:'wanting to know'},{word:'waistcoat',d:'a vest-like garment'},{word:'hedge',d:'a row of bushes'},{word:'remarkable',d:'unusual'},{word:'tunnel',d:'underground passage'}]},
+{id:2,title:'The Pool of Tears',titleCn:'',wordCount:140,readMinutes:5,hl:['enormous','desperate','sob','shore'],content:'Down, down, down. Would the fall never come to an end? "I wonder how many miles I have fallen by this time?" Alice said aloud.\n\nDown, down, down. There was nothing else to do, so Alice soon began talking again. "Dinah will miss me very much tonight," she thought. Dinah was her cat.\n\nSplash! She was now in a pool of salty water. It was the pool of tears she had cried. But she was not desperate now. She was swimming happily.\n\nJust then she heard something splashing about in the pool a little way off. She swam nearer to see what it was. At first she thought it must be a walrus or hippopotamus, but then she remembered how small she was, and it was just a mouse.',vocab:[{word:'enormous',d:'extremely large'},{word:'desperate',d:'hopeless'},{word:'sob',d:'cry loudly'},{word:'shore',d:'edge of water'}]},
+{id:3,title:'A Mad Tea Party',titleCn:'',wordCount:155,readMinutes:5,hl:['dormouse','riddle','mutter','curious','uncomfortable'],content:'There was a table set out under a tree in front of the house, and the March Hare and the Hatter were having tea at it. A Dormouse was sitting between them, fast asleep.\n\nThe table was a large one, but the three were all crowded together at one corner. "No room! No room!" they cried out when they saw Alice coming. "There is plenty of room!" said Alice, and she sat down in a large arm-chair.\n\n"Have some wine," the March Hare said. "I don\'t see any wine," Alice remarked. "There isn\'t any," said the March Hare.\n\n"Tell me a riddle," said the Mad Hatter. "Why is a raven like a writing-desk?" Alice could not guess the answer.',vocab:[{word:'dormouse',d:'a small sleeping rodent'},{word:'riddle',d:'a puzzling question'},{word:'mutter',d:'speak in low voice'}]},
+{id:4,title:'The Queen of Hearts',titleCn:'',wordCount:145,readMinutes:5,hl:['procession','frightened','terrified','polite'],content:'A large rose-tree stood near the entrance of the garden, and the roses growing on it were white, but there were three gardeners at it, busily painting them red. "Why are you painting those roses?" Alice asked.\n\nThen the Queen came. "Off with their heads!" she shouted at the top of her voice. Nobody moved. The soldiers were very frightened.\n\n"Who are you?" said the Queen to Alice. Alice was not at all frightened. "My name is Alice, Your Majesty," she said politely.\n\n"Can you play croquet?" shouted the Queen. The game was very strange. The balls were live hedgehogs, and the mallets were live flamingos. Alice found it very difficult to manage her flamingo.',vocab:[{word:'procession',d:'a line of people moving'},{word:'frightened',d:'afraid'},{word:'polite',d:'having good manners'}]},
+{id:5,title:'Alice\'s Evidence',titleCn:'',wordCount:135,readMinutes:5,hl:['witness','accuse','nonsense','jury'],content:'"Here!" cried Alice. She jumped up in such a hurry that she tipped over the jury-box, upsetting all the jury on to the heads of the crowd below.\n\n"Oh, I beg your pardon!" exclaimed Alice. "The trial cannot go on," said the King, "until all the jury are in their places."\n\n"What do you know about this business?" the King asked Alice. "Nothing," said Alice.\n\n"Off with her head!" shouted the Queen. "Nonsense!" said Alice, very loudly and decidedly.\n\n"You are nothing but a pack of cards!" cried Alice. At this, the whole pack rose up into the air and came flying down upon her. She gave a little scream and woke up to find herself on the bank, with her head in the lap of her sister, who was gently brushing away some dead leaves that had fallen on her face.',vocab:[{word:'witness',d:'a person who sees something'},{word:'accuse',d:'to say someone did wrong'},{word:'jury',d:'a group deciding a case'}]}
 ]},
-{id:'wizard',title:'The Wonderful Wizard of Oz',titleCn:'绿野仙踪',author:'L. Frank Baum',level:'A2',color:'#00B894',icon:'🧙',chapters:[
-{id:1,title:'The Cyclone',titleCn:'龙卷风',wordCount:155,readMinutes:5,hl:['cyclone','desperate','tornado','prairie'],content:'Dorothy lived in the midst of the great Kansas prairies. Her uncle and aunt were farmers, and their house was a small one. The great prairie stretched on every side.\n\nOne day, the sky turned a deep gray. The wind began to blow. Uncle Henry stood at the door. "There is a cyclone coming," he said. Dorothy was not afraid, for she had never seen a cyclone before.\n\nBut the wind grew stronger. The house shook. Toto, her little dog, jumped from her arms and hid under the bed. Dorothy caught him. Then the house rose slowly into the air.\n\nHours passed. Dorothy felt very strange. The house was spinning in the great cyclone, moving through the sky like a balloon. She crawled to her bed and lay down. Toto lay down beside her.',vocab:[{word:'cyclone',d:'a violent windstorm'},{word:'prairie',d:'a large open grassland'},{word:'desperate',d:'feeling hopeless'}]},
-{id:2,title:'The Land of Oz',titleCn:'奥兹国',wordCount:160,readMinutes:5,hl:['extraordinary','astonished','delighted','wander','sparkling'],content:'The house came down with a great crash. Dorothy was not hurt. When she looked around, she saw the most extraordinary sight.\n\nThe country was beautiful. There were lovely patches of green grass, and trees with rich fruit. Birds sang in the branches. A little way off was a small brook, sparkling in the sunlight.\n\nA group of strange people came toward her. They were not as big as Dorothy. They were very small. The men were dressed in blue, the women in white.\n\n"Welcome to the Land of Oz," said one of the little people. "Thank you for killing the Wicked Witch of the East." Dorothy looked and saw two silver shoes sticking out from under the house. "But I did not kill anyone," said Dorothy, feeling very confused.',vocab:[{word:'extraordinary',d:'very unusual'},{word:'astonished',d:'very surprised'},{word:'wander',d:'walk without direction'},{word:'sparkling',d:'shining brightly'}]},
-{id:3,title:'The Scarecrow',titleCn:'稻草人',wordCount:145,readMinutes:5,hl:['scarecrow','stuffed','sorrow','companion','clever'],content:'Dorothy set off along the road of yellow brick. She came to a large field. In the middle was a scarecrow, placed on a pole to frighten away the crows.\n\nDorothy looked at the scarecrow with interest. Its head was a small sack stuffed with straw, with eyes, nose, and mouth painted on it.\n\n"Good day," said the Scarecrow. "Did you speak?" asked Dorothy in surprise. "Certainly," answered the Scarecrow.\n\nDorothy helped the Scarecrow off the pole. "What do you want more than anything?" she asked. "I want a brain," said the Scarecrow sadly. "I am tired of being a fool." "Come with me to Oz," said Dorothy. "Perhaps he can help you."',vocab:[{word:'scarecrow',d:'a figure to scare birds'},{word:'sorrow',d:'sadness'},{word:'companion',d:'a person you travel with'}]},
-{id:4,title:'The Tin Woodman',titleCn:'铁皮人',wordCount:150,readMinutes:5,hl:['rusty','axe','affection','kindness','bewitch'],content:'As they walked, they heard a groan. Dorothy saw something shining in the grass. It was a man made entirely of tin. He was holding an axe.\n\n"Did you groan?" asked Dorothy. "Yes," answered the Tin Man. "I have been holding this axe for a long time, and I am very stiff and rusty."\n\nDorothy found an oil-can and oiled his joints. Soon the Tin Man could move freely.\n\n"What do you want?" asked the Scarecrow. "I want a heart," said the Tin Woodman. "When I was a man of flesh and blood, I was in love. But my enemy bewitched my axe, and it cut off my arms and legs. A tinsmith replaced them with tin. But he forgot to give me a heart."',vocab:[{word:'rusty',d:'covered with rust'},{word:'affection',d:'feeling of love'},{word:'kindness',d:'quality of being kind'}]},
-{id:5,title:'The Wizard',titleCn:'伟大的奥兹',wordCount:140,readMinutes:5,hl:['wizard','terrified','courage','request','promise'],content:'At last they reached the Emerald City. Everything was green. The people wore green clothes and green shoes.\n\nThey were taken to the great hall where the Wizard sat upon a throne of green marble. But he was surrounded by green fire and smoke. They could not see his face.\n\n"I am Oz, the Great and Terrible," said a voice. "Why do you seek me?"\n\n"I want a brain," said the Scarecrow. "I want a heart," said the Tin Woodman. "I want courage," said the Lion. "I want to go home," said Dorothy.\n\n"You must first destroy the Wicked Witch of the West," said Oz. Dorothy felt afraid, but she said, "I will try."',vocab:[{word:'wizard',d:'a man with magical powers'},{word:'courage',d:'bravery'},{word:'request',d:'something you ask for'},{word:'promise',d:'to say you will do something'}]}
+{id:'wizard',title:'The Wonderful Wizard of Oz',titleCn:'',author:'L. Frank Baum',level:'A2',color:'#00B894',icon:'�',chapters:[
+{id:1,title:'The Cyclone',titleCn:'',wordCount:155,readMinutes:5,hl:['cyclone','desperate','tornado','prairie'],content:'Dorothy lived in the midst of the great Kansas prairies. Her uncle and aunt were farmers, and their house was a small one. The great prairie stretched on every side.\n\nOne day, the sky turned a deep gray. The wind began to blow. Uncle Henry stood at the door. "There is a cyclone coming," he said. Dorothy was not afraid, for she had never seen a cyclone before.\n\nBut the wind grew stronger. The house shook. Toto, her little dog, jumped from her arms and hid under the bed. Dorothy caught him. Then the house rose slowly into the air.\n\nHours passed. Dorothy felt very strange. The house was spinning in the great cyclone, moving through the sky like a balloon. She crawled to her bed and lay down. Toto lay down beside her.',vocab:[{word:'cyclone',d:'a violent windstorm'},{word:'prairie',d:'a large open grassland'},{word:'desperate',d:'feeling hopeless'}]},
+{id:2,title:'The Land of Oz',titleCn:'',wordCount:160,readMinutes:5,hl:['extraordinary','astonished','delighted','wander','sparkling'],content:'The house came down with a great crash. Dorothy was not hurt. When she looked around, she saw the most extraordinary sight.\n\nThe country was beautiful. There were lovely patches of green grass, and trees with rich fruit. Birds sang in the branches. A little way off was a small brook, sparkling in the sunlight.\n\nA group of strange people came toward her. They were not as big as Dorothy. They were very small. The men were dressed in blue, the women in white.\n\n"Welcome to the Land of Oz," said one of the little people. "Thank you for killing the Wicked Witch of the East." Dorothy looked and saw two silver shoes sticking out from under the house. "But I did not kill anyone," said Dorothy, feeling very confused.',vocab:[{word:'extraordinary',d:'very unusual'},{word:'astonished',d:'very surprised'},{word:'wander',d:'walk without direction'},{word:'sparkling',d:'shining brightly'}]},
+{id:3,title:'The Scarecrow',titleCn:'',wordCount:145,readMinutes:5,hl:['scarecrow','stuffed','sorrow','companion','clever'],content:'Dorothy set off along the road of yellow brick. She came to a large field. In the middle was a scarecrow, placed on a pole to frighten away the crows.\n\nDorothy looked at the scarecrow with interest. Its head was a small sack stuffed with straw, with eyes, nose, and mouth painted on it.\n\n"Good day," said the Scarecrow. "Did you speak?" asked Dorothy in surprise. "Certainly," answered the Scarecrow.\n\nDorothy helped the Scarecrow off the pole. "What do you want more than anything?" she asked. "I want a brain," said the Scarecrow sadly. "I am tired of being a fool." "Come with me to Oz," said Dorothy. "Perhaps he can help you."',vocab:[{word:'scarecrow',d:'a figure to scare birds'},{word:'sorrow',d:'sadness'},{word:'companion',d:'a person you travel with'}]},
+{id:4,title:'The Tin Woodman',titleCn:'',wordCount:150,readMinutes:5,hl:['rusty','axe','affection','kindness','bewitch'],content:'As they walked, they heard a groan. Dorothy saw something shining in the grass. It was a man made entirely of tin. He was holding an axe.\n\n"Did you groan?" asked Dorothy. "Yes," answered the Tin Man. "I have been holding this axe for a long time, and I am very stiff and rusty."\n\nDorothy found an oil-can and oiled his joints. Soon the Tin Man could move freely.\n\n"What do you want?" asked the Scarecrow. "I want a heart," said the Tin Woodman. "When I was a man of flesh and blood, I was in love. But my enemy bewitched my axe, and it cut off my arms and legs. A tinsmith replaced them with tin. But he forgot to give me a heart."',vocab:[{word:'rusty',d:'covered with rust'},{word:'affection',d:'feeling of love'},{word:'kindness',d:'quality of being kind'}]},
+{id:5,title:'The Wizard',titleCn:'',wordCount:140,readMinutes:5,hl:['wizard','terrified','courage','request','promise'],content:'At last they reached the Emerald City. Everything was green. The people wore green clothes and green shoes.\n\nThey were taken to the great hall where the Wizard sat upon a throne of green marble. But he was surrounded by green fire and smoke. They could not see his face.\n\n"I am Oz, the Great and Terrible," said a voice. "Why do you seek me?"\n\n"I want a brain," said the Scarecrow. "I want a heart," said the Tin Woodman. "I want courage," said the Lion. "I want to go home," said Dorothy.\n\n"You must first destroy the Wicked Witch of the West," said Oz. Dorothy felt afraid, but she said, "I will try."',vocab:[{word:'wizard',d:'a man with magical powers'},{word:'courage',d:'bravery'},{word:'request',d:'something you ask for'},{word:'promise',d:'to say you will do something'}]}
 ]},
-{id:'prince',title:'The Little Prince',titleCn:'小王子',author:'Saint-Exupery',level:'B2',color:'#FDCB6E',icon:'✨',chapters:[
-{id:1,title:'The Drawing',titleCn:'画与大人',wordCount:180,readMinutes:6,hl:['magnificent','constrictor','digesting','tiresome','asteroid','pilot'],content:'Once when I was six, I saw a magnificent picture in a book about the forest. It showed a boa constrictor swallowing a wild beast.\n\nI showed my masterpiece to the grown-ups. "Does this drawing frighten you?" But they answered, "Why should anyone be frightened by a hat?" My drawing was not a hat. It was a boa constrictor digesting an elephant.\n\nThe grown-ups never understand anything by themselves, and it is tiresome for children to be always explaining things to them. So I chose another profession. I learned to pilot airplanes.\n\nThat is why, at the age of six, I abandoned the magnificent career as an artist. Grown-ups never understood anything.',vocab:[{word:'magnificent',d:'very beautiful'},{word:'constrictor',d:'a squeezing snake'},{word:'digest',d:'break down food'},{word:'tiresome',d:'boring'}]},
-{id:2,title:'The Desert',titleCn:'沙漠中的相遇',wordCount:175,readMinutes:6,hl:['fragile','solitude','fascinating','isolated','habitation'],content:'I lived my life alone, without anyone that I could really talk to, until I had to make a landing in the Sahara Desert. Something had broken in my engine. I set myself to attempt the difficult repairs all alone. It was a question of life or death. I had scarcely enough drinking water to last a week.\n\nThe first night, I went to sleep on the sand, a thousand miles from any human habitation. I was more isolated than a shipwrecked sailor on a raft in the middle of the ocean.\n\nImagine my surprise, then, when at daybreak I was awakened by an odd little voice. It said: "If you please, draw me a sheep!"\n\nI leaped up as if I had been struck by lightning. I rubbed my eyes. And there, sitting in front of me, was an extraordinary little man who looked at me with great seriousness.',vocab:[{word:'fragile',d:'easily broken'},{word:'solitude',d:'being alone'},{word:'isolated',d:'separated from others'},{word:'habitation',d:'a place to live'}]},
-{id:3,title:'The Rose',titleCn:'玫瑰与虚荣',wordCount:190,readMinutes:7,hl:['vanity','absurd','complicated','innocent','demand','sincere'],content:'One day, a new rose grew on the little prince\'s planet. "Ah!" said the little prince. "You are very beautiful." "Am I not?" the rose responded sweetly.\n\nThe little prince could guess that she was not a very modest flower. But she was so dazzling that he could not help loving her.\n\n"I am thirsty," she said. The little prince watered her, protected her from the wind, and killed the caterpillars. But the rose was vain and demanding. She complained constantly.\n\n"Then I should have judged her by her deeds, not her words," the little prince said to himself. "She perfumed my planet and lit up my life. I should never have run away! I ought to have guessed the sweetness behind her poor little lies."\n\nFlowers are so inconsistent! But I was too young to know how to love her.',vocab:[{word:'vanity',d:'too much pride'},{word:'absurd',d:'unreasonable'},{word:'sincere',d:'genuine'},{word:'inconsistent',d:'not reliable'}]},
-{id:4,title:'The Fox',titleCn:'狐狸与驯养',wordCount:195,readMinutes:7,hl:['tame','essential','invisible','devotion','responsibility','unique'],content:'It was then that the fox appeared. "Good morning," said the fox. "Good morning," the little prince responded.\n\n"Come and play with me," proposed the little prince. "I cannot play with you," the fox said. "I am not tamed."\n\n"What does that mean?" "It means to establish ties. To me, you are still nothing more than a little boy. But if you tame me, then we shall need each other. To me, you will be unique in all the world."\n\nThe little prince tamed the fox. When the hour of departure drew near, the fox said, "I shall cry." "It is your own fault," said the little prince. "I never wished you any sort of harm."\n\n"You become responsible, forever, for what you have tamed," the fox said. And he added: "Go and look again at the roses. You will understand that yours is unique in all the world."',vocab:[{word:'tame',d:'to make friendly'},{word:'essential',d:'absolutely necessary'},{word:'devotion',d:'deep love and loyalty'},{word:'unique',d:'one of a kind'}]},
-{id:5,title:'The Departure',titleCn:'离别',wordCount:160,readMinutes:6,hl:['departure','reveal','precious','wisdom','endure','forever'],content:'The little prince was leaving. His departure was simple. He took advantage of the migration of a flock of wild birds.\n\nOn the morning of his departure, he put his planet in perfect order. He cleaned his active volcanoes.\n\n"What does it mean to die?" asked the little prince. "It means to change into something older. When you look at the sky at night, because I live on one of them, because I laugh on one of them, for you it will be as if all the stars were laughing."\n\nThe little prince smiled. "When you look at the sky at night, I shall be living on one of them, laughing. And so it will be as if all the stars were laughing, when you look at the sky at night. You, only you, will have stars that can laugh."\n\nAnd then he laughed.',vocab:[{word:'departure',d:'the act of leaving'},{word:'wisdom',d:'ability to judge well'},{word:'endure',d:'suffer patiently'},{word:'reveal',d:'to make known'}]}
+{id:'prince',title:'The Little Prince',titleCn:'',author:'Saint-Exupery',level:'B2',color:'#FDCB6E',icon:'',chapters:[
+{id:1,title:'The Drawing',titleCn:'',wordCount:180,readMinutes:6,hl:['magnificent','constrictor','digesting','tiresome','asteroid','pilot'],content:'Once when I was six, I saw a magnificent picture in a book about the forest. It showed a boa constrictor swallowing a wild beast.\n\nI showed my masterpiece to the grown-ups. "Does this drawing frighten you?" But they answered, "Why should anyone be frightened by a hat?" My drawing was not a hat. It was a boa constrictor digesting an elephant.\n\nThe grown-ups never understand anything by themselves, and it is tiresome for children to be always explaining things to them. So I chose another profession. I learned to pilot airplanes.\n\nThat is why, at the age of six, I abandoned the magnificent career as an artist. Grown-ups never understood anything.',vocab:[{word:'magnificent',d:'very beautiful'},{word:'constrictor',d:'a squeezing snake'},{word:'digest',d:'break down food'},{word:'tiresome',d:'boring'}]},
+{id:2,title:'The Desert',titleCn:'',wordCount:175,readMinutes:6,hl:['fragile','solitude','fascinating','isolated','habitation'],content:'I lived my life alone, without anyone that I could really talk to, until I had to make a landing in the Sahara Desert. Something had broken in my engine. I set myself to attempt the difficult repairs all alone. It was a question of life or death. I had scarcely enough drinking water to last a week.\n\nThe first night, I went to sleep on the sand, a thousand miles from any human habitation. I was more isolated than a shipwrecked sailor on a raft in the middle of the ocean.\n\nImagine my surprise, then, when at daybreak I was awakened by an odd little voice. It said: "If you please, draw me a sheep!"\n\nI leaped up as if I had been struck by lightning. I rubbed my eyes. And there, sitting in front of me, was an extraordinary little man who looked at me with great seriousness.',vocab:[{word:'fragile',d:'easily broken'},{word:'solitude',d:'being alone'},{word:'isolated',d:'separated from others'},{word:'habitation',d:'a place to live'}]},
+{id:3,title:'The Rose',titleCn:'',wordCount:190,readMinutes:7,hl:['vanity','absurd','complicated','innocent','demand','sincere'],content:'One day, a new rose grew on the little prince\'s planet. "Ah!" said the little prince. "You are very beautiful." "Am I not?" the rose responded sweetly.\n\nThe little prince could guess that she was not a very modest flower. But she was so dazzling that he could not help loving her.\n\n"I am thirsty," she said. The little prince watered her, protected her from the wind, and killed the caterpillars. But the rose was vain and demanding. She complained constantly.\n\n"Then I should have judged her by her deeds, not her words," the little prince said to himself. "She perfumed my planet and lit up my life. I should never have run away! I ought to have guessed the sweetness behind her poor little lies."\n\nFlowers are so inconsistent! But I was too young to know how to love her.',vocab:[{word:'vanity',d:'too much pride'},{word:'absurd',d:'unreasonable'},{word:'sincere',d:'genuine'},{word:'inconsistent',d:'not reliable'}]},
+{id:4,title:'The Fox',titleCn:'',wordCount:195,readMinutes:7,hl:['tame','essential','invisible','devotion','responsibility','unique'],content:'It was then that the fox appeared. "Good morning," said the fox. "Good morning," the little prince responded.\n\n"Come and play with me," proposed the little prince. "I cannot play with you," the fox said. "I am not tamed."\n\n"What does that mean?" "It means to establish ties. To me, you are still nothing more than a little boy. But if you tame me, then we shall need each other. To me, you will be unique in all the world."\n\nThe little prince tamed the fox. When the hour of departure drew near, the fox said, "I shall cry." "It is your own fault," said the little prince. "I never wished you any sort of harm."\n\n"You become responsible, forever, for what you have tamed," the fox said. And he added: "Go and look again at the roses. You will understand that yours is unique in all the world."',vocab:[{word:'tame',d:'to make friendly'},{word:'essential',d:'absolutely necessary'},{word:'devotion',d:'deep love and loyalty'},{word:'unique',d:'one of a kind'}]},
+{id:5,title:'The Departure',titleCn:'',wordCount:160,readMinutes:6,hl:['departure','reveal','precious','wisdom','endure','forever'],content:'The little prince was leaving. His departure was simple. He took advantage of the migration of a flock of wild birds.\n\nOn the morning of his departure, he put his planet in perfect order. He cleaned his active volcanoes.\n\n"What does it mean to die?" asked the little prince. "It means to change into something older. When you look at the sky at night, because I live on one of them, because I laugh on one of them, for you it will be as if all the stars were laughing."\n\nThe little prince smiled. "When you look at the sky at night, I shall be living on one of them, laughing. And so it will be as if all the stars were laughing, when you look at the sky at night. You, only you, will have stars that can laugh."\n\nAnd then he laughed.',vocab:[{word:'departure',d:'the act of leaving'},{word:'wisdom',d:'ability to judge well'},{word:'endure',d:'suffer patiently'},{word:'reveal',d:'to make known'}]}
 ]}
 ];
 
@@ -1349,7 +1615,7 @@ function renderBookshelf(){
     const p=state.bookProgress[book.id];const ci=p?p.chapterIdx:0;
     const pct=Math.round((ci/book.chapters.length)*100);
     const hasP=p&&ci>0;const done=ci>=book.chapters.length;
-    return '<div class="book-card" onclick="openBook(\''+book.id+'\')"><div class="book-cover"><div class="bc-bg" style="background:linear-gradient(135deg,'+book.color+','+book.color+'dd)"><span class="bc-icon">'+book.icon+'</span><span class="bc-title">'+book.title+'</span><span class="bc-author">'+book.author+'</span><span class="bc-level">'+book.level+'</span><div class="bc-progress"><div class="bc-progress-fill" style="width:'+pct+'%"></div></div></div></div><div class="book-info"><span class="bi-title">'+book.titleCn+'</span><span class="bi-meta">'+book.level+' · '+book.chapters.length+' 章</span><span class="bi-continue" style="display:'+(hasP&&!done?'block':'none')+'">▶ 继续第 '+(ci+1)+' 章</span><span class="bi-continue" style="display:'+(done?'block':'none')+';color:var(--success)">✓ 已读完</span></div></div>';
+    return '<div class="book-card" onclick="openBook(\''+book.id+'\')"><div class="book-cover"><div class="bc-bg" style="background:linear-gradient(135deg,'+book.color+','+book.color+'dd)"><span class="bc-icon">'+book.icon+'</span><span class="bc-title">'+book.title+'</span><span class="bc-author">'+book.author+'</span><span class="bc-level">'+book.level+'</span><div class="bc-progress"><div class="bc-progress-fill" style="width:'+pct+'%"></div></div></div></div><div class="book-info"><span class="bi-title">'+book.titleCn+'</span><span class="bi-meta">'+book.level+'  '+book.chapters.length+' </span><span class="bi-continue" style="display:'+(hasP&&!done?'block':'none')+'">  '+(ci+1)+' </span><span class="bi-continue" style="display:'+(done?'block':'none')+';color:var(--success)"> </span></div></div>';
   }).join('');
 }
 
@@ -1366,7 +1632,7 @@ function openChapter(ci){
   const ch=book.chapters[ci];
   document.getElementById('immBookTitle').textContent=book.titleCn;
   document.getElementById('immChTitle').textContent=ch.title;
-  document.getElementById('immChSub').textContent='第 '+(ci+1)+' / '+book.chapters.length+' 章 · '+ch.wordCount+' 词 · 约 '+ch.readMinutes+' 分钟';
+  document.getElementById('immChSub').textContent=' '+(ci+1)+' / '+book.chapters.length+'   '+ch.wordCount+'    '+ch.readMinutes+' ';
   const hlSet=new Set((ch.hl||[]).map(w=>w.toLowerCase()));
   const body=document.getElementById('immersiveBody');
   const chHTML=ch.content.split('\n').filter(p=>p.trim()).map(para=>{
@@ -1374,12 +1640,11 @@ function openChapter(ci){
     return '<p>'+words.map(w=>{const clean=w.replace(/[^a-zA-Z\'-]/g,'').toLowerCase();const cls=hlSet.has(clean)?'wh':'';return '<span class="'+cls+'" onclick="tapWord(this,\''+clean.replace(/'/g,"\\'")+'\')">'+w+'</span>';}).join('')+'</p>';
   }).join('');
   const isLast=ci>=book.chapters.length-1;
-  const endCard=isLast?'<div class="chapter-end"><div class="ce-icon">🎉</div><div class="ce-title">恭喜读完整本书！</div><div class="ce-desc">'+book.titleCn+' · '+book.chapters.length+' 章</div><button class="ce-btn" onclick="exitImmersive()">返回首页</button></div>':'<div class="chapter-end"><div class="ce-icon">📖</div><div class="ce-title">本章结束</div><div class="ce-desc">'+ch.titleCn+' · 下一章：'+book.chapters[ci+1].titleCn+'</div><button class="ce-btn" onclick="immNextChapter()">继续下一章 →</button></div>';
+  const endCard=isLast?'<div class="chapter-end"><div class="ce-icon">�</div><div class="ce-title">�</div><div class="ce-desc">'+book.titleCn+'  '+book.chapters.length+' </div><button class="ce-btn" onclick="exitImmersive()"></button></div>':'<div class="chapter-end"><div class="ce-icon">�</div><div class="ce-title"></div><div class="ce-desc">'+ch.titleCn+'  �'+book.chapters[ci+1].titleCn+'</div><button class="ce-btn" onclick="immNextChapter()"> </button></div>';
   body.innerHTML=chHTML+endCard;
   body.style.fontSize=state.fontSize+'px';body.style.lineHeight='2';
-  document.body.classList.toggle('eye-care',state.eyeCare);
   const pct=Math.round(((ci+1)/book.chapters.length)*100);
-  document.getElementById('immProgressText').textContent='第 '+(ci+1)+' / '+book.chapters.length+' 章 · '+pct+'%';
+  document.getElementById('immProgressText').textContent=' '+(ci+1)+' / '+book.chapters.length+'   '+pct+'%';
   document.getElementById('immProgressFill').style.width=pct+'%';
   document.getElementById('immPrevBtn').style.display=ci>0?'block':'none';
   if(!state.bookProgress[book.id])state.bookProgress[book.id]={chapterIdx:0};
@@ -1401,7 +1666,7 @@ function immCompleteChapter(){
   const ch=book.chapters[state.currentChapterIdx];
   state.readingHistory.unshift({id:book.id+'_ch'+ch.id,title:ch.title+' ('+book.titleCn+')',titleCn:ch.titleCn+' - '+book.titleCn,level:book.level,tags:['novel','book'],wordCount:ch.wordCount,readTime:Date.now()});
   if(state.readingHistory.length>100)state.readingHistory.length=100;
-  saveAll();toast('🎉 第 '+(state.currentChapterIdx+1)+' 章完成！');
+  saveAll();toast('�  '+(state.currentChapterIdx+1)+' �');
   if(state.currentChapterIdx<book.chapters.length-1)setTimeout(()=>immNextChapter(),800);
   else setTimeout(()=>exitImmersive(),800);
 }
@@ -1412,17 +1677,17 @@ function exitImmersive(){navigateBack();if(state.readingMode==='immersive')rende
 // ============ TOC ============
 function showImmersiveToc(){
   const book=state.currentBook;if(!book)return;
-  document.getElementById('tocTitle').textContent=book.titleCn+' · 目录';
+  document.getElementById('tocTitle').textContent=book.titleCn+'  ';
   document.getElementById('tocList').innerHTML=book.chapters.map((ch,i)=>{
     const cur=i===state.currentChapterIdx;const read=i<state.currentChapterIdx;
-    return '<div class="toc-item '+(cur?'toc-current':'')+' '+(read?'toc-read':'')+'" onclick="closeToc();openChapter('+i+')"><div class="toc-num">'+(read?'✓':(i+1))+'</div><div class="toc-info"><div class="toc-ch-title">'+ch.title+'</div><div class="toc-ch-meta">'+ch.titleCn+' · '+ch.wordCount+' 词 · '+ch.readMinutes+' 分钟</div></div></div>';
+    return '<div class="toc-item '+(cur?'toc-current':'')+' '+(read?'toc-read':'')+'" onclick="closeToc();openChapter('+i+')"><div class="toc-num">'+(read?'':(i+1))+'</div><div class="toc-info"><div class="toc-ch-title">'+ch.title+'</div><div class="toc-ch-meta">'+ch.titleCn+'  '+ch.wordCount+'   '+ch.readMinutes+' </div></div></div>';
   }).join('');
   document.getElementById('tocOverlay').classList.add('show');
 }
 function closeToc(e){if(e&&e.target!==document.getElementById('tocOverlay'))return;document.getElementById('tocOverlay').classList.remove('show');}
 
 // ============ INIT ============
-loadState(); renderIndex();
+initUserSystem(); renderIndex();
 </script>
 </body>
 </html>
