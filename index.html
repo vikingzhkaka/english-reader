@@ -1071,8 +1071,9 @@ function switchHistTab(tab) {
       <div class="wordbook-header">
         <span class="wb-title">共 ${state.wordBook.length} 个生词</span>
         <div class="wb-actions">
-          <button class="wb-btn" onclick="exportWordBook('csv')">导出 CSV</button>
-          <button class="wb-btn" onclick="exportWordBook('txt')">导出 TXT</button>
+          <button class="wb-btn" onclick="exportWordBook('words')">纯单词</button>
+          <button class="wb-btn" onclick="exportWordBook('csv')">CSV</button>
+          <button class="wb-btn" onclick="exportWordBook('txt')">详细 TXT</button>
         </div>
       </div>
       ${state.wordBook.map((w,i) => `
@@ -1136,7 +1137,10 @@ function deleteWord(idx) {
 function exportWordBook(format) {
   if (!state.wordBook.length) { toast('生词本是空的'); return; }
   let content, filename, mime;
-  if (format === 'csv') {
+  if (format === 'words') {
+    content = state.wordBook.map(w => w.word).join('\n');
+    filename = 'wordlist.txt'; mime = 'text/plain;charset=utf-8';
+  } else if (format === 'csv') {
     content = '\uFEFFWord,Definition,Count,Date\n';
     content += state.wordBook.map(w => `"${w.word}","${w.def}",${w.count},"${w.time ? new Date(w.time).toLocaleDateString() : '-'}"`).join('\n');
     filename = 'wordbook.csv'; mime = 'text/csv;charset=utf-8';
@@ -1151,7 +1155,7 @@ function exportWordBook(format) {
   a.href = url; a.download = filename;
   document.body.appendChild(a); a.click();
   document.body.removeChild(a); URL.revokeObjectURL(url);
-  toast('导出成功: ' + filename);
+  toast('已导出: ' + filename);
 }
 
 // ============ INIT ============
