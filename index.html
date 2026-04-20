@@ -1405,6 +1405,7 @@ function handleDataImport(event) {
 // ============ SYNC SETTINGS ============
 var currentSyncTab = 'gist';
 var GIST_FILENAME = 'english-reader-sync.json';
+var GIST_DESC = 'English-Reader-Sync'; // 固定描述，按 GitHub Token 匹配（一人一个 Gist）
 var WEBDAV_FILENAME = '/english-reader-sync.json';
 function showSyncSettings() {
   document.getElementById('syncOverlay').style.display = 'flex';
@@ -1461,7 +1462,7 @@ function switchSyncTab(tab) {
 function updateSyncStatus() {
   var el = document.getElementById('syncStatus');
   var bound = [];
-  if (localStorage.getItem('er_gistId_' + currentUser)) bound.push('Gist');
+  if (localStorage.getItem('er_gistId')) bound.push('Gist');
   if (localStorage.getItem('er_webdavServer') && localStorage.getItem('er_webdavUser')) bound.push('WebDAV');
   if (bound.length) { el.textContent = bound.join('+') + ' ›'; el.style.color = 'var(--primary)'; }
   else { el.textContent = '›'; el.style.color = ''; }
@@ -1505,11 +1506,11 @@ function doGistSync() {
   var btn = document.getElementById('gistSyncBtn');
   btn.textContent = '同步中...'; btn.disabled = true;
   // Step 1: 获取或查找 Gist
-  var gistId = localStorage.getItem('er_gistId_' + currentUser) || '';
+  var gistId = localStorage.getItem('er_gistId') || '';
   if (gistId) {
     fetch('https://api.github.com/gists/' + gistId, {headers: headers})
     .then(function(r) {
-      if (r.status === 404) { localStorage.removeItem('er_gistId_' + currentUser); return findExistingGist(headers); }
+      if (r.status === 404) { localStorage.removeItem('er_gistId'); return findExistingGist(headers); }
       if (!r.ok) throw new Error('获取失败: ' + r.status);
       return r.json();
     })
@@ -1532,7 +1533,7 @@ function findExistingGist(headers) {
       return r.json().then(function(list) {
         if (!list.length) return null;
         for (var i = 0; i < list.length; i++) {
-          if (list[i].description === 'ER-Sync-' + currentUser && list[i].files && list[i].files[GIST_FILENAME]) {
+          if (list[i].description === GIST_DESC && list[i].files && list[i].files[GIST_FILENAME]) {
             return list[i];
           }
         }
@@ -1571,7 +1572,7 @@ function handleGistCompare(gist, headers, btn) {
       '覆盖云端（用本地数据）',
       function() {
         applyRemoteData(remoteData);
-        localStorage.setItem('er_gistId_'+currentUser, gist.id);
+        localStorage.setItem('er_gistId', gist.id);
         showSyncResult('gistResult','已用云端数据覆盖本地 ('+remoteStr+')',true);
         btn.textContent='同步'; btn.disabled=false; updateSyncStatus();
       },
@@ -1589,7 +1590,7 @@ function handleGistCompare(gist, headers, btn) {
       '取消',
       function() {
         applyRemoteData(remoteData);
-        localStorage.setItem('er_gistId_'+currentUser, gist.id);
+        localStorage.setItem('er_gistId', gist.id);
         showSyncResult('gistResult','已同步云端数据 ('+new Date(remoteTime).toLocaleString()+')',true);
         btn.textContent='同步'; btn.disabled=false; updateSyncStatus();
       },
@@ -1628,9 +1629,9 @@ function createOrUploadGist(gist, headers, data, btn) {
     .then(function(r) { if(!r.ok) throw new Error('上传失败: '+r.status); state._lastSync=Date.now(); save('_lastSync'); return '本地数据已上传到云端'; });
   } else {
     // 无 Gist → 创建
-    return fetch('https://api.github.com/gists', { method:'POST', headers:headers, body: JSON.stringify({description:'ER-Sync-'+currentUser, public:false, files:f}) })
+    return fetch('https://api.github.com/gists', { method:'POST', headers:headers, body: JSON.stringify({description: GIST_DESC, public:false, files:f}) })
     .then(function(r) { if(!r.ok) throw new Error('创建失败: '+r.status); return r.json(); })
-    .then(function(g) { localStorage.setItem('er_gistId_'+currentUser, g.id); state._lastSync=Date.now(); save('_lastSync'); return '已创建云端同步，数据已上传'; });
+    .then(function(g) { localStorage.setItem('er_gistId', g.id); state._lastSync=Date.now(); save('_lastSync'); return '已创建云端同步，数据已上传'; });
   }
 }
 
