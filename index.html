@@ -2407,99 +2407,68 @@ function urlToId(prefix, url) {
   return prefix + '_' + (h >>> 0).toString(36);
 }
 
-function fetchVoaArticles() {
-  // BBC Learning English - 6 Minute English（摘要较完整，约 150-300 词）
-  return fetch('https://api.rss2json.com/v1/api.json?rss_url=https://feeds.bbci.co.uk/learningenglish/english/features/6-minute-english/rss.xml&count=20')
-    .then(function(r){return r.json();})
+// 解析 rss2json 返回结果，提取词数 >= minWc 的文章
+function parseRssItems(items, sourceLabel, idPrefix, minWc) {
+  var results = [];
+  (items || []).forEach(function(item) {
+    var raw = item.content || item.description || '';
+    var text = raw.replace(/<[^>]*>/g, ' ').replace(/&nbsp;/g, ' ')
+                  .replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>')
+                  .replace(/\s+/g, ' ').trim();
+    var wc = text.split(' ').filter(function(w){return w.length > 0;}).length;
+    if (wc < (minWc || 100)) return;
+    var autoLv = wc < 150 ? 'A2' : wc < 300 ? 'B1' : wc < 600 ? 'B2' : 'C1';
+    results.push({
+      id: urlToId(idPrefix, item.link || item.guid || item.title || ''),
+      title: item.title || 'Untitled',
+      titleCn: '',
+      level: autoLv,
+      tags: ['news'],
+      wordCount: wc,
+      readMinutes: Math.max(3, Math.round(wc / 80)),
+      source: sourceLabel,
+      link: item.link || '',
+      content: text,
+      vocab: []
+    });
+  });
+  return results;
+}
+
+function fetchRss(url, sourceLabel, idPrefix) {
+  // 注意：rss2json 免费版不支持 count 参数，不要加
+  return fetch('https://api.rss2json.com/v1/api.json?rss_url=' + encodeURIComponent(url))
+    .then(function(r){ return r.json(); })
     .then(function(data){
-      if(!data.items) return [];
-      var results = [];
-      data.items.forEach(function(item){
-        // content 字段往往比 description 更完整，优先使用
-        var raw = item.content || item.description || '';
-        var text = raw.replace(/<[^>]*>/g,'').replace(/&nbsp;/g,' ').replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>').trim();
-        var wc = text.split(/\s+/).filter(function(w){return w.length>0;}).length;
-        if (wc < 100) return; // 过滤过短内容
-        results.push({
-          id: urlToId('bbc', item.link || item.guid || item.title),
-          title: item.title || 'Untitled',
-          titleCn: '',
-          level: 'B1',
-          tags: ['news', 'english-learning'],
-          wordCount: wc,
-          readMinutes: Math.max(3, Math.round(wc / 80)),
-          source: 'BBC Learning English',
-          link: item.link,
-          content: text,
-          vocab: []
-        });
-      });
-      return results;
+      if (data.status !== 'ok') return [];
+      return parseRssItems(data.items, sourceLabel, idPrefix, 100);
     })
-    .catch(function(){return [];});
+    .catch(function(){ return []; });
+}
+
+function fetchVoaArticles() {
+  // British Council Learn English — 平均 400-800 词，适合 B1-C1
+  return fetchRss(
+    'https://feeds.feedburner.com/LearnEnglishBritishCouncil',
+    'British Council',
+    'bc'
+  );
 }
 
 function fetchBreakingNewsArticles() {
-  // VOA Learning English Special English（专为英语学习者写，句子短、词汇简单）
-  return fetch('https://api.rss2json.com/v1/api.json?rss_url=https://learningenglish.voanews.com/api/ziyktmveiq&count=20')
-    .then(function(r){return r.json();})
-    .then(function(data){
-      if(!data.items) return [];
-      var levelMap = {'A1':0,'A2':1,'B1':2,'B2':3,'C1':4};
-      var results = [];
-      data.items.forEach(function(item){
-        var raw = item.content || item.description || '';
-        var text = raw.replace(/<[^>]*>/g,'').replace(/&nbsp;/g,' ').replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>').trim();
-        var wc = text.split(/\s+/).filter(function(w){return w.length>0;}).length;
-        if (wc < 100) return; // 过滤过短内容
-        var autoLv = wc < 150 ? 'A2' : wc < 300 ? 'B1' : wc < 500 ? 'B2' : 'C1';
-        results.push({
-          id: urlToId('voa', item.link || item.guid || item.title),
-          title: item.title || 'Untitled',
-          titleCn: '',
-          level: autoLv,
-          tags: ['news'],
-          wordCount: wc,
-          readMinutes: Math.max(3, Math.round(wc / 80)),
-          source: 'VOA Learning English',
-          link: item.link,
-          content: text,
-          vocab: []
-        });
-      });
-      return results;
-    })
-    .catch(function(){
-      // 备用：BBC News（正文内容较丰富）
-      return fetch('https://api.rss2json.com/v1/api.json?rss_url=https://feeds.bbci.co.uk/news/world/rss.xml&count=20')
-        .then(function(r){return r.json();})
-        .then(function(data){
-          if(!data.items) return [];
-          var results = [];
-          data.items.forEach(function(item){
-            var raw = item.content || item.description || '';
-            var text = raw.replace(/<[^>]*>/g,'').replace(/&nbsp;/g,' ').trim();
-            var wc = text.split(/\s+/).filter(function(w){return w.length>0;}).length;
-            if (wc < 100) return;
-            var autoLv = wc < 150 ? 'A2' : wc < 300 ? 'B1' : wc < 500 ? 'B2' : 'C1';
-            results.push({
-              id: urlToId('bbcnews', item.link || item.guid || item.title),
-              title: item.title || 'Untitled',
-              titleCn: '',
-              level: autoLv,
-              tags: ['news'],
-              wordCount: wc,
-              readMinutes: Math.max(3, Math.round(wc / 80)),
-              source: 'BBC News',
-              link: item.link,
-              content: text,
-              vocab: []
-            });
-          });
-          return results;
-        })
-        .catch(function(){return [];});
-    });
+  // The Guardian 多个频道并行，过滤后取词数 >= 100 的
+  var channels = [
+    { url: 'https://www.theguardian.com/world/rss',       label: 'The Guardian', prefix: 'gw' },
+    { url: 'https://www.theguardian.com/science/rss',     label: 'The Guardian', prefix: 'gs' },
+    { url: 'https://www.theguardian.com/technology/rss',  label: 'The Guardian', prefix: 'gt' },
+  ];
+  return Promise.all(channels.map(function(ch){
+    return fetchRss(ch.url, ch.label, ch.prefix);
+  })).then(function(results){
+    var merged = [];
+    results.forEach(function(r){ merged = merged.concat(r); });
+    return merged;
+  });
 }
 
 function openOnlineArticle(idx) {
